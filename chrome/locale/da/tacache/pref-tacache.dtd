@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Åben cachevindue">
+<!ENTITY copyAndClose.label "Kopiér og luk">
+<!ENTITY closeAndPaste.label "Luk og indsæt">
+<!ENTITY reload.label "Opdatér">
+<!ENTITY menu.label "Indstillinger">
+<!ENTITY general.caption "Generelt">
+<!ENTITY cacheSize.label "Cachestørrelse:">
+<!ENTITY cacheSizeWarning.label "(for stor cache kan sløve &brandShortName;)">
+<!ENTITY compactbutton.label "Brug pladsbesparende ikon (uden menu)">
+<!ENTITY hideemptybutton.label "Skjul værktøjslinieikon når cache er tom">
+<!ENTITY statusbutton.label "Vis statuslinieikon når tekst gemmes.">
+<!ENTITY toolMenu.label "Vis Åben cachevindue i menuen Funktioner">
+<!ENTITY inPrivateBrowsing.label "Private vinduer:">
+<!ENTITY neverSave.label "Gem aldrig tekst">
+<!ENTITY clearWhenLeave.label "Gem tekst men slet igen når private vinduer lukkes">
+<!ENTITY whitelist.caption "Undtagelser">
+<!ENTITY whitelist.text "Textarea Cache gemmer ikke indtastet tekst på disse sider.">
+<!ENTITY user-edit.text "Listen kan redigeres (adskil emner med Enter)">
+<!ENTITY optionOpen.label "Åben cachevindue">
+<!ENTITY addThisSite.label "Føj denne side til undtagelser">
+<!ENTITY openOptionWindow.label "Åben indstillinger">
+<!ENTITY clickOpenCache.label "Klik for at åbne cachevinduet">
+<!ENTITY contextAddSite.label "Føj siden til undtagelser via kontekstmenu">
+<!ENTITY clearAll.label "Tøm cache">
+<!ENTITY clearThis.label "Fjern dette emne">
+<!ENTITY clearAllWarning.label "Vil du tømme cachéen?">
+<!ENTITY clearThisWarning.label "Vil du fjerne dette emne?">
+<!ENTITY cacheWindow.label "Cachevindue">
+<!ENTITY clear.caption "Gamle data">
+<!ENTITY clear.restart "Bevar gamle cachedata når &brandShortName; startes (anbefalet)">
+<!ENTITY clear.restartInMin "og fjern dem efter (minutter):">
+<!ENTITY clear.restartWhenClosing "og fjern dem når &brandShortName; lukkes igen">
+<!ENTITY clear.byDays "Behold gamle cachedata i (dage):">
+<!ENTITY clear.whenFull "Fjern gamle data når cache er fuld">
+<!ENTITY clear.whenClosing "Fjern gemt hver gang &brandShortName; lukkes">

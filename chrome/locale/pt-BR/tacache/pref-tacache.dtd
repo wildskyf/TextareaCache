@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Abrir janela do Textarea Cache">
+<!ENTITY copyAndClose.label "Copiar e fechar">
+<!ENTITY closeAndPaste.label "Fechar e colar">
+<!ENTITY reload.label "Atualizar">
+<!ENTITY menu.label "Opções do Textarea Cache">
+<!ENTITY general.caption "Configurações Gerais">
+<!ENTITY cacheSize.label "Tamanho do cache:">
+<!ENTITY cacheSizeWarning.label "(um número muito grande pode tornar lento o &brandShortName;)">
+<!ENTITY compactbutton.label "Usar um ícone compacto na barra de ferramentas (sem menu) para economizar espaço">
+<!ENTITY hideemptybutton.label "Ocultar o ícone da barra de ferramentas quando o cache estiver vazio">
+<!ENTITY statusbutton.label "Mostrar ícone na barra de status quando textos são salvos no cache">
+<!ENTITY toolMenu.label "Adicionar um item para abrir a janela de cache no menu Ferramentas">
+<!ENTITY inPrivateBrowsing.label "Em janelas privativas:">
+<!ENTITY neverSave.label "Nunca salvar textos">
+<!ENTITY clearWhenLeave.label "Salvar textos mas limpar quando a janela privativa é fechada">
+<!ENTITY whitelist.caption "Lista de Exceções">
+<!ENTITY whitelist.text "O Textarea Cache NÃO salvará textos digitados nestes sites">
+<!ENTITY user-edit.text "Você pode editar esta lista. (itens separados pela tecla Enter)">
+<!ENTITY optionOpen.label "Abrir janela de cache">
+<!ENTITY addThisSite.label "Adicionar este site à Lista de Exceções">
+<!ENTITY openOptionWindow.label "Abrir janela de opções do Textarea Cache">
+<!ENTITY clickOpenCache.label "Clique para abrir a janela do Textarea Cache">
+<!ENTITY contextAddSite.label "Adicionar este site à Lista de Exceções através do menu de contexto">
+<!ENTITY clearAll.label "Esvaziar o cache">
+<!ENTITY clearThis.label "Remover este item">
+<!ENTITY clearAllWarning.label "Quer mesmo esvaziar o cache?">
+<!ENTITY clearThisWarning.label "Tem certeza que quer remover este item?">
+<!ENTITY cacheWindow.label "Janela do Textarea Cache">
+<!ENTITY clear.caption "Dados antigos">
+<!ENTITY clear.restart "Manter dados antigos no cache quando eu iniciar o &brandShortName; (recomendado)">
+<!ENTITY clear.restartInMin "Então remover dados antigos após um período de tempo (em minutos):">
+<!ENTITY clear.restartWhenClosing "Então remover dados antigos quando eu fechar o &brandShortName; novamente">
+<!ENTITY clear.byDays "Manter dados antigos no cache durante um período de tempo (em dias):">
+<!ENTITY clear.whenFull "Remover dados antigos quando o cache encher">
+<!ENTITY clear.whenClosing "Limpar todos os textos salvos sempre que eu fechar o &brandShortName;">

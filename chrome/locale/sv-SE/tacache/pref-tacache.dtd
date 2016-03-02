@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Öppna fönstret Textområdescache">
+<!ENTITY copyAndClose.label "Kopiera och stäng">
+<!ENTITY closeAndPaste.label "Stäng och klistra in">
+<!ENTITY reload.label "Uppdatera">
+<!ENTITY menu.label "Inställningar för Textarea Cache">
+<!ENTITY general.caption "Allmänna inställningar">
+<!ENTITY cacheSize.label "Cachestorlek:">
+<!ENTITY cacheSizeWarning.label "(Ett alltför högt nummer kan göra &brandShortName; långsammare)">
+<!ENTITY compactbutton.label "Använd en kompakt verktygsfältikon (utan meny) för att spara utrymme">
+<!ENTITY hideemptybutton.label "Dölj verktygsfältikonen när cachen är tom">
+<!ENTITY statusbutton.label "Visa en statusfältikon när text sparas i cachen">
+<!ENTITY toolMenu.label "Lägg till ett objekt i Verktyg-menyn, som öppnar cachefönstret">
+<!ENTITY inPrivateBrowsing.label "I privata fönster:">
+<!ENTITY neverSave.label "Spara aldrig textmaterial">
+<!ENTITY clearWhenLeave.label "Spara textmaterial, men rensa det när det privata fönster stängs">
+<!ENTITY whitelist.caption "Undantagslista">
+<!ENTITY whitelist.text "Textarea Cache kommer INTE att spara texten du skriver på dessa webbplatser">
+<!ENTITY user-edit.text "Du kan redigera den här listan. (Objekt separeras med Retur-tangenten)">
+<!ENTITY optionOpen.label "Öppna cachefönstret">
+<!ENTITY addThisSite.label "Lägg till denna webbplats i undantagslistan">
+<!ENTITY openOptionWindow.label "Öppna inställningarna för Textarea Cache">
+<!ENTITY clickOpenCache.label "Klicka för att öppna fönstret Textområdescache">
+<!ENTITY contextAddSite.label "Lägg till denna webbplats i undantagslistan via snabbmenyn">
+<!ENTITY clearAll.label "Töm cachen">
+<!ENTITY clearThis.label "Ta bort detta objekt">
+<!ENTITY clearAllWarning.label "Vill du verkligen tömma cachen?">
+<!ENTITY clearThisWarning.label "Är det säkert att du vill ta bort detta objekt?">
+<!ENTITY cacheWindow.label "Textområdescache">
+<!ENTITY clear.caption "Gammal data">
+<!ENTITY clear.restart "Spara gammal data i cachen när jag startar &brandShortName; (rekommenderas)">
+<!ENTITY clear.restartInMin "Ta därefter bort gammal data efter följande tidsperiod (min):">
+<!ENTITY clear.restartWhenClosing "Ta därefter bort gammal data när jag stänger &brandShortName; igen">
+<!ENTITY clear.byDays "Behåll gammal data i cachen under följande tidsperiod (dagar):">
+<!ENTITY clear.whenFull "Ta bort gammal data när cachen blir full">
+<!ENTITY clear.whenClosing "Rensa allt sparat textmaterial varje gång jag stänger &brandShortName;">

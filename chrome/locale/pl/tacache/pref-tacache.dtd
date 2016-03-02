@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Otwórz bufor">
+<!ENTITY copyAndClose.label "Kopiuj i zamknij">
+<!ENTITY closeAndPaste.label "Wklej i zamknij">
+<!ENTITY reload.label "Odśwież">
+<!ENTITY menu.label "Buforowanie tekstu - ustawienia">
+<!ENTITY general.caption "Ustawienia ogólne">
+<!ENTITY cacheSize.label "Rozmiar bufora:">
+<!ENTITY cacheSizeWarning.label "(Duży rozmiar może spowolnić &brandShortName;)">
+<!ENTITY compactbutton.label "Wyświetlaj kompaktowy przycisk narzędziowy (bez menu)">
+<!ENTITY hideemptybutton.label "Nie wyświetlaj ikony na pasku narzędzi, gdy bufor jest pusty">
+<!ENTITY statusbutton.label "Wyświetlaj ikonę na pasku stanu, gdy w buforze jest zapisany tekst">
+<!ENTITY toolMenu.label "Wyświetlaj w menu Narzędzia element otwierający okno buforu">
+<!ENTITY inPrivateBrowsing.label "W prywatnych oknach:">
+<!ENTITY neverSave.label "Nigdy nie zapisuj tekstu">
+<!ENTITY clearWhenLeave.label "Zapisuj tekst, ale wyczyść go podczas zamykania okna">
+<!ENTITY whitelist.caption "Lista wyjątków">
+<!ENTITY whitelist.text "Tekst pisany na tych witrynach nie będzie zapisywany w buforze">
+<!ENTITY user-edit.text "Można edytować tę listę (wprowadź każdy element w oddzielnym wierszu)">
+<!ENTITY optionOpen.label "Otwórz bufor okna">
+<!ENTITY addThisSite.label "Dodaj tę witrynę do listy wyjątków">
+<!ENTITY openOptionWindow.label "Otwórz ustawienia">
+<!ENTITY clickOpenCache.label "Kliknij, aby otworzyć bufor okna">
+<!ENTITY contextAddSite.label "Dodaj tę witrynę do listy wyjątków, używając menu kontekstowego">
+<!ENTITY clearAll.label "Wyczyść bufor">
+<!ENTITY clearThis.label "Usuń ten element">
+<!ENTITY clearAllWarning.label "Czy na pewno chcesz wyczyścić bufor?">
+<!ENTITY clearThisWarning.label "Czy na pewno chcesz usunąć ten element?">
+<!ENTITY cacheWindow.label "Okno buforu pól tekstowych">
+<!ENTITY clear.caption "Stare dane">
+<!ENTITY clear.restart "Zachowaj stare dane w buforze, gdy jest uruchamiany &brandShortName; (zalecane)">
+<!ENTITY clear.restartInMin "Usuwaj stare dane po upływie (min.):">
+<!ENTITY clear.restartWhenClosing "Usuwaj stare dane podczas zamykania &brandShortName;">
+<!ENTITY clear.byDays "Zachowaj stare dane w buforze przez (dni):">
+<!ENTITY clear.whenFull "Usuwaj stare dane, gdy bufor jest pełny">
+<!ENTITY clear.whenClosing "Usuwaj wszystkie zapisane teksty podczas każdego zamykania &brandShortName;">

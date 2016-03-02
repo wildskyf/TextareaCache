@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Ouvrir la fenêtre de Textarea Cache">
+<!ENTITY copyAndClose.label "Copier et fermer">
+<!ENTITY closeAndPaste.label "Fermer et coller">
+<!ENTITY reload.label "Recharger">
+<!ENTITY menu.label "Options de Textarea Cache">
+<!ENTITY general.caption "Paramètres généraux">
+<!ENTITY cacheSize.label "La taille du cache :">
+<!ENTITY cacheSizeWarning.label "(Un nombre trop grand pourrait ralentir &brandShortName;)">
+<!ENTITY compactbutton.label "Utiliser une icône compacte (sans menu) pour économiser de l'espace">
+<!ENTITY hideemptybutton.label "Masquer l'icône quand le cache est vide">
+<!ENTITY statusbutton.label "Afficher l'icône dans la barre d'état quand des textes sont enregistrés dans le cache.">
+<!ENTITY toolMenu.label "Ajouter une entrée au menu Outils pour ouvrir la fenêtre de Textarea Cache">
+<!ENTITY inPrivateBrowsing.label "Dans une fenêtre de navigation privée :">
+<!ENTITY neverSave.label "Ne jamais enregistrer les textes">
+<!ENTITY clearWhenLeave.label "Enregistrer les textes mais les supprimer dès que la fenêtre est fermée">
+<!ENTITY whitelist.caption "Liste des exceptions">
+<!ENTITY whitelist.text "Textarea Cache n'enregistrera PAS le texte que vous saisissez sur ces sites.">
+<!ENTITY user-edit.text "Vous pouvez éditer cette liste (séparez chaque élément par un retour à la ligne, touche Entrée)">
+<!ENTITY optionOpen.label "Ouvrir la fenêtre de cache">
+<!ENTITY addThisSite.label "Ajouter ce site à la liste des exceptions">
+<!ENTITY openOptionWindow.label "Ouvrir la fenêtre d'options de Textarea Cache">
+<!ENTITY clickOpenCache.label "Cliquez pour ouvrir la fenêtre de Textarea Cache">
+<!ENTITY contextAddSite.label "Ajouter ce site à la liste des exceptions via le menu contextuel">
+<!ENTITY clearAll.label "Vider le cache">
+<!ENTITY clearThis.label "Supprimer cet élément">
+<!ENTITY clearAllWarning.label "Voulez-vous vraiment vider le cache ?">
+<!ENTITY clearThisWarning.label "Voulez-vous vraiment supprimer cet élément ?">
+<!ENTITY cacheWindow.label "fenêtre de Textarea Cache">
+<!ENTITY clear.caption "Données anciennes">
+<!ENTITY clear.restart "Conserver les données anciennes dans le cache quand je démarre &brandShortName; (recommandé)">
+<!ENTITY clear.restartInMin "Puis supprimer les données anciennes dans un certain temps (en minutes) :">
+<!ENTITY clear.restartWhenClosing "Puis supprimer les données anciennes quand je referme &brandShortName;">
+<!ENTITY clear.byDays "Conserver les données anciennes dans le cache pour un certain temps (en jours) :">
+<!ENTITY clear.whenFull "Supprimer les données anciennes quand le cache est plein">
+<!ENTITY clear.whenClosing "Supprimer tous les textes enregistrés chaque fois que je ferme &brandShortName;">

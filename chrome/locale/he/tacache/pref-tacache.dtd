@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Open Textarea Cache window">
+<!ENTITY copyAndClose.label "העתק וסגור">
+<!ENTITY closeAndPaste.label "סגור והדבק">
+<!ENTITY reload.label "טען מחדש">
+<!ENTITY menu.label "אפשרויות TC">
+<!ENTITY general.caption "הגדרות כלליות">
+<!ENTITY cacheSize.label "Size of the cache: ">
+<!ENTITY cacheSizeWarning.label "(A too large number might slow down &brandShortName;)">
+<!ENTITY compactbutton.label "Use a compact toolbar icon (without menu) to save space">
+<!ENTITY hideemptybutton.label "Hide toolbar icon when the cache is empty">
+<!ENTITY statusbutton.label "הצג סמל בשורת מצב כשמלל נשמר במטמון.">
+<!ENTITY toolMenu.label "Add a item to open the cache window in the Tool menu">
+<!ENTITY inPrivateBrowsing.label "In Private Windows: ">
+<!ENTITY neverSave.label "Never save texts">
+<!ENTITY clearWhenLeave.label "Save texts but clear them when the private window is closed">
+<!ENTITY whitelist.caption "רשימת חריגים">
+<!ENTITY whitelist.text "TC לא ישמור את המלל שתקליד באתרים אלה.">
+<!ENTITY user-edit.text "באפשרותך לערוך רשימה זו. (פריטים מופרדים ע&quot;י מקש Enter)">
+<!ENTITY optionOpen.label "פתח חלון טמון">
+<!ENTITY addThisSite.label "הוסף אתר זה לרשימת חריגים">
+<!ENTITY openOptionWindow.label "פתח חלון אפשרות של TC">
+<!ENTITY clickOpenCache.label "Click to open Textarea Cache window">
+<!ENTITY contextAddSite.label "Add this site to Exception List via context menu">
+<!ENTITY clearAll.label "Empty the cache">
+<!ENTITY clearThis.label "Remove this item">
+<!ENTITY clearAllWarning.label "Do you really want to empty the cache?">
+<!ENTITY clearThisWarning.label "Are you sure to remove this item?">
+<!ENTITY cacheWindow.label "Textarea Cache Window">
+<!ENTITY clear.caption "Old Data">
+<!ENTITY clear.restart "Keep old data in the cache when I start &brandShortName; (recommended)">
+<!ENTITY clear.restartInMin "Then remove old data after a period of time (in minutes): ">
+<!ENTITY clear.restartWhenClosing "Then remove old data when I close &brandShortName; again">
+<!ENTITY clear.byDays "Keep old data in the cache for a period of time (in days): ">
+<!ENTITY clear.whenFull "Remove old data when the cache is full">
+<!ENTITY clear.whenClosing "Clear all saved texts every time I close &brandShortName;">

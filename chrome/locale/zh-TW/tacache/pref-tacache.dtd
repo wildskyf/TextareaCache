@@ -1,0 +1,42 @@
+<!ENTITY openTextareaCache.label "開啟 Textarea Cache 暫存視窗">
+<!ENTITY copyAndClose.label "複製後離開">
+<!ENTITY closeAndPaste.label "離開後貼上">
+<!ENTITY reload.label "重新整理">
+
+<!ENTITY menu.label "Textarea Cache 設定">
+
+<!ENTITY general.caption "一般設定">
+<!ENTITY cacheSize.label "暫存區容量: ">
+<!ENTITY cacheSizeWarning.label "（建議不要設太大）">
+<!ENTITY compactbutton.label "使用無選單的工具列圖示以節省空間">
+<!ENTITY hideemptybutton.label "暫存區沒有資料時隱藏工具列圖示">
+<!ENTITY statusbutton.label "暫存區存有資料時顯示圖示於狀態列">
+<!ENTITY toolMenu.label "工具選單中顯示開啟暫存視窗的選項">
+<!ENTITY inPrivateBrowsing.label "在隱私視窗中: ">
+<!ENTITY neverSave.label "不記錄輸入文字">
+<!ENTITY clearWhenLeave.label "記錄輸入文字但關閉隱私視窗時就清除">
+
+<!ENTITY whitelist.caption "排除清單">
+<!ENTITY whitelist.text "在下列網站裏，Textarea Cache 不會記錄你輸入的文字">
+<!ENTITY user-edit.text "您可自行編輯這份清單（以 Enter 鍵分行）: ">
+<!ENTITY optionOpen.label "開啟暫存視窗">
+<!ENTITY addThisSite.label "將本站加入排除清單">
+
+<!ENTITY openOptionWindow.label "開啟 Textarea Cache 設定視窗">
+<!ENTITY clickOpenCache.label "點擊開啟暫存視窗">
+<!ENTITY contextAddSite.label "右鍵選單可將本站如入排除清單">
+
+<!ENTITY clearAll.label "清空暫存">
+<!ENTITY clearThis.label "刪除此筆">
+<!ENTITY clearAllWarning.label "你確定要清空整個暫存區吼？">
+<!ENTITY clearThisWarning.label "你真的要砍掉這筆資料嗎？">
+<!ENTITY cacheWindow.label "Textarea Cache 暫存區">
+
+<!ENTITY clear.caption "清除舊資料">
+
+<!ENTITY clear.restart "下次開啟 &brandShortName; 時還保留已存資料（建議）">
+<!ENTITY clear.restartInMin "並且一段時間後清除（分鐘）: ">
+<!ENTITY clear.restartWhenClosing "並且在下次關閉 &brandShortName; 時清除">
+<!ENTITY clear.byDays "保留已存資料（天數）: ">
+<!ENTITY clear.whenFull "暫存區滿了才清除">
+<!ENTITY clear.whenClosing "每次關閉 &brandShortName; 時暫存區就全部清空">

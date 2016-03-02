@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Открыть окно Textarea Cache">
+<!ENTITY copyAndClose.label "Скопировать и закрыть">
+<!ENTITY closeAndPaste.label "Закрыть и вставить">
+<!ENTITY reload.label "Перезагрузить">
+<!ENTITY menu.label "Textarea Cache - Настройки">
+<!ENTITY general.caption "Основные настройки">
+<!ENTITY cacheSize.label "Size of the cache: ">
+<!ENTITY cacheSizeWarning.label "(A too large number might slowdown &brandShortName;)">
+<!ENTITY compactbutton.label "Use a compact toolbar icon (without menu) to save space">
+<!ENTITY hideemptybutton.label "Hide toolbar icon when the cache is empty">
+<!ENTITY statusbutton.label "Показывать значок в строке состояния при сохранении текста в кеше.">
+<!ENTITY toolMenu.label "Add a item to open the cache window in the Tool menu">
+<!ENTITY inPrivateBrowsing.label "In Private Windows: ">
+<!ENTITY neverSave.label "Never save texts">
+<!ENTITY clearWhenLeave.label "Save texts but clear them when the private window is closed">
+<!ENTITY whitelist.caption "Список исключений">
+<!ENTITY whitelist.text "Textarea Cache НЕ будет сохранять текст, вводимый вами на этих сайтах.">
+<!ENTITY user-edit.text "Вы можете редактировать этот список. (Разделяйте элементы клавишей Enter)">
+<!ENTITY optionOpen.label "Открыть окно кеша">
+<!ENTITY addThisSite.label "Добавить этот сайт в список исключений">
+<!ENTITY openOptionWindow.label "Открыть окно настроек Textarea Cache">
+<!ENTITY clickOpenCache.label "Щёлкните, чтобы открыть окно Textarea Cache">
+<!ENTITY contextAddSite.label "Добавить этот сайт в список исключений через контекстное меню">
+<!ENTITY clearAll.label "Очистить кеш">
+<!ENTITY clearThis.label "Удалить эту запись">
+<!ENTITY clearAllWarning.label "Вы действительно хотите очистить кеш?">
+<!ENTITY clearThisWarning.label "Вы хотите удалить эту запись?">
+<!ENTITY cacheWindow.label "Окно Textarea Cache">
+<!ENTITY clear.caption "Старые данные">
+<!ENTITY clear.restart "Keep old data in the cache when I start &brandShortName; (recommended)">
+<!ENTITY clear.restartInMin "Then remove old data after a period of time (in minutes): ">
+<!ENTITY clear.restartWhenClosing "Then remove old data when I close &brandShortName; again">
+<!ENTITY clear.byDays "Keep old data in the cache for a period of time (in days): ">
+<!ENTITY clear.whenFull "Remove old data when the cache is full">
+<!ENTITY clear.whenClosing "Clear all saved texts every time I close &brandShortName;">

@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://tacache/skin/tacache.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://tacache/locale/pref-tacache.dtd" >
+
+<overlay id="tacache-overlay"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://tacache/content/tacache.js"/>     
+  <script type="application/x-javascript" src="chrome://tacache/content/ui.js"/>
+
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton id="textareaCacheButton" class="toolbarbutton-1 chromeclass-toolbar-additional"
+      oncommand="tacacheUI.openCacheWindow();"
+      label="Textarea Cache"
+      type="menu-button"
+      tooltiptext="&openTextareaCache.label;">
+      <menupopup id="tacachePopupMenu">
+        <menuitem id="tacacheMenuAddSite"
+                  label="&addThisSite.label;"
+                  oncommand="tacacheUI.openOptionWindow(true); event.stopPropagation();"/>
+        <menuitem id="tacacheMenuOptionWindow"
+                  label="&openOptionWindow.label;"
+                  oncommand="tacacheUI.openOptionWindow(false); event.stopPropagation();"/>
+      </menupopup>
+    </toolbarbutton>
+  </toolbarpalette>  
+  
+  <menupopup id="menu_ToolsPopup">
+    <menuitem id="tacacheToolMenu"
+              label="&openTextareaCache.label;"
+              insertafter="devToolsSeparator" 
+              oncommand="tacacheUI.openCacheWindow(false);"/>
+  </menupopup>
+  
+  <popupset id="mainPopupSet">
+    <menupopup id="tacacheStatusMenu">
+      <menuitem id="tacacheStatusOpenCache"
+                label="&addThisSite.label;"
+                oncommand="tacacheUI.openOptionWindow(true); event.stopPropagation();"/>
+      <menuitem id="tacacheStatusAddSite"
+                label="&openTextareaCache.label;"
+                oncommand="tacacheUI.openCacheWindow(); event.stopPropagation();"/>
+    </menupopup>
+    <!--tooltip id="tacacheStatusTooltip">
+      <description value="&clickOpenCache.label;" />
+      <description value="&contextAddSite.label;" />
+    </tooltip-->
+  </popupset>
+
+  <statusbar id="status-bar">      
+    <statusbarpanel id="tacacheStatusButton" 
+      context="tacacheStatusMenu"
+      image="chrome://tacache/skin/tacache-16.png" 
+      class="statusbarpanel-iconic"
+      hidden="true"
+      tooltiptext="&openTextareaCache.label;"
+      oncommand="tacacheUI.openCacheWindow();" />
+  </statusbar>
+  
+  <menupopup id="contentAreaContextMenu">
+    <menuitem id="tacacheContextOpenCache" 
+              label="&openTextareaCache.label;"
+              hidden="true"
+              oncommand="tacacheUI.openCacheWindow({ document : document, node : document.popupNode });" />
+  </menupopup>
+
+</overlay>

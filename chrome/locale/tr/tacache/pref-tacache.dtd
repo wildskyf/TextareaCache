@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Metin Alanı Önbelleği penceresini aç">
+<!ENTITY copyAndClose.label "Kopyala ve kapat">
+<!ENTITY closeAndPaste.label "Close and paste">
+<!ENTITY reload.label "Yenile">
+<!ENTITY menu.label "Metin Alanı Önbelleği Seçenekleri">
+<!ENTITY general.caption "Genel Ayarlar">
+<!ENTITY cacheSize.label "Size of the cache: ">
+<!ENTITY cacheSizeWarning.label "(A too large number might slowdown &brandShortName;)">
+<!ENTITY compactbutton.label "Use a compact toolbar icon (without menu) to save space">
+<!ENTITY hideemptybutton.label "Hide toolbar icon when the cache is empty">
+<!ENTITY statusbutton.label "Önbellekte metin kaydedildiğinde durum çubuğunda simge göster.">
+<!ENTITY toolMenu.label "Add a item to open the cache window in the Tool menu">
+<!ENTITY inPrivateBrowsing.label "In Private Windows: ">
+<!ENTITY neverSave.label "Never save texts">
+<!ENTITY clearWhenLeave.label "Save texts but clear them when the private window is closed">
+<!ENTITY whitelist.caption "Hariç Tutulacaklar Listesi">
+<!ENTITY whitelist.text "Buraya yazdığınız sitelerde Metin Alanı Önbelleği metinleri kaydetmeyecek.">
+<!ENTITY user-edit.text "Bu listeyi düzenleyebilirsiniz. (Öğeleri Enter tuşu ile ayırın)">
+<!ENTITY optionOpen.label "Önbellek penceresini aç">
+<!ENTITY addThisSite.label "Bu siteyi hariç tutulacaklar listesine ekle">
+<!ENTITY openOptionWindow.label "Metin Alanı Önbelleği Seçeneklerini aç">
+<!ENTITY clickOpenCache.label "Metin Alanı Önbelleğini açmak için tıklayın">
+<!ENTITY contextAddSite.label "Bu siteyi içerik menüsüyle Hariç Tutulacaklar Listesine ekle">
+<!ENTITY clearAll.label "Önbelleği temizle">
+<!ENTITY clearThis.label "Bu öğeyi kaldır">
+<!ENTITY clearAllWarning.label "Önbelleği gerçekten temizlemek istiyor musunuz?">
+<!ENTITY clearThisWarning.label "Bu öğeyi kaldırmak istediğinize emin misiniz?">
+<!ENTITY cacheWindow.label "Textarea Cache Window">
+<!ENTITY clear.caption "Old Data">
+<!ENTITY clear.restart "Keep old data in the cache when I start &brandShortName; (recommended)">
+<!ENTITY clear.restartInMin "Then remove old data after a period of time (in minutes): ">
+<!ENTITY clear.restartWhenClosing "Then remove old data when I close &brandShortName; again">
+<!ENTITY clear.byDays "Keep old data in the cache for a period of time (in days): ">
+<!ENTITY clear.whenFull "Remove old data when the cache is full">
+<!ENTITY clear.whenClosing "Clear all saved texts every time I close &brandShortName;">

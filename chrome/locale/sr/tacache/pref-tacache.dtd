@@ -1,0 +1,35 @@
+<!ENTITY openTextareaCache.label "Отвори Textarea Cache">
+<!ENTITY copyAndClose.label "Копирај и затвори">
+<!ENTITY closeAndPaste.label "Затвори и налепи">
+<!ENTITY reload.label "Освежи">
+<!ENTITY menu.label "Textarea Cache - опције">
+<!ENTITY general.caption "Главна подешавања">
+<!ENTITY cacheSize.label "Величина кеша:">
+<!ENTITY cacheSizeWarning.label "(ако превелик број, &brandShortName; ће можда радити успорено)">
+<!ENTITY compactbutton.label "Користи малу икону у траци са алаткама, ради уштеде простора">
+<!ENTITY hideemptybutton.label "Сакриј икону из статусне траке, ако је кеш празан">
+<!ENTITY statusbutton.label "Прикажи икону на статусној траци када текст буде сачуван као кеш">
+<!ENTITY toolMenu.label "У мени са алаткама додај ставку „Отвори прозор са кешом”">
+<!ENTITY inPrivateBrowsing.label "У приватним прозорима:">
+<!ENTITY neverSave.label "никада не чувај текстове">
+<!ENTITY clearWhenLeave.label "сачувај текст, али га обриши када се затвори приватни прозор">
+<!ENTITY whitelist.caption "Списак изузетака">
+<!ENTITY whitelist.text "Textarea Cache НЕЋЕ сачувати тест који унесете на овим страницама.">
+<!ENTITY user-edit.text "Овај списак можете да уредите (ставке одвојите типком ентер)">
+<!ENTITY optionOpen.label "Отвори кеш">
+<!ENTITY addThisSite.label "Додај ову страницу у списак изузетака">
+<!ENTITY openOptionWindow.label "Textarea Cache - опције">
+<!ENTITY clickOpenCache.label "Кликните овде да бисте отворили кеш оквира за текст">
+<!ENTITY contextAddSite.label "Додај ову страницу у списак изузетака помоћу приручног менија">
+<!ENTITY clearAll.label "Избриши кеш">
+<!ENTITY clearThis.label "Уклони ову ставку">
+<!ENTITY clearAllWarning.label "Желите ли да избришете кеш?">
+<!ENTITY clearThisWarning.label "Желите ле да уклоните ову ставку?">
+<!ENTITY cacheWindow.label "Кеш оквира за текст">
+<!ENTITY clear.caption "Стари подаци">
+<!ENTITY clear.restart "Сачувај старе податке у кешу када покренем &brandShortName; (препоручено)">
+<!ENTITY clear.restartInMin "Потом уклони старе податке након одређеног периода (у минутима):">
+<!ENTITY clear.restartWhenClosing "Потом уклони старе податке након што поново затворим &brandShortName;">
+<!ENTITY clear.byDays "Задржи атаре податке у кешу одређен период (у данима):">
+<!ENTITY clear.whenFull "Уклони старе податке када се кеш напуни">
+<!ENTITY clear.whenClosing "Очисти све сачуване текстове сваки пут када затворим &brandShortName;">

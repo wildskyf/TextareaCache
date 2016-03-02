@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://browser/skin/"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % prefDTD SYSTEM "chrome://tacache/locale/pref-tacache.dtd" >
+%prefDTD;
+<!ENTITY % textcontextDTD SYSTEM "chrome://global/locale/textcontext.dtd" >
+%textcontextDTD;
+]>
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        title="&cacheWindow.label;"
+        onload="cacheWindow.init();"
+        width="600"
+        height="400"
+        persist="screenX screenY width height sizemode"
+        id="tacacheCacheWindow">
+
+  <script type="application/x-javascript" src="chrome://tacache/content/cacheWindow.js"/>
+  <script type="application/javascript" src="chrome://global/content/globalOverlay.js"/>
+  
+	<keyset id="tacacheCacheKeyset">
+	  <key id="tacacheCloseCacheWindow" 
+	       keycode="VK_ESCAPE" 
+	       oncommand="window.close();" />
+	</keyset>
+  <menupopup id="tacacheCacheContextMenu"
+             tabindex="1"
+             onpopupshowing="cacheWindow.onContextMenuShowing();">
+      <menuitem id="contextCopy"
+                label="&copyCmd.label;" 
+                accesskey="&copyCmd.accesskey;" 
+                oncommand="goDoCommand('cmd_copy');" />
+      <menuitem label="&selectAllCmd.label;" 
+                accesskey="&selectAllCmd.accesskey;" 
+                oncommand="goDoCommand('cmd_selectAll');" />
+  </menupopup>
+  <vbox flex="1">
+    <hbox>
+      <menulist id="cacheMenu" flex="1">
+        <menupopup id="cacheMenuPopup" />
+      </menulist>
+    </hbox>
+    <deck id="contentDeck" 
+          flex="1" 
+          style="height: 100%; width: 100%;">
+      <textbox id="textContent" 
+               multiline="true" 
+               readonly="true" 
+               flex="1" />
+      <browser id="docContent" 
+               flex="1" 
+               type="content"
+               context="tacacheCacheContextMenu" 
+               style="margin: 2px 4px; border: black 1px solid;" />
+    </deck>
+    <hbox>
+      <button id="clearThis" 
+              label="&clearThis.label;" 
+              value="&clearThisWarning.label;"
+              oncommand="if (cacheWindow.confirm(this.label, this.getAttribute('value'))) cacheWindow.clearThis();" />
+      <button id="clearAll" 
+              label="&clearAll.label;" 
+              value="&clearAllWarning.label;"
+              oncommand="if (cacheWindow.confirm(this.label, this.getAttribute('value'))) cacheWindow.clearAll();" />
+      <spacer flex="1"/>
+      <!-- button id="reloadButton" 
+              label="&reload.label;" 
+              oncommand="cacheWindow.init(); this.disabled='true';" 
+              disabled="true" / -->
+      <button id="copyButton" 
+              label="&copyAndClose.label;" 
+              oncommand="cacheWindow.copyAndClose();" />
+      <button id="pasteButton" 
+              label="&closeAndPaste.label;"
+              oncommand="cacheWindow.copyAndClose(); cacheWindow.pasteClipboard();" />
+    </hbox>
+  </vbox>
+</window>
