@@ -6,18 +6,18 @@
     <!-- Required fields //-->
     <em:name>Textarea Cache</em:name>
     <em:id>{578e7caa-210f-4967-a0d3-88fe5b59a39f}</em:id>
-    <em:version>0.9.3.2.1-signed</em:version>
+    <em:version>0.9.3.3</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>14.0</em:minVersion>
-        <em:maxVersion>31.0</em:maxVersion>
+        <em:maxVersion>45.0</em:maxVersion>
       </Description>
     </em:targetApplication>
 
-    <!-- Localization fields //-->    
+    <!-- Localization fields //-->
     <em:localized>
       <Description>
         <em:locale>de</em:locale>
@@ -131,7 +131,7 @@
         <em:translator>uk: Sappa</em:translator>
       </Description>
     </em:localized>
-    
+
     <em:localized>
       <Description>
         <em:locale>sv-SE</em:locale>

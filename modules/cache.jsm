@@ -20,7 +20,7 @@ const P_STATUS_BUTTON   = "statusButton";
 const P_COMPACT_BUTTON  = "compactButton";
 const P_HIDE_EMPTY      = "hideEmptyButton";
 const P_TOOL_MENU       = "toolMenu";
-  
+
 // clear settings
 const NEVER_CLEAR   = 0;     // never clear old data unless the cache is full
 const RESTART_CLEAR = 1;     // clear old data in the next session
@@ -36,7 +36,7 @@ const ObserverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIO
 function msg (msg) {
   if ( !TextareaCacheUtil.debug )
     return;
-    
+
   let d = new Date();
   msg = "TextareaCacheUtil("+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"."+d.getMilliseconds() +") :"+msg;
 
@@ -50,21 +50,21 @@ this.TextareaCacheUtil = {
   cache         : [],
   empty         : true,
   ready         : false,
-  
+
   debug         : false,
 
   FILE          : null,
-  
+
   whitelist     : [],    // whitelist saved in array
   whitelistTime : 0,     // the time the whitelist is built
 
-  cacheSize     : 50,    // size of the cache  
+  cacheSize     : 50,    // size of the cache
 
   isSaving      : null,
   saveInPrivate : false, // save texts or not in a private browsing window
 
   clearSetting  : null,  // could be NEVER_CLEAR, RESTART_CLEAR, CLEAR_BY_DAY OR CLOSE_CLEAR
-  
+
   clearInMins   : 5,     // for clearSetting == RESTART_CLEAR, clear old data 5 minutes after restarting Firefox
   clearInDays   : 1,     // for clearSetting == CLEAR_BY_DAY, clear data older than 1 day
   saveInterval  : 3000,  // interval for writing the cache into textareacache.json file, 3 senconds by default
@@ -77,7 +77,7 @@ this.TextareaCacheUtil = {
 
   TYPE_HTML     : "HTML",
   TYPE_TEXT     : "TEXT",
-  
+
   gPref         : Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch),
   pref          : Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.tacache."),
 
@@ -85,11 +85,11 @@ this.TextareaCacheUtil = {
   restartClearTimer : null,
   clearDayTimer     : null,
 
-  
+
   ///////////////////////////////////////////////////////
   // deprecated, kept only for backward compatibility
   isDoc : "<D>",
-    
+
   getPref : function () {
     let cache = [];
     let nsISS = Ci.nsISupportsString;
@@ -110,7 +110,7 @@ this.TextareaCacheUtil = {
     },
 
     unregister: function () {
-      if (!this._branch) 
+      if (!this._branch)
         return;
       this._branch.removeObserver("", this, false);
     },
@@ -136,20 +136,20 @@ this.TextareaCacheUtil = {
       }
     }
   },
-  
+
   observer : {
     register : function () {
       ObserverService.addObserver(this, "last-pb-context-exited", false);
       ObserverService.addObserver(this, "quit-application-requested", false);
       ObserverService.addObserver(this, "textarea-cache-ui", false);
     },
-    
+
     unregister : function () {
       ObserverService.removeObserver(this, "last-pb-context-exited", false);
       ObserverService.removeObserver(this, "quit-application-requested", false);
       ObserverService.removeObserver(this, "textarea-cache-ui", false);
     },
-    
+
     observe : function (subject, topic, data) {
       switch (topic) {
         case "last-pb-context-exited" :
@@ -164,7 +164,7 @@ this.TextareaCacheUtil = {
       }
     }
   },
-  
+
   // data : "status-button"   --    show status button or not
   //        "toolbar-button"  --    check toolbar button
   //        "update-buttons"  --    update toolbar button and status button
@@ -174,10 +174,10 @@ this.TextareaCacheUtil = {
       let _empty = (this.cache.length == 0);
       data = ( this.empty  ^ _empty ) ? "update-buttons" : "content-changed";
       this.empty = _empty;
-    }    
+    }
     ObserverService.notifyObservers(null, "textarea-cache-ui", data);
   },
-  
+
   // Settings
   //
   getSettings : function () {
@@ -193,8 +193,8 @@ this.TextareaCacheUtil = {
     this.hideEmpty        = this.pref.getBoolPref(P_HIDE_EMPTY);
     this.statusButton     = this.pref.getBoolPref(P_STATUS_BUTTON);
     this.debug            = this.pref.getBoolPref(P_DEBUG);
-  },  
-  
+  },
+
   // Whitelist
   //
   getWhitelist : function () {
@@ -215,7 +215,7 @@ this.TextareaCacheUtil = {
       this.whitelistTime = Date.now();
     }
   },
-  
+
   // Check white list
   // return value: true  -- match, do not save
   //               false -- not match, it's okay to save
@@ -223,7 +223,7 @@ this.TextareaCacheUtil = {
   checkWhitelist : function (url) {
     if ( this.whitelist == [] )
       return false;
-  
+
     for ( var i = 0; i < this.whitelist.length; i++ ) {
       let keyword = this.whitelist[i];
       if ( keyword != "" && new RegExp(keyword).test(url) ) {
@@ -231,8 +231,8 @@ this.TextareaCacheUtil = {
       }
     }
     return false;
-  },  
-   
+  },
+
   // Methods for cache items
   //
   getItemIndex : function (id) {
@@ -242,11 +242,11 @@ this.TextareaCacheUtil = {
     }
     return -1;
   },
-  
+
   moveItemToTop : function (index) {
     this.cache.splice(0, 0, this.cache.splice(index, 1)[0]);
   },
-  
+
   trimCache : function () {
     if ( this.cache.length > this.cacheSize ) {
       this.cache.splice( this.cacheSize, this.cache.length - this.cacheSize );
@@ -254,20 +254,20 @@ this.TextareaCacheUtil = {
       this.notify();
     }
   },
-  
+
   // if |index| is not assigned, remove the last item
   removeItem : function (index) {
     if ( index == null )
       this.cache.pop();
     else
       this.cache.splice(index, 1);
-    
+
     this.notify();
   },
-  
+
   removeAllItem : function () {
     this.cache = [];
-    
+
     this.notify();
   },
 
@@ -276,7 +276,7 @@ this.TextareaCacheUtil = {
       this.cache[i].old = "old";
     this.writeFile();
   },
-  
+
   removeOldItems : function () {
     if ( this.clearSetting != RESTART_CLEAR )
       return;
@@ -291,7 +291,7 @@ this.TextareaCacheUtil = {
     if (changed)
       this.writeFile();
   },
-  
+
   removePrivateItems : function () {
     let changed = false;
     for ( var i = this.cache.length - 1; i >= 0; i-- ) {
@@ -301,22 +301,22 @@ this.TextareaCacheUtil = {
       }
     }
     if (changed)
-      this.writeFile();  
+      this.writeFile();
   },
-  
+
   clearOldDataByDay : function () {
     if ( this.clearSetting != CLEAR_BY_DAY )
       return;
-      
+
     var days = this.clearInDays;
-    days = ( days < 1 ) ? 1 : days;    
+    days = ( days < 1 ) ? 1 : days;
 
     var endtime = Date.now() - days * 86400 * 1000; // 1 day = 86400 sec
     var range = [ 0, endtime * 1000 ];
 
     this.clearCacheByRange(range);
   },
-  
+
   // range: array contains 2 elements
   //   range[0]: start time
   //   range[1]: end time
@@ -325,7 +325,7 @@ this.TextareaCacheUtil = {
   clearCacheByRange : function (range) {
     let starttime = range ? range[0] : 0;
     let endtime   = range ? range[1] : Date.now() * 1000;
-    let changed   = false;        
+    let changed   = false;
 
     for ( let i = this.cache.length - 1; i >= 0; i-- ) {
       let time = Math.abs( parseInt(this.cache[i].time) ) * 1000;
@@ -333,51 +333,51 @@ this.TextareaCacheUtil = {
         this.removeItem(i);
         changed = true;
       }
-    }    
+    }
     if (changed)
       this.writeFile();
   },
 
   // always the first item, eg. this.cache[0]
   updateItemText : function ( text, submitted ) {
-    let time = Date.now(); 
+    let time = Date.now();
 
     this.cache[0].time = time;
 
     if ( submitted )
       this.cache[0].id += time;
 
-    if ( text == this.cache[0].text ) 
+    if ( text == this.cache[0].text )
       return;
-      
+
     this.cache[0].text = text;
-    
+
     this.notify();
   },
-  
+
   addNewItem : function ( node, text, submitted, privateWindow ) {
     let title = node.tacacheDoc.title;
     let id = node.tacacheID;
-    
+
     // get time
-    let time = Date.now(); 
-    
+    let time = Date.now();
+
     if ( submitted )
       id += time;
-    
+
     let temp = { title : title, text : text, id : id, time : time };
-    
+
     if ( privateWindow )
       temp.private = "true";
     if ( node.nodeName.toLowerCase() != "textarea" )
       temp.type = this.TYPE_HTML;
-    
+
     if ( this.cache.unshift(temp) > this.cacheSize )
       this.removeItem();
-      
-    this.notify(); 
+
+    this.notify();
   },
-    
+
   // Update cache
   cacheUpdate : function () {
     if ( this.cache.length == 0 )
@@ -403,16 +403,16 @@ this.TextareaCacheUtil = {
         item.type = html;
       item.time = Math.abs(item.time);
     });
-    
+
     //this.cache.sort( function (a, b) {
     //  return b.time - a.time;
     //});
   },
-  
+
   // always fired by readFile()
   initCache : function () {
     this.cacheUpdate();
-    
+
     this.empty = ( this.cache.length == 0 );
 
     if ( this.cacheSize <= 0 )
@@ -427,7 +427,7 @@ this.TextareaCacheUtil = {
       sessionRestore = ss.doRestore();
     }
     catch (e) {}
-    
+
     // clearInMins
     //   > 0 : clear old data after a time interval (in minute)
     //   = 0 : keep clear old data during this session, but clear them this session is closed
@@ -439,7 +439,7 @@ this.TextareaCacheUtil = {
     //
     // If user sets |browser.startup.page| to 3 (always save session and show tabs in last session when starting Firefox)
     //   always clear old data
-    // 
+    //
 
     if ( this.clearInMins < 0 ) {
       this.clearSetting = NEVER_CLEAR;
@@ -451,7 +451,7 @@ this.TextareaCacheUtil = {
         // clear the "very" old data
         if ( this.clearInMins >= 0 )
           this.removeOldItems();
-              
+
         let delay = this.clearInMins * 60 * 1000;
         // clear these old data session after a time interval
         if ( this.clearInMins > 0 ) {
@@ -460,7 +460,7 @@ this.TextareaCacheUtil = {
           }, this.clearInMins * 60 * 1000, Ci.nsITimer.TYPE_ONE_SHOT );
         }
       }
-      
+
       // then mark the data left from the last session as "old"
       this.markOldItems();
     }
@@ -469,23 +469,23 @@ this.TextareaCacheUtil = {
     // Remove items older than assigned time(one day, three days or one week, etc.).
     //
     this.clearOldDataByDay();
-    
+
     var interval = 30 * 60 * 1000; // 30 mins
     this.clearDayTimer.initWithCallback( function () {
       TextareaCacheUtil.clearOldDataByDay();
     }, interval, Ci.nsITimer.TYPE_REPEATING_PRECISE_CAN_SKIP );
   },
-  
+
   initTimers : function () {
     this.restartClearTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
     this.clearDayTimer     = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
   },
-  
+
   cancelTimers : function () {
     this.restartClearTimer.cancel();
     this.clearDayTimer.cancel();
   },
-  
+
   // File I/O
   //
   initFile : function () {
@@ -493,20 +493,20 @@ this.TextareaCacheUtil = {
 
     this.FILE = FileUtils.getFile("ProfD", [FILENAME]);
   },
-  
+
   checkOldPrefAndFile : function () {
     //Cu.reportError("checkfile");
 
     if (!(this.FILE instanceof Ci.nsIFile))
       this.initFile();
-      
+
     // get cache from old pref and save it to file
     if ( !this.FILE.exists() ) {
-    
+
       //Cu.reportError("not exists");
-      
+
       if ( this.pref.prefHasUserValue(P_CACHE) ) {
-      
+
         //Cu.reportError("has old pref");
 
         this.cache = this.getPref();
@@ -515,15 +515,15 @@ this.TextareaCacheUtil = {
       this.writeFile();
     }
   },
-  
+
   writeFile : function () {
     //msg("write");
-    
+
     if (!(this.FILE instanceof Ci.nsIFile))
       this.initFile();
 
     var data = JSON.stringify(this.cache);
-    
+
     //msg("write:>"+data+"<");
 
     var openFlags = FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE;
@@ -534,7 +534,7 @@ this.TextareaCacheUtil = {
     var converter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
     converter.charset = "UTF-8";
     var istream = converter.convertToInputStream(data);
-    
+
     NetUtil.asyncCopy( istream, ostream, function (status) {
       if (!Components.isSuccessCode(status)) {
         // Handle error!
@@ -547,7 +547,7 @@ this.TextareaCacheUtil = {
   readFile : function () {
     if (!(this.FILE instanceof Ci.nsIFile))
       this.initFile();
-      
+
     var data = "";
     let _this = this;
 
@@ -558,17 +558,18 @@ this.TextareaCacheUtil = {
         return;
       }
       var cstream = Cc["@mozilla.org/intl/converter-input-stream;1"].createInstance(Ci.nsIConverterInputStream);
-      cstream.init(inputStream, "UTF-8", 0, 0);      
-      
-      let (str = {}) {
+      cstream.init(inputStream, "UTF-8", 0, 0);
+
+      let str = {};
+      {
         let read = 0;
-        do { 
+        do {
           read = cstream.readString(0xffffffff, str); // read as much as we can and put it in str.value
           data += str.value;
         } while (read != 0);
       }
-      cstream.close();      
-  
+      cstream.close();
+
       _this.cache = JSON.parse(data);
       if ( !_this.ready ) {
         _this.initCache();
@@ -577,7 +578,7 @@ this.TextareaCacheUtil = {
       return;
     });
   },
-  
+
   init : function () {
     if ( this.ready )
       return;
@@ -587,11 +588,11 @@ this.TextareaCacheUtil = {
     this.initTimers();
     this.prefObserver.register();
     this.observer.register();
-    
+
     this.checkOldPrefAndFile();
     this.readFile();
   },
-  
+
   uninit : function () {
     this.prefObserver.unregister();
     this.observer.unregister();
