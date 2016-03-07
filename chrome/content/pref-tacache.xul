@@ -16,11 +16,11 @@
             buttonlabelextra2="&optionOpen.label;"
             onload="tacachePref.init();"
             onunload="tacachePref.uninit('close');"
-            ondialogaccept="tacachePref.uninit(true);" 
+            ondialogaccept="tacachePref.uninit(true);"
             ondialogcancel="tacachePref.uninit(false);"
             ondialogextra2="tacacheUI.openCacheWindow();" >
-  
-  <prefpane id="generalPane" label="&general.caption;">    
+
+  <prefpane id="generalPane" label="&general.caption;">
     <preferences>
       <preference id="extensions.tacache.maxTextSaved"
                   name="extensions.tacache.maxTextSaved"
@@ -40,8 +40,8 @@
       <preference id="extensions.tacache.saveInPrivate"
                   name="extensions.tacache.saveInPrivate"
                   type="bool" />
-    </preferences>    
-  
+    </preferences>
+
     <vbox flex="1">
       <hbox align="center">
         <label value="&cacheSize.label;"/>
@@ -53,17 +53,17 @@
                  preference="extensions.tacache.maxTextSaved"/>
         <label value="&cacheSizeWarning.label;"/>
       </hbox>
-      <checkbox id="compactButton" 
-                label="&compactbutton.label;" 
+      <checkbox id="compactButton"
+                label="&compactbutton.label;"
                 preference="extensions.tacache.compactButton"/>
-      <checkbox id="hideEmptyButton" 
-                label="&hideemptybutton.label;" 
+      <checkbox id="hideEmptyButton"
+                label="&hideemptybutton.label;"
                 preference="extensions.tacache.hideEmptyButton"/>
-      <checkbox id="statusButton" 
-                label="&statusbutton.label;" 
+      <checkbox id="statusButton"
+                label="&statusbutton.label;"
                 preference="extensions.tacache.statusButton"/>
-      <checkbox id="toolMenu" 
-                label="&toolMenu.label;" 
+      <checkbox id="toolMenu"
+                label="&toolMenu.label;"
                 preference="extensions.tacache.toolMenu"/>
       <hbox align="center">
         <label value="&inPrivateBrowsing.label;" />
@@ -82,8 +82,8 @@
       </hbox>
     </vbox>
   </prefpane>
-  
-  <prefpane id="clearSettingPane" label="&clear.caption;">    
+
+  <prefpane id="clearSettingPane" label="&clear.caption;">
     <preferences>
       <preference id="extensions.tacache.clearCache"
                   name="extensions.tacache.clearCache"
@@ -94,8 +94,8 @@
       <preference id="extensions.tacache.clearTimeSpan"
                   name="extensions.tacache.clearTimeSpan"
                   type="int" />
-    </preferences>    
-  
+    </preferences>
+
     <vbox flex="1">
       <radiogroup id="clearCache"
                   onsyncfrompreference="return tacachePref.checkClearSetting();"
@@ -143,26 +143,26 @@
     </vbox>
   </prefpane>
 
-  <prefpane id="whitelistPane" label="&whitelist.caption;">    
+  <prefpane id="whitelistPane" label="&whitelist.caption;">
     <preferences>
       <preference id="extensions.tacache.whitelist"
                   name="extensions.tacache.whitelist"
                   type="string" />
-    </preferences>    
-  
+    </preferences>
+
     <vbox flex="1">
       <label value="&whitelist.text;"/>
       <label value="&user-edit.text;"/>
-      <textbox id="tacache-whitelist" 
-               flex="1" 
-               multiline="true" 
-               cols="50" 
-               rows="4" 
+      <textbox id="tacache-whitelist"
+               flex="1"
+               multiline="true"
+               cols="50"
+               rows="4"
                wrap="off"
                preference="extensions.tacache.whitelist"/>
     </vbox>
-  </prefpane>  
+  </prefpane>
 
   <script type="application/x-javascript" src="chrome://tacache/content/pref-tacache.js"/>
-  <script type="application/x-javascript" src="chrome://tacache/content/ui.js"/> 
+  <script type="application/x-javascript" src="chrome://tacache/content/ui.js"/>
 </prefwindow>

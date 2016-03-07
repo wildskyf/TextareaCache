@@ -20,7 +20,7 @@ var textareaCache = {
 
   saveToFile : function () {
     //this.msg("save to file");
-    
+
     this.util.isSaving = null;
     this.util.writeFile();
   },
@@ -34,14 +34,14 @@ var textareaCache = {
   },
 
   getID : function (node) {
-    let nodeName = node.nodeName.toLowerCase();    
-  
+    let nodeName = node.nodeName.toLowerCase();
+
     //this.msg("getID:"+nodeName+","+node.id);
 
     let browser = window.gBrowser.getBrowserForDocument(node.tacacheDoc);
     let docShellID = browser.docShell.historyID;
     let index = browser.sessionHistory.index;
-    
+
     let nodeID = node.id;
     if ( node.id == "" && "form" in node ) {
       try {
@@ -58,12 +58,12 @@ var textareaCache = {
       }
       nodeID = offsetTop;
     }
-    
+
     //this.msg("getID get:"+nodeID);
-    
+
     return docShellID + "-" + index + "#" + nodeID;
   },
-  
+
   getText : function (node) {
     let text = "";
     if ( node.nodeName.toLowerCase() == "textarea" )
@@ -80,19 +80,19 @@ var textareaCache = {
     delete node.tacacheDoc;
     delete node.tacacheWhitelist;
   },
-  
+
   beforeWrite : function (node, submitted) {
     //this.msg("beforewrite:"+node.tacacheText);
-    
+
     delete node.waiting;
 
     let text = node.tacacheText;
     if ( !("tacacheText" in node) || text == "" )
       return;
-      
+
     if ( this.isWindowPrivate && !this.util.saveInPrivate )
       return;
-      
+
     node.tacacheDoc = node.tacacheDoc || this.getTopDoc(node);
     node.tacacheID = node.tacacheID || this.getID(node);
 
@@ -106,18 +106,18 @@ var textareaCache = {
     // the node is hidden
     if ( node.style.display == "none" || node.scrollHeight == 0 || node.scrollWidth == 0 )
       return;
-      
+
     // for debug
     //if ( this.util.cache.length > 0 )
       //this.msg( node.tacacheID + ","+this.util.cache[0].id );
-    
+
     if ( this.util.cache.length > 0 && node.tacacheID == this.util.cache[0].id ) // already saved in cache[0]
       this.util.updateItemText(text, submitted);
     else {
       let index = this.util.getItemIndex(node.tacacheID);
-      
+
       //this.msg("find index:"+index);
-      
+
       if ( index > 0 ) {
         this.util.moveItemToTop(index);
         this.util.updateItemText(text, submitted);
@@ -126,17 +126,17 @@ var textareaCache = {
         this.util.addNewItem(node, text, submitted, this.isWindowPrivate);
     }
   },
-  
+
   prepareToSave : function () {
     if ( !this.util.isSaving ) {
       this.util.isSaving = window.setTimeout( function () {textareaCache.saveToFile();}, this.util.saveInterval );
     }
   },
-      
+
   onInput : function (e) {
     let node = e.target;
     let nodeName = node.nodeName.toLowerCase();
-    
+
     //textareaCache.msg("on input");
 
     if ( nodeName != "textarea" && ( node.ownerDocument.designMode != "on" && !node.isContentEditable ) )
@@ -148,23 +148,23 @@ var textareaCache = {
       node = node.ownerDocument.activeElement;
       //textareaCache.msg("input new>"+node.nodeName+","+node.id+","+node.isContentEditable);
     }
-    
+
     // this should not happen, just in case
     if ( nodeName == "html" )
       node = node.ownerDocument.body;
-  
+
     let temp = textareaCache.getText(node);
     //textareaCache.msg("input>"+temp+"<");
 
     node.tacacheText = temp;
-    
+
     if ( !("waiting" in node) ) {
       node.waiting = window.setTimeout( function () {textareaCache.beforeWrite(node);}, TextareaCacheUtil.writeInterval );
     }
     textareaCache.prepareToSave();
 
   },
-  
+
   onKeyup : function (e) {
     let node = e.target;
     let nodeName = node.nodeName.toLowerCase();
@@ -177,10 +177,10 @@ var textareaCache = {
       return;
 
     let temp = textareaCache.getText(node);
-    
+
     if ( temp == "" && e.keyCode == 13 ) {
       //textareaCache.msg("submit");
-      
+
       // keyup event is always fired after input event. so we can cancel the timeout
       window.clearTimeout(node.waiting);
       textareaCache.beforeWrite(node, true);
@@ -188,20 +188,20 @@ var textareaCache = {
       textareaCache.prepareToSave();
     }
   },
-  
+
   onChange : function (e) {
     let node = e.target;
 
     // Only for textarea node
     if ( node.nodeName.toLowerCase() != "textarea" || node.rows == 1 )
       return;
-    
+
     node.tacacheText = node.value;
     window.clearTimeout(node.waiting);
     textareaCache.beforeWrite(node);
     textareaCache.prepareToSave();
   },
-  
+
   // ui
   //
   checkToolbarButton : function () {
@@ -214,17 +214,17 @@ var textareaCache = {
 
     if (!button)
       return;
-      
+
     if (!compact)
       button.setAttribute("type", "menu-button");
     else if ( button.hasAttribute("type") )
       button.removeAttribute("type");
-    
+
     if ( empty )
       button.classList.add("empty");
     else
       button.classList.remove("empty");
-      
+
     button.setAttribute("hidden", hide && empty);
     button.disabled = compact && empty;
   },
@@ -234,16 +234,16 @@ var textareaCache = {
 
     var button  = document.getElementById("tacacheStatusButton");
     var empty = TextareaCacheUtil.empty;
-    
+
     if ( button )
       button.setAttribute("hidden", ( !showStatusButton || empty ) );
   },
-  
+
   checkButtons : function () {
     this.checkStatusButton();
     this.checkToolbarButton();
   },
-  
+
   checkToolMenu : function () {
     var showmenu = TextareaCacheUtil.toolMenu;
     var toolmenu = document.getElementById("tacacheToolMenu");
@@ -252,28 +252,28 @@ var textareaCache = {
       toolmenu.setAttribute("hidden", !showmenu);
     }
   },
-  
+
   onContentMenu : function (e) {
     var tacacheContextMenuOpenCache = document.getElementById("tacacheContextOpenCache");
-    if ( gContextMenu.onTextInput && 
+    if ( gContextMenu.onTextInput &&
          document.popupNode.localName.toLowerCase() != "input" &&
          !TextareaCacheUtil.empty )
       tacacheContextMenuOpenCache.hidden = false;
     else
       tacacheContextMenuOpenCache.hidden = true;
   },
-  
+
   observer : {
     register : function () {
       let ObserverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
       ObserverService.addObserver(this, "textarea-cache-ui", false);
     },
-    
+
     unregister : function () {
       let ObserverService = Cc["@mozilla.org/observer-service;1"].getService(Ci.nsIObserverService);
       ObserverService.removeObserver(this, "textarea-cache-ui", false);
     },
-    
+
     observe : function (subject, topic, data) {
       switch (data) {
         case "status-button" :
@@ -288,7 +288,7 @@ var textareaCache = {
       }
     }
   },
- 
+
   init : function () {
     textareaCache.observer.register();
 
@@ -297,18 +297,18 @@ var textareaCache = {
     gBrowser.addEventListener("keyup", textareaCache.onKeyup, false);
     gBrowser.addEventListener("input", textareaCache.onInput, false);
     gBrowser.addEventListener("change", textareaCache.onChange, false);
-    
+
     let menu_ToolsPopup = document.getElementById("tacacheToolMenu").parentNode;
     menu_ToolsPopup.addEventListener("popupshowing", textareaCache.checkToolMenu, false);
     document.getElementById("contentAreaContextMenu").addEventListener("popupshowing", textareaCache.onContentMenu, false);
-    
+
     let menuPanel = document.getElementById("PanelUI-popup");
     if ( menuPanel )
       menuPanel.addEventListener("popupshown", textareaCache.checkToolbarButton, false);
 
-    textareaCache.checkButtons();    
+    textareaCache.checkButtons();
   },
-  
+
   exit : function () {
     textareaCache.observer.unregister();
 

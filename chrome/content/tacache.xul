@@ -6,7 +6,7 @@
 <overlay id="tacache-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://tacache/content/tacache.js"/>     
+  <script type="application/x-javascript" src="chrome://tacache/content/tacache.js"/>
   <script type="application/x-javascript" src="chrome://tacache/content/ui.js"/>
 
   <toolbarpalette id="BrowserToolbarPalette">
@@ -24,15 +24,15 @@
                   oncommand="tacacheUI.openOptionWindow(false); event.stopPropagation();"/>
       </menupopup>
     </toolbarbutton>
-  </toolbarpalette>  
-  
+  </toolbarpalette>
+
   <menupopup id="menu_ToolsPopup">
     <menuitem id="tacacheToolMenu"
               label="&openTextareaCache.label;"
-              insertafter="devToolsSeparator" 
+              insertafter="devToolsSeparator"
               oncommand="tacacheUI.openCacheWindow(false);"/>
   </menupopup>
-  
+
   <popupset id="mainPopupSet">
     <menupopup id="tacacheStatusMenu">
       <menuitem id="tacacheStatusOpenCache"
@@ -48,18 +48,18 @@
     </tooltip-->
   </popupset>
 
-  <statusbar id="status-bar">      
-    <statusbarpanel id="tacacheStatusButton" 
+  <statusbar id="status-bar">
+    <statusbarpanel id="tacacheStatusButton"
       context="tacacheStatusMenu"
-      image="chrome://tacache/skin/tacache-16.png" 
+      image="chrome://tacache/skin/tacache-16.png"
       class="statusbarpanel-iconic"
       hidden="true"
       tooltiptext="&openTextareaCache.label;"
       oncommand="tacacheUI.openCacheWindow();" />
   </statusbar>
-  
+
   <menupopup id="contentAreaContextMenu">
-    <menuitem id="tacacheContextOpenCache" 
+    <menuitem id="tacacheContextOpenCache"
               label="&openTextareaCache.label;"
               hidden="true"
               oncommand="tacacheUI.openCacheWindow({ document : document, node : document.popupNode });" />

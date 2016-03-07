@@ -12,16 +12,16 @@ var tacacheUI = {
       }
     }
     if ( aArg == null )
-      return window.open(aURL, "", "chrome,toolbar,centerscreen" + aFeature);  
+      return window.open(aURL, "", "chrome,toolbar,centerscreen" + aFeature);
     else
-      return openDialog(aURL, "", "chrome,toolbar,centerscreen" + aFeature, aArg);  
+      return openDialog(aURL, "", "chrome,toolbar,centerscreen" + aFeature, aArg);
   },
-  
+
   openCacheWindow : function (opener) {
     opener = null || opener;
     this.cacheWindowRef = this.openWindow("chrome://tacache/content/cacheWindow.xul", ", resizable", opener);
   },
-  
+
   openOptionWindow : function (addWhitelist) {
     try {
       var arg = addWhitelist ? gBrowser.mCurrentBrowser.contentDocument.location.host : null;
@@ -29,7 +29,7 @@ var tacacheUI = {
     catch (e) {
       var arg = null;
     }
-    
+
     this.openWindow("chrome://tacache/content/pref-tacache.xul", "", arg);
   }
 

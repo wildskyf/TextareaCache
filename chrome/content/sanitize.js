@@ -12,18 +12,18 @@ var textareaCacheSanitize = {
       }
     }
   },
-  
+
   exit : function () {
     window.removeEventListener("dialogaccept", textareaCacheSanitize.onDialogAccept, false);
   },
-  
+
   onDialogAccept : function () {
     gSanitizePromptDialog.updatePrefs();
     var s = new Sanitizer();
     s.prefDomain = "privacy.cpd.";
     s.range = Sanitizer.getClearRange(gSanitizePromptDialog.selectedTimespan);
 
-    if ( TextareaCacheUtil.gPref.getBoolPref("privacy.cpd.formdata") && 
+    if ( TextareaCacheUtil.gPref.getBoolPref("privacy.cpd.formdata") &&
          TextareaCacheUtil.gPref.getBoolPref("extensions.tacache.clearWithSanitize") )
       TextareaCacheUtil.clearCacheByRange(s.range);
   }
