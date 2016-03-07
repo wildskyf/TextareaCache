@@ -6,7 +6,7 @@
     <!-- Required fields //-->
     <em:name>Textarea Cache</em:name>
     <em:id>{578e7caa-210f-4967-a0d3-88fe5b59a39f}</em:id>
-    <em:version>0.9.3.3</em:version>
+    <em:version>0.9.3.4</em:version>
     <em:type>2</em:type>
 
     <em:targetApplication>

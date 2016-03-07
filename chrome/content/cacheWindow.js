@@ -80,7 +80,9 @@ var cacheWindow = {
       let time = cacheWindow.getTime( new Date(this.cache[i].time) );
       m.label = time + this.cache[i].title;
       m.setAttribute("anonid", i);
-      m.setAttribute("oncommand", "cacheWindow.getContent(this);");
+      m.addEventListener('command', function(event){
+        cacheWindow.getContent(event.target);
+      });
     }
 
     cacheMenu.disabled =
@@ -134,6 +136,7 @@ var cacheWindow = {
       document.getElementById("textContent").value = node.value;
     else {
       document.getElementById("textContent").value = node.value;
+      //TODO: Remove innerHTML assign, use DOMParser()
       document.getElementById("docContent").contentDocument.body.innerHTML = node.value;
     }
     document.getElementById("cacheMenu").setAttribute("anonid", node.getAttribute("anonid"));

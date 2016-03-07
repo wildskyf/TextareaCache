@@ -12,7 +12,7 @@ var textareaCache = {
     if ( !this.util.debug )
       return;
     var d = new Date();
-    Application.console.log(
+    console.log(
       "Textarea Cache ("+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+"."+d.getMilliseconds() +") :"+msg
     );
   },
