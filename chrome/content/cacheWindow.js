@@ -138,7 +138,6 @@ var cacheWindow = {
     } else {
       //for WYSIWYG editor
       document.getElementById("textContent").value = node.value;
-      console.log(node.value);
       let dp = new DOMParser();
       let bodyNode = document.getElementById("docContent").contentDocument.body;
       let doc = dp.parseFromString(node.value, "text/html");
