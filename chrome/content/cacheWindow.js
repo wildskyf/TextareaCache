@@ -155,6 +155,10 @@ var cacheWindow = {
     this.setCopyButton();
   },
 
+  setCopyButton : function () {
+    this.copyButton.disabled = ( this.cache.length == 0 );
+  },
+
   copyAndClose : function () {
     let nodeID = ( this.type == this._Text ) ? "textContent" : "docContent";
     let node = document.getElementById(nodeID);
