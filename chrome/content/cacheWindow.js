@@ -132,19 +132,27 @@ var cacheWindow = {
   getContent : function (node) {
     this.type = node.deckType;
     document.getElementById("contentDeck").setAttribute("selectedIndex", this.type);
-    if ( this.type == this._Text )
+    if ( this.type == this._Text ) {
+      //for textarea
       document.getElementById("textContent").value = node.value;
-    else {
+    } else {
+      //for WYSIWYG editor
       document.getElementById("textContent").value = node.value;
-      //TODO: Remove innerHTML assign, use DOMParser()
-      document.getElementById("docContent").contentDocument.body.innerHTML = node.value;
+      console.log(node.value);
+      let dp = new DOMParser();
+      let bodyNode = document.getElementById("docContent").contentDocument.body;
+      let doc = dp.parseFromString(node.value, "text/html");
+      while(bodyNode.firstChild) {
+        bodyNode.removeChild(bodyNode.firstChild);
+      }
+      for(let i=0; i < doc.body.childNodes.length; ++i) {
+        let newNode = doc.body.childNodes[i].cloneNode(true);
+        bodyNode.appendChild(newNode);
+      }
+      //var ih = bodyNode.innerHTML;
     }
     document.getElementById("cacheMenu").setAttribute("anonid", node.getAttribute("anonid"));
     this.setCopyButton();
-  },
-
-  setCopyButton : function () {
-    this.copyButton.disabled = ( this.cache.length == 0 );
   },
 
   copyAndClose : function () {
