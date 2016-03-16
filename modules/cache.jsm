@@ -356,8 +356,9 @@ this.TextareaCacheUtil = {
   },
 
   addNewItem : function ( node, text, submitted, privateWindow ) {
-    let title = node.tacacheDoc.title;
-    let id = node.tacacheID;
+    //let title = node.tacacheDoc.title;
+    //let id = node.tacacheID;
+    let {title, id} = node;
 
     // get time
     let time = Date.now();

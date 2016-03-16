@@ -122,8 +122,10 @@ var textareaCache = {
         this.util.moveItemToTop(index);
         this.util.updateItemText(text, submitted);
       }
-      else
-        this.util.addNewItem(node, text, submitted, this.isWindowPrivate);
+      else {
+        this.util.addNewItem({title: node.tacacheDoc.title, id: node.tacacheID, nodeName: node.nodeName}, text, submitted, this.isWindowPrivate);
+        //this.util.addNewItem(node, text, submitted, this.isWindowPrivate);
+      }
     }
   },
 
