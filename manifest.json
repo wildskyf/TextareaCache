@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "Textarea Cache",
+  "version": "1.0.0",
+
+  "default_locale": "en",
+  "description": "Allows to save automatically the content in a text input field.",
+  "homepage_url": "https://addons.mozilla.org/en-US/firefox/addon/textarea-cache/",
+
+  "icons": {
+    "48": "icons/icon.png"
+  },
+
+  "permissions": ["<all_urls>"],
+
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "16": "icons/icon.png",
+      "32": "icons/icon.png"
+    }
+  },
+
+  "background": {
+    "scripts": ["index.js"]
+  }
+}
