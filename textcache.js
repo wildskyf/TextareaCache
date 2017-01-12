@@ -1,8 +1,11 @@
-var textArea = document.querySelector('textarea');
-textArea.addEventListener( 'input', e => {
-    var rect = textArea.getBoundingClientRect();
-    var pos = `${rect.x},${rect.y}`;
-    localStorage[pos] = textArea.value;
-});
+var textAreas = document.querySelectorAll('textarea');
 
-// browser.runtime.
+if(textAreas.length !== 0) {
+	textAreas.forEach( ta => {
+		ta.addEventListener( 'input', e => {
+			var rect = ta.getBoundingClientRect();
+			var pos = `${rect.x},${rect.y}`;
+			localStorage[pos] = ta.value;
+		});
+	});
+}
