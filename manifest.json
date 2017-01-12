@@ -15,11 +15,15 @@
 
   "browser_action": {
     "browser_style": true,
-    "default_icon": {
-      "16": "icons/icon.png",
-      "32": "icons/icon.png"
-    }
+    "default_icon": "icons/icon.png"
   },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["textcache.js"]
+    }
+  ],
 
   "background": {
     "scripts": ["index.js"]
