@@ -1,9 +1,15 @@
 browser.browserAction.setPopup({
     popup: browser.extension.getURL('dashboard.html')
 });
-browser.runtime.onMessage.addListener( (req, sender, sendRes) => {
-		sendRes({
-			res: "This msg should from content page's localStorage"
+browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
+
+	browser.tabs.query({active:true}).then( tabs => {
+		browser.tabs.sendMessage(tabs[0].id, '').then( resObj => {
+			sendBack({
+				res: resObj.res
+			});
 		});
-	}
-);
+	});
+
+	return true;
+});
