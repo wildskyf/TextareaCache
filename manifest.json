@@ -11,7 +11,7 @@
     "48": "icons/icon.png"
   },
 
-  "permissions": ["<all_urls>"],
+  "permissions": ["<all_urls>", "storage"],
 
   "browser_action": {
     "browser_style": true,

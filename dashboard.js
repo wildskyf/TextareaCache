@@ -1,5 +1,9 @@
+// popup script
+
 window.onload = () => {
-	browser.runtime.sendMessage().then( ( resObj => {
+	browser.runtime.sendMessage({
+		behavior: 'load'
+	}).then( ( resObj => {
 		if (!resObj) return false;
 		JSON.parse(resObj.res).forEach( obj => {
 			var ta = document.createElement("TEXTAREA");

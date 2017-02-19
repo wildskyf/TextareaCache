@@ -1,24 +1,15 @@
-var textAreas = document.querySelectorAll('textarea');
+// content script
 
-if(textAreas.length !== 0) {
-	textAreas.forEach( (ta,i) => {
-		ta.addEventListener( 'input', e => {
-			sessionStorage[i] = ta.value;
+var textAreas = Array.from(document.querySelectorAll('textarea'));
+
+textAreas.forEach( (ta, i) => {
+	ta.addEventListener( 'input', e => {
+		browser.runtime.sendMessage({
+			behavior: 'save',
+			url: location.href,
+			id: i,
+			val: ta.value
 		});
 	});
-}
-
-browser.runtime.onMessage.addListener( (req, sender, sendRes) => {
-
-	if(textAreas.length !== 0) {
-		var all_msg = Array.from(textAreas).map( (ta,i) => {
-			return {
-				current: sessionStorage[i] || ''
-			};
-		});
-
-		sendRes({
-			res: JSON.stringify(all_msg)
-		});
-	}
 });
+
