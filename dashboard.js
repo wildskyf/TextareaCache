@@ -4,12 +4,14 @@ window.onload = () => {
 	browser.runtime.sendMessage({
 		behavior: 'load'
 	}).then( ( resObj => {
-		if (!resObj) return false;
-		JSON.parse(resObj.res).forEach( obj => {
+		if (!resObj.data) return false;
+
+		for (var i = 0 ; i < resObj.data.length ; ++i) {
+
 			var ta = document.createElement("TEXTAREA");
 			var body = document.querySelector('body');
-			ta.value = obj.current;
+			ta.value = resObj.data[i].val;
 			body.appendChild(ta);
-		});
+		}
 	}));
 }

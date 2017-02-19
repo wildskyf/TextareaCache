@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Textarea Cache",
-  "version": "1.0.0",
+  "version": "1.0.1",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
@@ -21,6 +21,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "run_at": "document_idle",
       "js": ["textcache.js"]
     }
   ],
