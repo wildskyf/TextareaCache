@@ -1,25 +1,27 @@
 // background script
 
+var isDEV = false;
+
 browser.browserAction.setPopup({
     popup: browser.extension.getURL('dashboard.html')
 });
 
 var log_storage = window.log = () => {
 	browser.storage.local.get().then( thing => {
-		console.log(thing);
+		if (isDEV) console.log(thing);
 	});
 };
 
 browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 
-	console.log(request.behavior);
+	if (isDEV) console.log(request.behavior);
 	switch(request.behavior) {
 		case 'init':
-			console.log('bg_init');
+			if (isDEV) console.log('bg_init');
 			browser.storage.local.get().then( local_obj => {
 				log_storage();
 				if (local_obj[request.url] === undefined) {
-					console.log('creating record');
+					if (isDEV) console.log('creating record');
 					local_obj[request.url] = {};
 					for (var i = 0 ; i < request.ta_num ; ++i) {
 						local_obj[request.url][i] = { val: "" };
@@ -31,7 +33,7 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 			});
 			break;
 		case 'save':
-			console.log('bg_save');
+			if (isDEV) console.log('bg_save');
 			browser.storage.local.get().then( local_obj => {
 				var {url, val, id} = request;
 
@@ -44,7 +46,7 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 			});
 			break;
 		case 'load':
-			console.log('bg_load');
+			if (isDEV) console.log('bg_load');
 
 			browser.tabs.query({active:true}).then( tabs => {
 				browser.tabs.sendMessage(tabs[0].id, 'url').then( res => {
@@ -56,7 +58,7 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 
 			break;
 		case 'clear':
-			console.log('bg_clear');
+			if (isDEV) console.log('bg_clear');
 			browser.storage.local.clear().then( () => {
 				log_storage();
 				sendBack({ msg: 'done'});
