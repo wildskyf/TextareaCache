@@ -29,7 +29,7 @@
     {
       "matches": ["<all_urls>"],
       "run_at": "document_idle",
-      "js": ["textcache.js"]
+      "js": ["content-script.js"]
     }
   ],
 

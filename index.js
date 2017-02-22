@@ -3,7 +3,7 @@
 var isDEV = false;
 
 browser.browserAction.setPopup({
-    popup: browser.extension.getURL('dashboard.html')
+    popup: browser.extension.getURL('panel.html')
 });
 
 var log_storage = window.log = () => {
