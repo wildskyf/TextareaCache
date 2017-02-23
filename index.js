@@ -2,10 +2,6 @@
 
 var isDEV = false;
 
-browser.browserAction.setPopup({
-    popup: browser.extension.getURL('panel.html')
-});
-
 var log_storage = window.log = () => {
 	browser.storage.local.get().then( thing => {
 		if (isDEV) console.log(thing);
@@ -18,6 +14,11 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 	switch(request.behavior) {
 		case 'init':
 			if (isDEV) console.log('bg_init');
+
+			browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+				browser.pageAction.show(tab.id);
+			});
+
 			browser.storage.local.get().then( local_obj => {
 				log_storage();
 				if (local_obj[request.url] === undefined) {
