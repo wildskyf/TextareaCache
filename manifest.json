@@ -20,6 +20,10 @@
 
   "permissions": ["<all_urls>", "storage", "tabs"],
 
+  "options_ui": {
+    "page": "options.html"
+  },
+
   "page_action": {
     "default_title": "Save your data",
     "default_popup": "panel.html",

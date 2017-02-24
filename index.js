@@ -1,17 +1,46 @@
 // background script
 
-var isDEV = false;
+var isDEV = true;
 
-var log_storage = window.log = () => {
+var log_storage = () => {
 	browser.storage.local.get().then( thing => {
 		if (isDEV) console.log(thing);
 	});
+};
+
+var getOptions = (request, sendBack) => {
+	browser.storage.local.get().then( local_obj => {
+		var {setting} = local_obj;
+		sendBack({ setting: setting });
+	}).catch(e => console.warn(e));
+	return true;
+};
+
+var setOptions = (request, sendBack) => {
+	browser.storage.local.get().then( local_obj => {
+		log_storage();
+		if (local_obj.setting === undefined) {
+			if (isDEV) console.log('creating setting');
+			local_obj.setting = {};
+		}
+		local_obj.setting[request.key] = request.val;
+		browser.storage.local.set(local_obj);
+		log_storage();
+		sendBack({ msg: 'done'});
+	}).catch(e => console.warn(e));
+	return true;
 };
 
 browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 
 	if (isDEV) console.log(request.behavior);
 	switch(request.behavior) {
+		case 'set_options':
+			setOptions(request, sendBack);
+			break;
+		case 'get_options':
+			getOptions(request, sendBack);
+			break;
 		case 'init':
 			if (isDEV) console.log('bg_init');
 
@@ -19,7 +48,7 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 				tab_infos.forEach(tab_info => {
 					browser.pageAction.show(tab_info.id);
 				});
-			});
+			}).catch(e => console.warn(e));
 
 			browser.storage.local.get().then( local_obj => {
 				log_storage();
@@ -33,7 +62,7 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 					browser.storage.local.set(local_obj);
 					log_storage();
 				}
-			});
+			}).catch(e => console.warn(e));
 			break;
 		case 'save':
 			if (isDEV) console.log('bg_save');
@@ -46,7 +75,7 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 				browser.storage.local.set(local_obj);
 
 				log_storage();
-			});
+			}).catch(e => console.warn(e));
 			break;
 		case 'load':
 			if (isDEV) console.log('bg_load');
@@ -56,8 +85,8 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 					browser.storage.local.get().then( data => {
 						sendBack({ data: data[res.url] });
 					});
-				});
-			});
+				}).catch(e => console.warn(e));
+			}).catch(e => console.warn(e));
 
 			break;
 		case 'clear':
@@ -65,9 +94,10 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 			browser.storage.local.clear().then( () => {
 				log_storage();
 				sendBack({ msg: 'done'});
-			});
+			}).catch(e => console.warn(e));
 			break;
 	}
 
 	return true;
 });
+
