@@ -15,8 +15,10 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 		case 'init':
 			if (isDEV) console.log('bg_init');
 
-			browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-				browser.pageAction.show(tab.id);
+			browser.tabs.query({url: request.url}).then((tab_infos) => {
+				tab_infos.forEach(tab_info => {
+					browser.pageAction.show(tab_info.id);
+				});
 			});
 
 			browser.storage.local.get().then( local_obj => {
