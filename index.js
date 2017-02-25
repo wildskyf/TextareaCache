@@ -1,6 +1,6 @@
 // background script
 
-var isDEV = true;
+var isDEV = false;
 
 var log_storage = () => {
 	browser.storage.local.get().then( thing => {

@@ -8,7 +8,7 @@
 
   "manifest_version": 2,
   "name": "Textarea Cache Lite",
-  "version": "1.2.0",
+  "version": "1.2.1",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
@@ -19,10 +19,6 @@
   },
 
   "permissions": ["<all_urls>", "storage", "tabs", "clipboardWrite"],
-
-  "options_ui": {
-    "page": "options.html"
-  },
 
   "page_action": {
     "default_title": "Save your data",
