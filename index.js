@@ -44,6 +44,7 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 		case 'init':
 			if (isDEV) console.log('bg_init');
 
+			if (isDEV) console.log(request.url);
 			browser.tabs.query({url: request.url}).then((tab_infos) => {
 				tab_infos.forEach(tab_info => {
 					browser.pageAction.show(tab_info.id);
@@ -58,7 +59,11 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 					for (var i = 0 ; i < request.ta_num ; ++i) {
 						local_obj[request.url][i] = { val: "" };
 					}
+					for (var i = 0 ; i < request.ifr_num ; ++i) {
+						local_obj[request.url]['w-'+i] = { val: "" };
+					}
 					local_obj[request.url].length = request.ta_num;
+					local_obj[request.url].ifr_length = request.ifr_num;
 					browser.storage.local.set(local_obj);
 					log_storage();
 				}

@@ -2,13 +2,13 @@
   "applications": {
     "gecko": {
       "id": "textarea-cache-lite@wildsky.cc",
-      "strict_min_version": "45.0"
+      "strict_min_version": "51.0"
     }
   },
 
   "manifest_version": 2,
   "name": "Textarea Cache Lite",
-  "version": "1.1.2",
+  "version": "1.2.0",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
@@ -18,7 +18,7 @@
     "48": "icons/icon.png"
   },
 
-  "permissions": ["<all_urls>", "storage", "tabs"],
+  "permissions": ["<all_urls>", "storage", "tabs", "clipboardWrite"],
 
   "options_ui": {
     "page": "options.html"
