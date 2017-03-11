@@ -4,12 +4,18 @@ var isDEV = false;
 
 var log_storage = () => {
 	browser.storage.local.get().then( thing => {
+		if ((typeof thing.length === 'number') && (thing.length > 0)) {
+    		thing = thing[0];
+		}
 		if (isDEV) console.log(thing);
 	});
 };
 
 var getOptions = (request, sendBack) => {
 	browser.storage.local.get().then( local_obj => {
+		if ((typeof local_obj.length === 'number') && (local_obj.length > 0)) {
+			local_obj = local_obj[0];
+		}
 		var {setting} = local_obj;
 		sendBack({ setting: setting });
 	}).catch(e => console.warn(e));
@@ -18,6 +24,9 @@ var getOptions = (request, sendBack) => {
 
 var setOptions = (request, sendBack) => {
 	browser.storage.local.get().then( local_obj => {
+		if ((typeof local_obj.length === 'number') && (local_obj.length > 0)) {
+			local_obj = local_obj[0];
+		}
 		log_storage();
 		if (local_obj.setting === undefined) {
 			if (isDEV) console.log('creating setting');
@@ -52,6 +61,9 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 			}).catch(e => console.warn(e));
 
 			browser.storage.local.get().then( local_obj => {
+				if ((typeof local_obj.length === 'number') && (local_obj.length > 0)) {
+					local_obj = local_obj[0];
+				}
 				log_storage();
 				if (local_obj[request.url] === undefined) {
 					if (isDEV) console.log('creating record');
@@ -72,6 +84,9 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 		case 'save':
 			if (isDEV) console.log('bg_save');
 			browser.storage.local.get().then( local_obj => {
+				if ((typeof local_obj.length === 'number') && (local_obj.length > 0)) {
+					local_obj = local_obj[0];
+				}
 				var {url, val, id} = request;
 
 				local_obj[url] = local_obj[url] || {};
@@ -88,6 +103,9 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 			browser.tabs.query({active:true}).then( tabs => {
 				browser.tabs.sendMessage(tabs[0].id, 'url').then( res => {
 					browser.storage.local.get().then( data => {
+						if ((typeof data.length === 'number') && (data.length > 0)) {
+							data = data[0];
+						}
 						sendBack({ data: data[res.url] });
 					});
 				}).catch(e => console.warn(e));
