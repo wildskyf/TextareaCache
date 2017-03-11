@@ -31,13 +31,16 @@ window.onload = () => {
 		};
 
 		var showPreview = (isWYSIWYG, val) => {
+			// val is used to show preview of WYSIWYG,
+			// so it should not be escaped.
+
 			if (isWYSIWYG) {
 				show_cache.type = 'WYSIWYG';
 				show_cache.innerHTML = val;
 			}
 			else {
 				show_cache.type = 'text';
-				show_cache.innerHTML = `<textarea>${val}</textarea>`;
+				show_cache.innerHTML = `<textarea>${escapeHTML(val)}</textarea>`;
 			}
 		};
 
