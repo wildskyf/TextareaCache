@@ -23,38 +23,48 @@ if (textAreas.length || iframes.length) {
 	});
 }
 
-if (textAreas.length) {
+window.setInterval(() => {
+    textAreas.forEach( (ta, i) => {
+        if (!ta.changed) return;
+        browser.runtime.sendMessage({
+            behavior: 'save',
+            url: location.href,
+            id: i,
+            val: ta.value
+        });
+        ta.changed = false;
+    });
 
+	iframes.forEach( (ifr, i) => {
+        if (!ifr.changed) return;
+        browser.runtime.sendMessage({
+            behavior: 'save',
+            url: location.href,
+            id: 'w-' + i,
+            val: ifr.contentWindow.document.body.innerHTML
+        });
+        ta.changed = false;
+    });
+}, 5000);
+
+if (textAreas.length) {
 	textAreas.forEach( (ta, i) => {
 		ta.addEventListener( 'input', e => {
 			if (isDEV) console.log('save');
-			browser.runtime.sendMessage({
-				behavior: 'save',
-				url: location.href,
-				id: i,
-				val: ta.value
-			});
+            ta.changed = true;
 		});
 	});
-
 }
 
 if (iframes.length) {
-
 	iframes.forEach( (ifr, i) => {
 		var events = ['click', 'keydown', 'keypress', 'keyup', 'focusout'];
 		events.forEach( evt_name => {
 			ifr.contentWindow.document.body.addEventListener( evt_name, e => {
 				if (isDEV) console.log('ifr_save');
-				browser.runtime.sendMessage({
-					behavior: 'save',
-					url: location.href,
-					id: 'w-' + i,
-					val: ifr.contentWindow.document.body.innerHTML
-				});
+				ifr.changed = true;
 			});
 		});
 	});
-
 }
 
