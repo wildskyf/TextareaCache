@@ -26,6 +26,7 @@ if (textAreas.length || iframes.length) {
 window.setInterval(() => {
     textAreas.forEach( (ta, i) => {
         if (!ta.changed) return;
+        console.log('save');
         browser.runtime.sendMessage({
             behavior: 'save',
             url: location.href,
@@ -43,7 +44,7 @@ window.setInterval(() => {
             id: 'w-' + i,
             val: ifr.contentWindow.document.body.innerHTML
         });
-        ta.changed = false;
+        ifr.changed = false;
     });
 }, 5000);
 
