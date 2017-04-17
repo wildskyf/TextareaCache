@@ -26,7 +26,7 @@ if (textAreas.length || iframes.length) {
 window.setInterval(() => {
     textAreas.forEach( (ta, i) => {
         if (!ta.changed) return;
-        console.log('save');
+        if (isDEV) console.log('save');
         browser.runtime.sendMessage({
             behavior: 'save',
             url: location.href,
@@ -51,7 +51,7 @@ window.setInterval(() => {
 if (textAreas.length) {
 	textAreas.forEach( (ta, i) => {
 		ta.addEventListener( 'input', e => {
-			if (isDEV) console.log('save');
+			if (isDEV) console.log('textarea changed');
             ta.changed = true;
 		});
 	});
@@ -62,7 +62,7 @@ if (iframes.length) {
 		var events = ['click', 'keydown', 'keypress', 'keyup', 'focusout'];
 		events.forEach( evt_name => {
 			ifr.contentWindow.document.body.addEventListener( evt_name, e => {
-				if (isDEV) console.log('ifr_save');
+				if (isDEV) console.log('iframe changed');
 				ifr.changed = true;
 			});
 		});
