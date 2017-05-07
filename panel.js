@@ -4,12 +4,12 @@ window.onload = () => {
 	browser.runtime.sendMessage({
 		behavior: 'load'
 	}).then( ( resObj => {
-		if (!resObj.data) return false;
+		if (!(resObj && resObj.data)) return false;
 		var selector   = document.querySelector('#cache_seletor');
 		var show_cache = document.querySelector('#show_cache');
 		var copy_btn   = document.querySelector('#copy_btn');
 
-		var escapeHTML = str => str.toString().replace(/[&"'<>]/g, (m) => ({
+		var escapeHTML = str => str.toString().replace(/[&"'<>]/g, m => ({
 			"&": "&amp;",
 			'"': "&quot;",
 			"'": "&#39;",
@@ -39,24 +39,23 @@ window.onload = () => {
 				show_cache.innerHTML = val;
 			}
 			else {
-				show_cache.type = 'text';
+				show_cache.type = 'txt';
 				show_cache.innerHTML = `<textarea>${escapeHTML(val)}</textarea>`;
 			}
 		};
 
 		for (var key in resObj.data) {
 
-			if (key.includes('length')) continue;
+            if (!resObj.data[key]) return;
+            var type = resObj.data[key].type;
+            var cache = resObj.data[key].val;
 
-			var cache = resObj.data[key];
-			if (cache.val.length == 0) continue;
+            var select_title = escapeHTML(key).substr(0,50) + '...';
+            selector.innerHTML += `<option value="${escapeHTML(key)}">${select_title}</option>`;
 
-			var select_title = escapeHTML(key + ' : ' + cache.val).substr(0,50) + '...';
+            if (show_cache.innerHTML == '')
+                showPreview(type == 'WYSIWYG', cache);
 
-			selector.innerHTML += `<option value="${escapeHTML(key)}">${select_title}</option>`;
-
-			if (show_cache.innerHTML == '')
-				showPreview(key.includes('w-'), cache.val);
 		}
 
 		if (!document.querySelector('option')) {
@@ -65,10 +64,10 @@ window.onload = () => {
 
 		selector.addEventListener('change', e => {
 			var key = e.target.value;
-			var cache = resObj.data[key];
-			var isWYSIWYG = key.includes('w-');
+			var cache = resObj.data[key].val;
+			var isWYSIWYG = resObj.data[key].type == 'WYSIWYG';
 
-			showPreview(isWYSIWYG, cache.val);
+			showPreview(isWYSIWYG, cache);
 		});
 
 		copy_btn.addEventListener('click', () => {

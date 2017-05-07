@@ -1,71 +1,97 @@
 // content script
 
-var isDEV = false;
 
-var textAreas = Array.from(document.querySelectorAll('textarea'));
-var iframes   = Array.from(document.querySelectorAll('iframe'));
+var tcl = {
+    isDEV: false,
 
-if (textAreas.length || iframes.length) {
+    textareas: Array.from(document.querySelectorAll('textarea')),
+    wysiwyg_editors: Array.from(document.querySelectorAll('[contenteditable="true"]')),
 
-	if (isDEV) console.log('sendMessage init');
-	browser.runtime.sendMessage({
-		behavior: 'init',
-		url: location.href,
-		ta_num: textAreas.length,
-		ifr_num: iframes.length
-	});
+    init: () => {
+        var me = tcl;
+        me.initToBackgroundScript();
+        me.addEventListener();
+        me.connectBackgroundWhenChanged();
+    },
 
-	// wait for panel's request
-	browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
-		sendBack({
-			url: location.href
-		});
-	});
-}
+    initToBackgroundScript: () => {
+        var me = tcl;
+        var {textareas,wysiwyg_editors,isDEV} = me;
 
-window.setInterval(() => {
-    textAreas.forEach( (ta, i) => {
-        if (!ta.changed) return;
-        if (isDEV) console.log('save');
-        browser.runtime.sendMessage({
-            behavior: 'save',
-            url: location.href,
-            id: i,
-            val: ta.value
+        if (textareas.length || wysiwyg_editors.length) {
+            if (isDEV) console.log('sendMessage init');
+            browser.runtime.sendMessage({
+                behavior: 'init',
+                title: document.title
+            });
+        }
+    },
+
+    _multiEventBinding: (target, event_array, callback) => {
+        event_array.forEach(event => {
+            target.addEventListener(event, e => {
+                callback();
+            });
         });
-        ta.changed = false;
-    });
+    },
 
-	iframes.forEach( (ifr, i) => {
-        if (!ifr.changed) return;
-        browser.runtime.sendMessage({
-            behavior: 'save',
-            url: location.href,
-            id: 'w-' + i,
-            val: ifr.contentWindow.document.body.innerHTML
+    addEventListener: () => {
+        var me = tcl;
+        var {textareas,wysiwyg_editors,isDEV} = me;
+
+        textareas.length && textareas.forEach( (ta, i) => {
+            me._multiEventBinding(ta, ['input', 'focusout'], e => {
+                if (ta.changed) return;
+                if (isDEV) console.log('textarea changed');
+                ta.changed = true;
+            });
         });
-        ifr.changed = false;
-    });
-}, 5000);
 
-if (textAreas.length) {
-	textAreas.forEach( (ta, i) => {
-		ta.addEventListener( 'input', e => {
-			if (isDEV) console.log('textarea changed');
-            ta.changed = true;
-		});
-	});
-}
+        wysiwyg_editors.length && wysiwyg_editors.forEach( (editor, i) => {
+            me._multiEventBinding(editor, ['click', 'keydown', 'keypress', 'keyup', 'focusout'], e => {
+                if (editor.changed) return;
+                if (isDEV) console.log('iframe changed');
+                editor.changed = true;
+            });
+        });
 
-if (iframes.length) {
-	iframes.forEach( (ifr, i) => {
-		var events = ['click', 'keydown', 'keypress', 'keyup', 'focusout'];
-		events.forEach( evt_name => {
-			ifr.contentWindow.document.body.addEventListener( evt_name, e => {
-				if (isDEV) console.log('iframe changed');
-				ifr.changed = true;
-			});
-		});
-	});
-}
+    },
+
+    connectBackgroundWhenChanged: () => {
+        var me = tcl;
+        var {textareas,wysiwyg_editors,isDEV} = me;
+
+        window.setInterval(() => {
+
+            textareas.forEach( (ta, i) => {
+                if (!ta.changed) return;
+                if (isDEV) console.log('save');
+                browser.runtime.sendMessage({
+                    behavior: 'save',
+                    title: document.title,
+                    val: ta.value,
+                    id: i,
+                    type: 'txt'
+                });
+                ta.changed = false;
+            });
+
+            wysiwyg_editors.forEach( (editor, i) => {
+                if (!editor.changed) return;
+                browser.runtime.sendMessage({
+                    behavior: 'save',
+                    title: document.title,
+                    val: editor.innerHTML,
+                    id: 'w-' + i,
+                    type: 'WYSIWYG'
+                });
+                editor.changed = false;
+            });
+
+        }, 5000);
+
+    }
+
+};
+tcl.init();
 
