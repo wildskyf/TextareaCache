@@ -46,7 +46,7 @@ window.onload = () => {
 
 		for (var key in resObj.data) {
 
-            if (!resObj.data[key]) return;
+            if (!resObj.data[key] || key == 'version') continue;
             var type = resObj.data[key].type;
             var cache = resObj.data[key].val;
 
