@@ -20,10 +20,11 @@
 
   "permissions": ["<all_urls>", "storage", "tabs", "clipboardWrite"],
 
-  "page_action": {
+  "browser_action": {
+    "browser_style": true,
     "default_title": "Save your data",
     "default_popup": "panel.html",
-    "default_icon": "icons/tacache-32-bw.png"
+    "default_icon": "icons/tacache-32.png"
   },
 
   "content_scripts": [

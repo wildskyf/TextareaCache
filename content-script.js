@@ -7,7 +7,7 @@ var iframes   = Array.from(document.querySelectorAll('iframe'));
 
 if (textAreas.length || iframes.length) {
 
-	if (isDEV) console.log('init');
+	if (isDEV) console.log('sendMessage init');
 	browser.runtime.sendMessage({
 		behavior: 'init',
 		url: location.href,

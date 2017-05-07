@@ -42,7 +42,7 @@ var setOptions = (request, sendBack) => {
 
 browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 
-	if (isDEV) console.log(request.behavior);
+	if (isDEV) console.log('bg_get_request', request.behavior);
 	switch(request.behavior) {
 		case 'set_options':
 			setOptions(request, sendBack);
@@ -54,11 +54,6 @@ browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 			if (isDEV) console.log('bg_init');
 
 			if (isDEV) console.log(request.url);
-			browser.tabs.query({url: request.url}).then((tab_infos) => {
-				tab_infos.forEach(tab_info => {
-					browser.pageAction.show(tab_info.id);
-				});
-			}).catch(e => console.warn(e));
 
 			browser.storage.local.get().then( local_obj => {
 				if ((typeof local_obj.length === 'number') && (local_obj.length > 0)) {
