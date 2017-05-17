@@ -50,7 +50,7 @@ window.onload = () => {
             var type = resObj.data[key].type;
             var cache = resObj.data[key].val;
 
-            var select_title = escapeHTML(key).substr(0,50) + '...';
+            var select_title = escapeHTML(key);
             selector.innerHTML += `<option value="${escapeHTML(key)}">${select_title}</option>`;
 
             if (show_cache.innerHTML == '')
