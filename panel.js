@@ -1,13 +1,17 @@
 // popup script
 
 window.onload = () => {
+    var whole_data = null;
 	browser.runtime.sendMessage({
 		behavior: 'load'
 	}).then( ( resObj => {
 		if (!(resObj && resObj.data)) return false;
+        whole_data = resObj.data;
+
 		var selector   = document.querySelector('#cache_seletor');
 		var show_cache = document.querySelector('#show_cache');
 		var copy_btn   = document.querySelector('#copy_btn');
+		var delete_btn = document.querySelector('#delete_btn');
 
 		var escapeHTML = str => str.toString().replace(/[&"'<>]/g, m => ({
 			"&": "&amp;",
@@ -44,11 +48,11 @@ window.onload = () => {
 			}
 		};
 
-		for (var key in resObj.data) {
+		for (var key in whole_data) {
 
-            if (!resObj.data[key] || key == 'version') continue;
-            var type = resObj.data[key].type;
-            var cache = resObj.data[key].val;
+            if (!whole_data[key] || key == 'version') continue;
+            var type = whole_data[key].type;
+            var cache = whole_data[key].val;
 
             var select_title = escapeHTML(key);
             selector.innerHTML += `<option value="${escapeHTML(key)}">${select_title}</option>`;
@@ -64,8 +68,8 @@ window.onload = () => {
 
 		selector.addEventListener('change', e => {
 			var key = e.target.value;
-			var cache = resObj.data[key].val;
-			var isWYSIWYG = resObj.data[key].type == 'WYSIWYG';
+			var cache = whole_data[key].val;
+			var isWYSIWYG = whole_data[key].type == 'WYSIWYG';
 
 			showPreview(isWYSIWYG, cache);
 		});
@@ -80,5 +84,21 @@ window.onload = () => {
 			document.execCommand("Copy");
 			// alert('You got it, now put your cache anyway!');
 		});
+
+        delete_btn.addEventListener('click', () => {
+            browser.runtime.sendMessage({
+                behavior: 'delete',
+                id: selector.value
+            }).then( res => {
+                whole_data = res.data;
+                selector.querySelector(`[value="${res.deleted}"]`).remove();
+
+                var key = selector.value;
+                var cache = whole_data[key].val;
+                var isWYSIWYG = whole_data[key].type == 'WYSIWYG';
+
+                showPreview(isWYSIWYG, cache);
+            });
+        });
 	}));
 }

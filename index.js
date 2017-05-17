@@ -143,6 +143,15 @@ var bg = {
                     });
 
                     break;
+                case 'delete':
+                    if (isDEV) console.log('bg_delete');
+                    browser.storage.local.get().then( data => {
+                        me._hackForStorage(data);
+                        delete data[request.id];
+                        browser.storage.local.set(data);
+                        sendBack({ done: 1, deleted: request.id, data: data});
+                    });
+                    break;
                 case 'clear':
                     if (isDEV) console.log('bg_clear');
                     browser.storage.local.clear().then( () => {
