@@ -1,14 +1,15 @@
 // content script
 
-
 var tcl = {
     isDEV: false,
-
-    textareas: Array.from(document.querySelectorAll('textarea')),
-    wysiwyg_editors: Array.from(document.querySelectorAll('[contenteditable="true"]')),
+    textareas: null,
+    wysiwyg_editors: null,
 
     init: () => {
         var me = tcl;
+
+        me.textareas = Array.from(document.querySelectorAll('textarea')),
+        me.wysiwyg_editors = Array.from(document.querySelectorAll('[contenteditable="true"]')),
         me.initToBackgroundScript();
         me.addEventListener();
         me.connectBackgroundWhenChanged();
@@ -88,7 +89,7 @@ var tcl = {
                 editor.changed = false;
             });
 
-        }, 5000);
+        }, 2000);
 
     }
 

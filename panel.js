@@ -48,23 +48,28 @@ window.onload = () => {
 			}
 		};
 
+        var tmp_array = [];
 		for (var key in whole_data) {
-
             if (!whole_data[key] || key == 'version') continue;
-            var type = whole_data[key].type;
-            var cache = whole_data[key].val;
+		    var tmp_data = whole_data[key];
+		    tmp_data.key = key;
+		    tmp_array.push(tmp_data);
+		}
 
-            var select_title = escapeHTML(key);
-            selector.innerHTML += `<option value="${escapeHTML(key)}">${select_title}</option>`;
+        tmp_array.forEach(one_data => {
+            var type = one_data.type;
+            var cache = one_data.val;
+
+            var select_title = escapeHTML(one_data.key);
+            selector.innerHTML += `<option value="${escapeHTML(one_data.key)}">${select_title}</option>`;
 
             if (show_cache.innerHTML == '')
                 showPreview(type == 'WYSIWYG', cache);
 
-		}
-
-		if (!document.querySelector('option')) {
-			document.querySelector('body').innerHTML = '<p>You don\'t have any cache yet!</p>';
-		}
+            if (!document.querySelector('option')) {
+                document.querySelector('body').innerHTML = '<p>You don\'t have any cache yet!</p>';
+            }
+        });
 
 		selector.addEventListener('change', e => {
 			var key = e.target.value;
