@@ -32,20 +32,29 @@
 				min-width: 300px;
 				width: 100%;
 			}
-			#copy_btn {
-			    box-sizing: content-box;
+            #copy_btn, #delete_btn {
+			    box-sizing: border-box;
+			    border: 1px solid #ccc;
 			    border-radius: 0;
-                cursor: pointer;
-				float: left;
-                height: 2rem;
+                background: #eee;
+                float: left;
+                height: 3rem;
                 padding: .5rem;
-			}
+                text-align: center;
+                width: 50%;
+            }
+            #copy_btn:hover, #delete_btn:hover {
+                background: #ddd;
+            }
 		</style>
         <script src="panel.js"></script>
     </head>
     <body>
     	<select id="cache_seletor" name="cache_seletor"></select>
     	<div id="show_cache" contenteditable='true'></div>
-		<button id="copy_btn">COPY</button>
+    	<div>
+            <button id="copy_btn">Copy</button>
+            <button id="delete_btn">Delete</button>
+        </div>
     </body>
 </html>
