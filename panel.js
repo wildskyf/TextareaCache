@@ -1,5 +1,12 @@
 // popup script
 
+var setBodyEmpty = () => {
+    var textnode = document.createTextNode('There is no cache here!');
+    document.body.textContent = '';
+    document.body.style.padding = '20px';
+    document.body.appendChild(textnode);
+};
+
 window.onload = () => {
     var whole_data = null;
 	browser.runtime.sendMessage({
@@ -7,6 +14,10 @@ window.onload = () => {
 	}).then( ( resObj => {
 		if (!(resObj && resObj.data)) return false;
         whole_data = resObj.data;
+        if (Object.keys(whole_data).length <= 1) {
+            setBodyEmpty();
+            return false;
+        }
 
 		var selector   = document.querySelector('#cache_seletor');
 		var show_cache = document.querySelector('#show_cache');
@@ -90,6 +101,17 @@ window.onload = () => {
 			// alert('You got it, now put your cache anyway!');
 		});
 
+
+        delete_all_btn.addEventListener('click', () => {
+            browser.runtime.sendMessage({
+                behavior: 'clear'
+            }).then(res => {
+                if (res.msg == 'done') {
+                    setBodyEmpty();
+                }
+            });
+        });
+
         delete_btn.addEventListener('click', () => {
             browser.runtime.sendMessage({
                 behavior: 'delete',
@@ -99,6 +121,12 @@ window.onload = () => {
                 selector.querySelector(`[value="${res.deleted}"]`).remove();
 
                 var key = selector.value;
+
+                if (!whole_data[key]) {
+                    setBodyEmpty();
+                    return false;
+                }
+
                 var cache = whole_data[key].val;
                 var isWYSIWYG = whole_data[key].type == 'WYSIWYG';
 

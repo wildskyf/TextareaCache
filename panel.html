@@ -9,6 +9,7 @@
                 height: auto;
                 overflow: hidden;
                 padding: 0;
+                min-width: 200px;
             }
 			#cache_seletor {
 			    border-radius: 0;
@@ -32,7 +33,7 @@
 				min-width: 300px;
 				width: 100%;
 			}
-            #copy_btn, #delete_btn {
+            #copy_btn, #delete_all_btn, #delete_btn {
 			    box-sizing: border-box;
 			    border: 1px solid #ccc;
 			    border-radius: 0;
@@ -41,9 +42,9 @@
                 height: 3rem;
                 padding: .5rem;
                 text-align: center;
-                width: 50%;
+                width: 33%;
             }
-            #copy_btn:hover, #delete_btn:hover {
+            #copy_btn:hover, #delete_all_btn:hover, #delete_btn:hover {
                 background: #ddd;
             }
 		</style>
@@ -54,6 +55,7 @@
     	<div id="show_cache" contenteditable='true'></div>
     	<div>
             <button id="copy_btn">Copy</button>
+            <button id="delete_all_btn">Delete All Cache</button>
             <button id="delete_btn">Delete</button>
         </div>
     </body>
