@@ -48,9 +48,12 @@ window.onload = () => {
 		var showPreview = (isWYSIWYG, val) => {
 			// val is used to show preview of WYSIWYG,
 			// so it should not be escaped.
+			//
+			// for security issues, I will remove all <script> & </script> tag
 
 			if (isWYSIWYG) {
 				show_cache.type = 'WYSIWYG';
+				show_cache = show_cache.replace(/<script.*>.*<\/script.*>/g, '');
 				show_cache.innerHTML = val;
 			}
 			else {
