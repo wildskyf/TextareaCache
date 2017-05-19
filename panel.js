@@ -55,7 +55,11 @@ window.onload = () => {
 			}
 			else {
 				show_cache.type = 'txt';
-				show_cache.innerHTML = `<textarea>${escapeHTML(val)}</textarea>`;
+				var text = document.createTextNode(val);
+				var textarea = document.createElement('textarea');
+                textarea.appendChild(text);
+                show_cache.contentText = '';
+				show_cache.appendChild(textarea);
 			}
 		};
 
@@ -71,14 +75,17 @@ window.onload = () => {
             var type = one_data.type;
             var cache = one_data.val;
 
-            var select_title = escapeHTML(one_data.key);
-            selector.innerHTML += `<option value="${escapeHTML(one_data.key)}">${select_title}</option>`;
+            var text = document.createTextNode(one_data.key);
+            var option = document.createElement('option');
+            option.appendChild(text);
+            option.value = one_data.key;
+            selector.appendChild(option);
 
             if (show_cache.innerHTML == '')
                 showPreview(type == 'WYSIWYG', cache);
 
             if (!document.querySelector('option')) {
-                document.querySelector('body').innerHTML = '<p>You don\'t have any cache yet!</p>';
+                setBodyEmpty();
             }
         });
 
