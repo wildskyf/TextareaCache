@@ -1,19 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Options</title>
+    <meta charset="UTF-8">
+    <title>Options</title>
     <style>
         .response {
             min-height: 1.5rem;
             color: #555;
+            transition-duration: .2s;
+        }
+        .row {
+            border-top: 1px solid #c1c1c1;
+            -moz-box-align: center;
+            min-height: 35px;
+            line-height: 35px;
+            text-shadow: 0 1px 1px #fefffe;
+        }
+        .row .title {
+            width: 264px;
+            display: inline-block;
+            cursor: default;
+            margin-top: 1px;
+            margin-bottom: 2px;
+            margin-inline-end: 5px;
+            font: message-box;
+            font-size: 1rem;
+            color: #333;
         }
     </style>
 </head>
 <body>
-	<div class="response"></div>
-	<label for="debug">Debug Mode</label>
-    <input id="debug" type="checkbox">
-	<script src="options.js"></script>
+    <div class="response"></div>
+    <div class="row">
+        <label class="title" for="pageAction">Show Icon at navigation bar</label>
+        <input id="pageAction" type="checkbox">
+        <!--
+            <input id="browserAction" type="checkbox">
+            <label class="option-text" for="browserAction">toolbox</label>
+        -->
+    </div>
+    <div class="row">
+        <label class="title" for="debug">Debug Mode</label>
+        <input id="debug" type="checkbox">
+    </div>
+    <script src="options.js"></script>
 </body>
 </html>

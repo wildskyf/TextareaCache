@@ -148,6 +148,23 @@ var bg = {
                     break;
                 case 'init':
                     if (isDEV) console.log('bg_init');
+
+                    browser.storage.local.get().then( local_obj => {
+                        me._hackForStorage(local_obj);
+                        var {setting} = local_obj;
+
+                        if (browserAction) {
+                            // can't hide ...
+                        }
+
+                        if (pageAction) {
+                            browser.tabs.query({ url: request.url }).then(tab_infos => {
+                                tab_infos.forEach(tab_info => {
+                                    browser.pageAction.show(tab_info.id);
+                                });
+                            }).catch(e => console.warn(e));
+                        }
+                    }).catch(e => console.warn(e));
                     break;
                 case 'save':
                     if (isDEV) console.log('bg_save');

@@ -27,6 +27,12 @@
     "default_icon": "icons/tacache-32.png"
   },
 
+  "page_action": {
+    "default_title": "Save your data",
+    "default_popup": "panel.html",
+    "default_icon": "icons/tacache-32-bw.png"
+  },
+
   "content_scripts": [
     {
       "match_about_blank": true,

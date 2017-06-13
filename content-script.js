@@ -23,7 +23,8 @@ var tcl = {
             if (isDEV) console.log('sendMessage init');
             browser.runtime.sendMessage({
                 behavior: 'init',
-                title: document.title
+                title: document.title,
+                url: location.href
             });
         }
     },
