@@ -53,7 +53,7 @@ window.onload = () => {
 
 			if (isWYSIWYG) {
 				show_cache.type = 'WYSIWYG';
-				show_cache = show_cache.replace(/<script.*>.*<\/script.*>/g, '');
+				val = val.replace(/<script.*>.*<\/script.*>/g, '');
 				show_cache.innerHTML = val;
 			}
 			else {
@@ -61,7 +61,7 @@ window.onload = () => {
 				var text = document.createTextNode(val);
 				var textarea = document.createElement('textarea');
                 textarea.appendChild(text);
-                show_cache.contentText = '';
+                show_cache.innerHTML = '';
 				show_cache.appendChild(textarea);
 			}
 		};
