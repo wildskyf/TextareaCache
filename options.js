@@ -2,17 +2,17 @@ window.onload = () => {
 
 	var showUpdatedMessage = (status) => {
 		if (status == 'success')
-			document.querySelector('.response').innerHTML = 'Your change has been saved.';
+			document.querySelector('.response').textContent = 'Your change has been saved.';
 		else {
-			document.querySelector('.response').innerHTML = 'There is something wrong, please report to developer.';
+			document.querySelector('.response').textContent = 'There is something wrong, please report to developer.';
 		}
 		setTimeout( () => {
-			document.querySelector('.response').innerHTML = '';
-		}, 3000);
+			document.querySelector('.response').textContent = '';
+		}, 2000);
 	};
 
 	browser.runtime.sendMessage({
-		behavior: 'set_options'
+		behavior: 'get_options'
 	}).then( res => {
 		var {setting} = res;
 		for (var key in setting) {

@@ -1,12 +1,13 @@
 // background script
 
 var bg = {
-    isDEV: true,
+    isDEV: false,
     VERSION: '2',
 
     init: () => {
         var me = bg;
         me.checkStorageVersion();
+        me.applyOptions();
         me.onMessage();
     },
 
@@ -88,12 +89,21 @@ var bg = {
 
     },
 
+    applyOptions: () => {
+        var me = bg;
+        browser.storage.local.get().then( local_obj => {
+            me._hackForStorage(local_obj);
+            var {setting} = local_obj;
+            me.isDEV = !!setting.debug;
+        }).catch(e => console.warn(e));
+    },
+
     getOptions: (request, sendBack) => {
         var me = bg;
         browser.storage.local.get().then( local_obj => {
             me._hackForStorage(local_obj);
             var {setting} = local_obj;
-            sendBack({ setting: setting });
+            if (sendBack) sendBack({ setting: setting });
         }).catch(e => console.warn(e));
         return true;
     },
@@ -158,7 +168,7 @@ var bg = {
 
                         // clear unnessary data when saving
                         for (var cache_key in local_obj) {
-                            if (cache_key !== 'version' && local_obj[cache_key].val.length == 0) {
+                            if (cache_key !== 'version' && cache_key !== 'setting' && local_obj[cache_key].val.length == 0) {
                                 delete local_obj[cache_key];
                             }
                         }
@@ -186,10 +196,18 @@ var bg = {
                     break;
                 case 'clear':
                     if (isDEV) console.log('bg_clear');
-                    browser.storage.local.clear().then( () => {
-                        log_storage();
-                        sendBack({ msg: 'done'});
-                    }).catch(e => console.warn(e));
+                    browser.storage.local.get().then( local_obj => {
+                        var old_obj = Object.assign({}, local_obj);
+                        browser.storage.local.clear().then( () => {
+                            browser.storage.local.set({
+                                version: old_obj.version,
+                                setting: old_obj.setting
+                            }).then( () => {
+                                log_storage();
+                                sendBack({ msg: 'done'});
+                            });
+                        }).catch(e => console.warn(e));
+                    });
                     break;
             }
 

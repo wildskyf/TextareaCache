@@ -68,7 +68,7 @@ window.onload = () => {
 
         var tmp_array = [];
 		for (var key in whole_data) {
-            if (!whole_data[key] || key == 'version') continue;
+            if (!whole_data[key] || key == 'version' || key == 'setting') continue;
 		    var tmp_data = whole_data[key];
 		    tmp_data.key = key;
 		    tmp_array.push(tmp_data);
