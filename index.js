@@ -1,7 +1,7 @@
 // background script
 
 var bg = {
-    isDEV: false,
+    isDEV: true,
     VERSION: '2',
 
     init: () => {
@@ -30,38 +30,62 @@ var bg = {
         browser.storage.local.get().then( local_obj => {
             me._hackForStorage(local_obj);
 
-            if (!local_obj.version) {
-                me._fallback(local_obj);
+            if (!local_obj.version || local_obj.version !== me.VERSION) {
+                me._fallback(local_obj, local_obj.version);
             }
         });
     },
 
-    _fallback: local_obj => {
+    _fallback: (local_obj, version) => {
         var new_local_obj = {};
         var me = bg;
         var { log_storage } = me;
 
-        for (var url in local_obj) {
-            var title = url;
-            var data_in_url = url[title];
+        if (!version) {
+            for (var url in local_obj) {
+                var title = url;
+                var data_in_url = url[title];
 
-            for (var id in data_in_url) {
-                if (id.includes('length')) continue;
+                for (var id in data_in_url) {
+                    if (id.includes('length')) continue;
 
-                var time = getDate(new Date());
-                var key = `${time} ${title} ${id}`;
-                var type = id.includes('w-') ? 'WYSIWYG' : 'txt';
-                var { val } = data_in_url[id];
+                    var time = _getTime(new Date());
+                    var key = `${time} ${title} ${id}`;
+                    var type = id.includes('w-') ? 'WYSIWYG' : 'txt';
+                    var { val } = data_in_url[id];
 
-                new_local_obj.version = '2';
-                new_local_obj[key] = {
-                    type: type,
-                    val: val
-                };
-                browser.storage.local.set(new_local_obj);
-                log_storage();
+                    new_local_obj.version = '3';
+                    new_local_obj[key] = {
+                        time: new Date(),
+                        type: type,
+                        val: val
+                    };
+                    browser.storage.local.set(new_local_obj);
+                    log_storage();
+                }
             }
         }
+        else if (version == '2') {
+            var new_obj = {
+                version: '3'
+            };
+            delete local_obj.version;
+
+            for (var key in local_obj) {
+                var new_val = local_obj[key];
+                var key_arr = key.split(' ');
+                var time_arr = key_arr[0].split('/');
+                var month = parseInt(time_arr[1]) + 1;
+
+                new_val.time = new Date();
+                key_arr[0] = `${time_arr[0]}/${month}/${time_arr[2]}`;
+                new_obj[key_arr.join(' ')] = new_val;
+            }
+            browser.storage.local.clear();
+            browser.storage.local.set(new_obj);
+            log_storage();
+        }
+
     },
 
     getOptions: (request, sendBack) => {
@@ -94,7 +118,7 @@ var bg = {
     },
 
     _getTime: date => {
-        var date_str = date.getFullYear() + '/' + date.getMonth() + '/' + date.getDate();
+        var date_str = date.getFullYear() + '/' + (parseInt(date.getMonth()) + 1) + '/' + date.getDate();
         return date_str;
     },
 
@@ -127,6 +151,7 @@ var bg = {
 
                         local_obj.version = VERSION;
                         local_obj[key] = {
+                            time: new Date(),
                             type: type,
                             val: val
                         };
