@@ -130,6 +130,14 @@ var bg = {
                             type: type,
                             val: val
                         };
+
+                        // clear unnessary data when saving
+                        for (var cache_key in local_obj) {
+                            if (cache_key !== 'version' && local_obj[cache_key].val.length == 0) {
+                                delete local_obj[cache_key];
+                            }
+                        }
+
                         browser.storage.local.set(local_obj);
                         log_storage();
                     }).catch(e => console.warn(e));
