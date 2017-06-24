@@ -152,6 +152,7 @@ var bg = {
                     browser.storage.local.get().then( local_obj => {
                         me._hackForStorage(local_obj);
                         var {setting} = local_obj;
+                        var {browserAction, pageAction} = setting;
 
                         if (browserAction) {
                             // can't hide ...
