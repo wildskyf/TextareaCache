@@ -31,6 +31,15 @@ var bg = {
         browser.storage.local.get().then( local_obj => {
             me._hackForStorage(local_obj);
 
+            if (Object.keys(local_obj).length === 0 && local_obj.constructor === Object) {
+                // if obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+                local_obj = {
+                    version: me.VERSION,
+                    setting: {}
+                }
+                browser.storage.local.set(local_obj);
+            }
+
             if (!local_obj.version || local_obj.version !== me.VERSION) {
                 me._fallback(local_obj, local_obj.version);
             }

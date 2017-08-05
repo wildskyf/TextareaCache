@@ -74,7 +74,7 @@ window.onload = () => {
 		    tmp_array.push(tmp_data);
 		}
 
-        tmp_array.forEach(one_data => {
+        tmp_array.reverse().forEach(one_data => {
             var type = one_data.type;
             var cache = one_data.val;
 
