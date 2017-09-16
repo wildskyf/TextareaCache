@@ -9,10 +9,10 @@ var setBodyEmpty = () => {
 
 window.onload = () => {
     var whole_data = null;
-	browser.runtime.sendMessage({
-		behavior: 'load'
-	}).then( ( resObj => {
-		if (!(resObj && resObj.data)) return false;
+    browser.runtime.sendMessage({
+        behavior: 'load'
+    }).then( ( resObj => {
+        if (!(resObj && resObj.data)) return false;
         whole_data = resObj.data;
         if (Object.keys(whole_data).length <= 2) {
             // Note: there are 2 default keys: version, setting
@@ -20,56 +20,56 @@ window.onload = () => {
             return false;
         }
 
-		var selector   = document.querySelector('#cache_seletor');
-		var show_cache = document.querySelector('#show_cache');
-		var copy_btn   = document.querySelector('#copy_btn');
-		var delete_btn = document.querySelector('#delete_btn');
+        var selector   = document.querySelector('#cache_seletor');
+        var show_cache = document.querySelector('#show_cache');
+        var copy_btn   = document.querySelector('#copy_btn');
+        var delete_btn = document.querySelector('#delete_btn');
 
-		var escapeHTML = str => str.toString().replace(/[&"'<>]/g, m => ({
-			"&": "&amp;",
-			'"': "&quot;",
-			"'": "&#39;",
-			"<": "&lt;",
-			">": "&gt;"
-		})[m]);
+        var escapeHTML = str => str.toString().replace(/[&"'<>]/g, m => ({
+            "&": "&amp;",
+            '"': "&quot;",
+            "'": "&#39;",
+            "<": "&lt;",
+            ">": "&gt;"
+        })[m]);
 
-		var selectText = dom  => {
-			if (document.selection) {
-				var range = document.body.createTextRange();
-				range.moveToElementText(dom);
-				range.select();
-			}
-			else if (window.getSelection) {
-				var range = document.createRange();
-				range.selectNode(dom);
-				window.getSelection().addRange(range);
-			}
-		};
+        var selectText = dom  => {
+            if (document.selection) {
+                var range = document.body.createTextRange();
+                range.moveToElementText(dom);
+                range.select();
+            }
+            else if (window.getSelection) {
+                var range = document.createRange();
+                range.selectNode(dom);
+                window.getSelection().addRange(range);
+            }
+        };
 
-		var showPreview = (isWYSIWYG, val) => {
-			// val is used to show preview of WYSIWYG,
-			// so it should not be escaped.
-			//
-			// for security issues, I will remove all <script> & </script> tag
+        var showPreview = (isWYSIWYG, val) => {
+            // val is used to show preview of WYSIWYG,
+            // so it should not be escaped.
+            //
+            // for security issues, I will remove all <script> & </script> tag
 
-			if (isWYSIWYG) {
-				show_cache.type = 'WYSIWYG';
-				val = val.replace(/<script.*>.*<\/script.*>/g, '');
-				show_cache.innerHTML = val;
-			}
-			else {
-				show_cache.type = 'txt';
-				var text = document.createTextNode(val);
-				var textarea = document.createElement('textarea');
+            if (isWYSIWYG) {
+                show_cache.type = 'WYSIWYG';
+                val = val.replace(/<script.*>.*<\/script.*>/g, '');
+                show_cache.innerHTML = val;
+            }
+            else {
+                show_cache.type = 'txt';
+                var text = document.createTextNode(val);
+                var textarea = document.createElement('textarea');
                 textarea.appendChild(text);
                 show_cache.innerHTML = '';
-				show_cache.appendChild(textarea);
-			}
-		};
+                show_cache.appendChild(textarea);
+            }
+        };
 
 
         var tmp_array = []; // for reverse the order of saved cache
-		for (var key in whole_data) {
+        for (var key in whole_data) {
             if (!whole_data[key] || key == 'version' || key == 'setting') continue;
             var tmp_data = whole_data[key];
             tmp_data.key = key;
@@ -98,24 +98,24 @@ window.onload = () => {
             }
         });
 
-		selector.addEventListener('change', e => {
-			var key = e.target.value;
-			var cache = whole_data[key].val;
-			var isWYSIWYG = whole_data[key].type == 'WYSIWYG';
+        selector.addEventListener('change', e => {
+            var key = e.target.value;
+            var cache = whole_data[key].val;
+            var isWYSIWYG = whole_data[key].type == 'WYSIWYG';
 
-			showPreview(isWYSIWYG, cache);
-		});
+            showPreview(isWYSIWYG, cache);
+        });
 
-		copy_btn.addEventListener('click', () => {
-			if (show_cache.type == 'WYSIWYG') {
-				selectText(show_cache);
-			}
-			else {
-				document.querySelector("textarea").select();
-			}
-			document.execCommand("Copy");
-			// alert('You got it, now put your cache anyway!');
-		});
+        copy_btn.addEventListener('click', () => {
+            if (show_cache.type == 'WYSIWYG') {
+                selectText(show_cache);
+            }
+            else {
+                document.querySelector("textarea").select();
+            }
+            document.execCommand("Copy");
+            // alert('You got it, now put your cache anyway!');
+        });
 
 
         delete_all_btn.addEventListener('click', () => {
@@ -149,5 +149,5 @@ window.onload = () => {
                 showPreview(isWYSIWYG, cache);
             });
         });
-	}));
+    }));
 }
