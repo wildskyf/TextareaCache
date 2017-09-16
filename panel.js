@@ -67,22 +67,27 @@ window.onload = () => {
 			}
 		};
 
-        var tmp_array = [];
+
+        var tmp_array = []; // for reverse the order of saved cache
 		for (var key in whole_data) {
             if (!whole_data[key] || key == 'version' || key == 'setting') continue;
-		    var tmp_data = whole_data[key];
-		    tmp_data.key = key;
-		    tmp_array.push(tmp_data);
-		}
+            var tmp_data = whole_data[key];
+            tmp_data.key = key;
+            tmp_array.push(tmp_data);
+        }
 
         tmp_array.reverse().forEach(one_data => {
             var type = one_data.type;
             var cache = one_data.val;
+            var txt = one_data.key.split(" ");
+            txt.pop(); // hide the serial number
+            txt = txt.join(' ');
 
-            var text = document.createTextNode(one_data.key);
+            var text = document.createTextNode(txt);
             var option = document.createElement('option');
             option.appendChild(text);
             option.value = one_data.key;
+
             selector.appendChild(option);
 
             if (show_cache.innerHTML == '')

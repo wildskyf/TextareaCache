@@ -103,7 +103,7 @@ var bg = {
         browser.storage.local.get().then( local_obj => {
             me._hackForStorage(local_obj);
             var {setting} = local_obj;
-            me.isDEV = !!setting.debug;
+            me.isDEV = !!(setting && setting.debug);
         }).catch(e => console.warn(e));
     },
 
