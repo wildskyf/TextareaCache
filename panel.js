@@ -14,7 +14,8 @@ window.onload = () => {
 	}).then( ( resObj => {
 		if (!(resObj && resObj.data)) return false;
         whole_data = resObj.data;
-        if (Object.keys(whole_data).length <= 1) {
+        if (Object.keys(whole_data).length <= 2) {
+            // Note: there are 2 default keys: version, setting
             setBodyEmpty();
             return false;
         }
