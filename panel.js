@@ -87,6 +87,7 @@ window.onload = () => {
             var option = document.createElement('option');
             option.appendChild(text);
             option.value = one_data.key;
+            option.title = `${one_data.key}\n(${one_data.url})\n\n${one_data.val.substr(0,40)}...`;
 
             selector.appendChild(option);
 

@@ -180,17 +180,18 @@ var bg = {
                     if (isDEV) console.log('bg_save');
                     browser.storage.local.get().then( local_obj => {
                         me._hackForStorage(local_obj);
-                        var {title, val, type, id} = request;
+                        var {title, val, type, id, url} = request;
                         var time = _getTime(new Date());
                         var key = `${time} ${title} ${id}`;
 
-                        if (isDEV) console.table({ key: key, val: val, type: type });
+                        if (isDEV) console.table({ key: key, val: val, type: type, url: url });
 
                         local_obj.version = VERSION;
                         local_obj[key] = {
                             time: new Date(),
                             type: type,
-                            val: val
+                            val: val,
+                            url: url
                         };
 
                         // clear unnessary data when saving

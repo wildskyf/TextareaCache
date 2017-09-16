@@ -71,6 +71,7 @@ var tcl = {
                 browser.runtime.sendMessage({
                     behavior: 'save',
                     title: document.title,
+                    url: location.href,
                     val: ta.value,
                     id: i,
                     type: 'txt'
