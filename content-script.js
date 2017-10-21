@@ -2,99 +2,85 @@
 
 var tcl = {
     isDEV: false,
-    textareas: null,
-    wysiwyg_editors: null,
 
     init: () => {
         var me = tcl;
-
-        me.textareas = Array.from(document.querySelectorAll('textarea')),
-        me.wysiwyg_editors = Array.from(document.querySelectorAll('[contenteditable="true"]')),
-        me.initToBackgroundScript();
-        me.addEventListener();
-        me.connectBackgroundWhenChanged();
+        tcl.initDBTable();
+        document.querySelectorAll('textarea, [contentEditable]').forEach( (ta, i) => {
+            ta.classList.add('ta-textContent');
+            ta.dataset.id = ta.tagName == "TEXTAREA" ? i : `w-${i}`;
+        });
+        document.querySelectorAll('.ta-textContent').forEach( ta => {
+            ta.addEventListener('focus', event => {
+                me.isDEV && console.log('add eventlistener');
+                event.target.addEventListener('keyup', me.saveToStorage);
+            });
+            ta.addEventListener('blur', event => {
+                me.isDEV && console.log('rm eventlistener');
+                event.target.removeEventListener('keyup', me.saveToStorage);
+            });
+        });
     },
 
-    initToBackgroundScript: () => {
-        var me = tcl;
-        var {textareas,wysiwyg_editors,isDEV} = me;
+    initDBTable: () => {
+        browser.runtime.sendMessage({
+            behavior: 'init',
+            title: document.title,
+            url: location.href
+        });
+    },
 
-        if (textareas.length || wysiwyg_editors.length) {
-            if (isDEV) console.log('sendMessage init');
-            browser.runtime.sendMessage({
-                behavior: 'init',
-                title: document.title,
-                url: location.href
+    getContent: target => {
+        if (target.tagName == "TEXTAREA") {
+            // textarea
+            // console.log('textarea');
+            return {
+                val: target.value,
+                isWYSIWYG: false
+            };
+        }
+        else if (target.contentEditable) {
+            // WYSIWYG
+            // console.log('WYSIWYG');
+
+            let dp = new DOMParser();
+            let bodyNode = target.cloneNode(true);
+            let doc = dp.parseFromString(bodyNode.innerHTML, "text/html");
+
+            while (bodyNode.firstChild) {
+                bodyNode.removeChild(bodyNode.firstChild);
+            }
+            doc.body.childNodes.forEach( childNode => {
+                let newNode = childNode.cloneNode(true);
+                bodyNode.appendChild(newNode);
             });
+
+            /*
+             * raw data ===>     bodyNode
+             * save data ===>    bodyNode.outerHTML
+             * output data ===>  dp.parseFromString(bodyNode.outerHTML, "text/html")
+             */
+
+            return {
+                val: bodyNode.outerHTML,
+                isWYSIWYG: true
+            };
         }
     },
 
-    _multiEventBinding: (target, event_array, callback) => {
-        event_array.forEach(event => {
-            target.addEventListener(event, e => {
-                callback();
-            });
+    saveToStorage: event => {
+        var save_info = tcl.getContent(event.target);
+
+        browser.runtime.sendMessage({
+            behavior: 'save',
+            title: document.title,
+            url: location.href,
+            val: save_info.val,
+            id: event.target.dataset.id,
+            type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt'
         });
-    },
-
-    addEventListener: () => {
-        var me = tcl;
-        var {textareas,wysiwyg_editors,isDEV} = me;
-
-        textareas.length && textareas.forEach( (ta, i) => {
-            me._multiEventBinding(ta, ['input', 'focusout'], e => {
-                if (ta.changed) return;
-                if (isDEV) console.log('textarea changed');
-                ta.changed = true;
-            });
-        });
-
-        wysiwyg_editors.length && wysiwyg_editors.forEach( (editor, i) => {
-            me._multiEventBinding(editor, ['click', 'keydown', 'keypress', 'keyup', 'focusout'], e => {
-                if (editor.changed) return;
-                if (isDEV) console.log('iframe changed');
-                editor.changed = true;
-            });
-        });
-
-    },
-
-    connectBackgroundWhenChanged: () => {
-        var me = tcl;
-        var {textareas,wysiwyg_editors,isDEV} = me;
-
-        window.setInterval(() => {
-
-            textareas.forEach( (ta, i) => {
-                if (!ta.changed) return;
-                if (isDEV) console.log('save');
-                browser.runtime.sendMessage({
-                    behavior: 'save',
-                    title: document.title,
-                    url: location.href,
-                    val: ta.value,
-                    id: i,
-                    type: 'txt'
-                });
-                ta.changed = false;
-            });
-
-            wysiwyg_editors.forEach( (editor, i) => {
-                if (!editor.changed) return;
-                browser.runtime.sendMessage({
-                    behavior: 'save',
-                    title: document.title,
-                    val: editor.innerHTML,
-                    id: 'w-' + i,
-                    type: 'WYSIWYG'
-                });
-                editor.changed = false;
-            });
-
-        }, 2000);
-
     }
-
 };
+
 tcl.init();
 
