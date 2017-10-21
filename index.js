@@ -6,9 +6,20 @@ var bg = {
 
     init: () => {
         var me = bg;
+        me.showUpdateLog();
         me.checkStorageVersion();
         me.applyOptions();
         me.onMessage();
+    },
+
+    showUpdateLog: () => {
+        browser.runtime.onInstalled.addListener( details => {
+            if (details.reason !== "update") return;
+
+            browser.tabs.create({
+                url: browser.runtime.getURL('./letter.html')
+            });
+        });
     },
 
     _hackForStorage: obj => {

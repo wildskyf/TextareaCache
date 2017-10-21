@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A letter for you</title>
+    <style>
+        body {
+            background: #eee;
+            color: #555;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 16px;
+        }
+        h1 {
+            background: #fff;
+            box-sizing: border-box;
+            display: inline-block;
+            font-size: 2rem;
+            font-weight: 100;
+            margin: 1rem auto 1.5rem;
+            padding: 1rem;
+            width: 980px;
+        }
+        #content {
+            background: #fff;
+            box-sizing: border-box;
+            color: #000;
+            font-weight: 100;
+            line-height: 1.5rem;
+            margin: auto;
+            padding: 1rem 3rem;
+            text-align: left;
+            width: 980px;
+        }
+        #content::after {
+            content: '';
+            clear: both;
+            display: block;
+        }
+        #content p {
+            margin-bottom: 2rem;
+        }
+        .float-right {
+            clear: both;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hi, Thank you for using Textarea Cache</h1>
+    <div id="content">
+        <p>Hi, my dear user. Thanks for your patience. :)</p>
+        <p>I am sorry that I haven't updated Textarea Cache for a long time.
+        The reason why I was absent is that I was fulfilling my mandatory
+        military service. But I finished it on 10/21. So I am going to
+        keep developing this add-on. If you have any problem, question, or
+        idea, feel free to leave an issue on GitHub or send me an email.</p>
+        <span class="float-right">Thank you again,</span>
+        <span class="float-right">Wildsky Fann</span>
+    </div>
+</body>
+</html>
