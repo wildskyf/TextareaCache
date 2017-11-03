@@ -71,6 +71,8 @@ var tcl = {
     saveToStorage: event => {
         var save_info = tcl.getContent(event.target);
 
+        if (tcl.strip(save_info.val).length == 0) return;
+
         browser.runtime.sendMessage({
             behavior: 'save',
             title: document.title,
@@ -79,6 +81,12 @@ var tcl = {
             id: event.target.dataset.id,
             type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt'
         });
+    },
+
+    strip: html => {
+       var tmp = document.createElement("DIV");
+       tmp.innerHTML = html;
+       return tmp.textContent || tmp.innerText || "";
     }
 };
 
