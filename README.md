@@ -3,7 +3,7 @@ Save automatically the content in Textarea.
 
 ## install
 
-Please go to [AMO](https://addons.mozilla.org/en-US/firefox/addon/textarea-cache-lite) to install Textarea Cache Lite.
+Please go to [AMO](https://addons.mozilla.org/en-US/firefox/addon/textarea-cache) to install Textarea Cache.
 
 ## develop
 
