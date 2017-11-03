@@ -191,15 +191,14 @@ var bg = {
                     if (isDEV) console.log('bg_save');
                     browser.storage.local.get().then( local_obj => {
                         me._hackForStorage(local_obj);
-                        var {title, val, type, id, url} = request;
-                        var time = _getTime(new Date());
-                        var key = `${time} ${title} ${id}`;
+                        var {title, val, type, id, url, sessionKey} = request;
+                        var key = `${sessionKey} ${title} ${id}`;
 
                         if (isDEV) console.table({ key: key, val: val, type: type, url: url });
 
                         local_obj.version = VERSION;
                         local_obj[key] = {
-                            time: new Date(),
+                            time: sessionKey,
                             type: type,
                             val: val,
                             url: url

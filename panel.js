@@ -7,6 +7,21 @@ var setBodyEmpty = () => {
     document.body.appendChild(textnode);
 };
 
+var formatDate = key => {
+    var timestamp = key.split(' ')[0];
+    var tmp_key_array = key.split(' ').reverse();
+    tmp_key_array.pop();
+    var else_info = tmp_key_array.reverse().join(' ');
+    if (!timestamp.includes('/')) {
+        var origin_date = new Date(Number(timestamp));
+        var year = origin_date.getFullYear();
+        var month = origin_date.getMonth()+1;
+        var day = origin_date.getDate();
+        timestamp = `${year}/${month}/${day}`;
+    }
+    return timestamp + ' ' + else_info;
+};
+
 window.onload = () => {
     var whole_data = null;
     browser.runtime.sendMessage({
@@ -79,16 +94,14 @@ window.onload = () => {
         tmp_array.reverse().forEach(one_data => {
             var type = one_data.type;
             var cache = one_data.val;
-            var txt = one_data.key.split(" ");
+            var txt = formatDate(one_data.key).split(" ");
             txt.pop(); // hide the serial number
             txt = txt.join(' ');
 
-            var text = document.createTextNode(txt);
             var option = document.createElement('option');
-            option.appendChild(text);
+            option.textContent = txt; // todo: remove date stamp
             option.value = one_data.key;
-            console.log(1111111, one_data);
-            option.title = `${one_data.key}\n(${one_data.url})\n\n${one_data.val.substr(0,40)}...`;
+            option.title = `${formatDate(one_data.key)}\n(${one_data.url})\n\n${one_data.val.substr(0,40)}...`;
 
             selector.appendChild(option);
 

@@ -2,6 +2,7 @@
 
 var tcl = {
     isDEV: false,
+    sessionKey: null,
 
     exceptWebsites: [
         "docs.google.com/spreadsheets"
@@ -11,6 +12,7 @@ var tcl = {
         var me = tcl;
         if (!tcl.checkEnable()) return;
         tcl.initDBTable();
+        tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
         document.querySelectorAll('textarea, [contentEditable]').forEach( (ta, i) => {
             ta.classList.add('ta-textContent');
             ta.dataset.id = ta.tagName == "TEXTAREA" ? i : `w-${i}`;
@@ -92,7 +94,8 @@ var tcl = {
             url: location.href,
             val: save_info.val,
             id: event.target.dataset.id,
-            type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt'
+            type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt',
+            sessionKey: tcl.sessionKey
         });
     },
 
