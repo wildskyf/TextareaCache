@@ -44,7 +44,7 @@
   ],
 
   "background": {
-    "scripts": ["index.js"]
+    "scripts": ["background.js"]
   },
 
   "options_ui": {
