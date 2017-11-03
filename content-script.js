@@ -3,8 +3,13 @@
 var tcl = {
     isDEV: false,
 
+    exceptWebsites: [
+        "docs.google.com/spreadsheets"
+    ],
+
     init: () => {
         var me = tcl;
+        if (!tcl.checkEnable()) return;
         tcl.initDBTable();
         document.querySelectorAll('textarea, [contentEditable]').forEach( (ta, i) => {
             ta.classList.add('ta-textContent');
@@ -20,6 +25,14 @@ var tcl = {
                 event.target.removeEventListener('keyup', me.saveToStorage);
             });
         });
+    },
+
+    checkEnable: () => {
+        var url = location.href;
+        for (var site of tcl.exceptWebsites) {
+            if (url.includes(site)) return false;
+        }
+        return true;
     },
 
     initDBTable: () => {
