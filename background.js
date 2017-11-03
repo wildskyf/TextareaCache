@@ -13,6 +13,8 @@ var bg = {
     },
 
     showUpdateLog: () => {
+        return;
+
         browser.runtime.onInstalled.addListener( details => {
             if (details.reason !== "update") return;
 
