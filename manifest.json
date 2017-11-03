@@ -8,7 +8,7 @@
 
   "manifest_version": 2,
   "name": "Textarea Cache",
-  "version": "2.7.0",
+  "version": "2.8.0",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
