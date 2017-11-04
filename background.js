@@ -101,7 +101,7 @@ var bg = {
         var me = bg;
         browser.storage.local.get().then( local_obj => {
             var {setting} = local_obj;
-            if (sendBack) sendBack({ setting: setting });
+            if (sendBack) sendBack(setting);
         }).catch(e => console.warn(e));
         return true;
     },
