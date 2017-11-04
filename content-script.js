@@ -83,10 +83,12 @@ var tcl = {
         }
     },
 
+    _strip: html => html.replace(/<(?:.|\n)*?>/gm, ''),
+
     saveToStorage: event => {
         var save_info = tcl.getContent(event.target);
 
-        if (tcl.strip(save_info.val).length == 0) return;
+        if (tcl._strip(save_info.val).length == 0) return;
 
         browser.runtime.sendMessage({
             behavior: 'save',
@@ -97,12 +99,6 @@ var tcl = {
             type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt',
             sessionKey: tcl.sessionKey
         });
-    },
-
-    strip: html => {
-       var tmp = document.createElement("DIV");
-       tmp.innerHTML = html;
-       return tmp.textContent || tmp.innerText || "";
     }
 };
 
