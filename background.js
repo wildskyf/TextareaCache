@@ -198,20 +198,12 @@ var bg = {
 
                         if (isDEV) console.table({ key: key, val: val, type: type, url: url });
 
-                        local_obj.version = VERSION;
                         local_obj[key] = {
                             time: sessionKey,
                             type: type,
                             val: val,
                             url: url
                         };
-
-                        // clear unnessary data when saving
-                        for (var cache_key in local_obj) {
-                            if (cache_key !== 'version' && cache_key !== 'setting' && local_obj[cache_key].val.length == 0) {
-                                delete local_obj[cache_key];
-                            }
-                        }
 
                         browser.storage.local.set(local_obj);
                         log_storage();
