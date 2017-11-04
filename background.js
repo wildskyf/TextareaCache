@@ -6,35 +6,14 @@ var bg = {
 
     init: () => {
         var me = bg;
-        me.showUpdateLog();
         me.checkStorageVersion();
         me.applyOptions();
         me.onMessage();
     },
 
-    showUpdateLog: () => {
-        return;
-
-        browser.runtime.onInstalled.addListener( details => {
-            if (details.reason !== "update") return;
-
-            browser.tabs.create({
-                url: browser.runtime.getURL('./letter.html')
-            });
-        });
-    },
-
-    _hackForStorage: obj => {
-        // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/storage/StorageArea/get#Return_value
-        if ((typeof obj.length === 'number') && (obj.length > 0)) {
-            obj = obj[0];
-        }
-    },
-
     log_storage: () => {
         var me = bg;
         browser.storage.local.get().then( thing => {
-            me._hackForStorage(thing);
             if (me.isDEV) console.log(thing);
         });
     },
@@ -42,7 +21,6 @@ var bg = {
     checkStorageVersion: () => {
         var me = bg;
         browser.storage.local.get().then( local_obj => {
-            me._hackForStorage(local_obj);
 
             if (Object.keys(local_obj).length === 0 && local_obj.constructor === Object) {
                 // if obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
@@ -114,7 +92,6 @@ var bg = {
     applyOptions: () => {
         var me = bg;
         browser.storage.local.get().then( local_obj => {
-            me._hackForStorage(local_obj);
             var {setting} = local_obj;
             me.isDEV = !!(setting && setting.debug);
         }).catch(e => console.warn(e));
@@ -123,7 +100,6 @@ var bg = {
     getOptions: (request, sendBack) => {
         var me = bg;
         browser.storage.local.get().then( local_obj => {
-            me._hackForStorage(local_obj);
             var {setting} = local_obj;
             if (sendBack) sendBack({ setting: setting });
         }).catch(e => console.warn(e));
@@ -135,7 +111,6 @@ var bg = {
         var { log_storage } = me;
 
         browser.storage.local.get().then( local_obj => {
-            me._hackForStorage(local_obj);
             log_storage();
             if (local_obj.setting === undefined) {
                 if (me.isDEV) console.log('creating setting');
@@ -172,7 +147,6 @@ var bg = {
                     if (isDEV) console.log('bg_init');
 
                     browser.storage.local.get().then( local_obj => {
-                        me._hackForStorage(local_obj);
                         var {setting} = local_obj;
                         var {browserAction, pageAction} = setting;
 
@@ -192,7 +166,6 @@ var bg = {
                 case 'save':
                     if (isDEV) console.log('bg_save');
                     browser.storage.local.get().then( local_obj => {
-                        me._hackForStorage(local_obj);
                         var {title, val, type, id, url, sessionKey} = request;
                         var key = `${sessionKey} ${title} ${id}`;
 
@@ -213,7 +186,6 @@ var bg = {
                     if (isDEV) console.log('bg_load');
 
                     browser.storage.local.get().then( data => {
-                        me._hackForStorage(data);
                         sendBack({ data: data });
                     });
 
