@@ -33,20 +33,23 @@ var tcl = {
 
     attachEvents: () => {
         var me = tcl;
-
         var allTxtCnt = document.querySelectorAll('.ta-textContent');
 
         allTxtCnt.forEach( ta => {
             me.isDEV && console.log('ta-txtcnt-event');
-            ta.addEventListener('focus', event => {
-                me.isDEV && console.log('ta-event-fire-focus');
-                event.target.addEventListener('keyup', me.saveToStorage);
-            });
 
-            ta.addEventListener('blur', event => {
-                me.isDEV && console.log('ta-event-fire-blur');
-                event.target.removeEventListener('keyup', me.saveToStorage);
-            });
+            var saveFunction = {
+                add: event => {
+                    me.isDEV && console.log('ta-event-fire-focus', event);
+                    event.target.addEventListener('keyup', me.saveToStorage);
+                },
+                remove: event => {
+                    me.isDEV && console.log('ta-event-fire-blur');
+                    event.target.removeEventListener('keyup', me.saveToStorage);
+                }
+            };
+            ta.onfocus = saveFunction.add;
+            ta.onblur  = saveFunction.remove;
         });
     },
 
