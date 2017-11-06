@@ -4,34 +4,66 @@ var tcl = {
     isDEV: false,
     sessionKey: null,
 
-    exceptWebsites: [
+    cache_rule: [
+        "textarea",
+        "iframe",
+        "[contentEditable]",
+        "[role='textbox']",
+        "[aria-multiline='true']"
+    ],
+
+    except_websites: [
         "docs.google.com/spreadsheets"
     ],
 
-    init: () => {
+    findTextContents: () => {
         var me = tcl;
-        if (!tcl.checkEnable()) return;
-        tcl.initDBTable();
-        tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
-        document.querySelectorAll('textarea, [contentEditable]').forEach( (ta, i) => {
+
+        document.querySelectorAll(me.cache_rule.join(',')).forEach( (ta, i) => {
+            me.isDEV && console.log('ta-class-append');
+            var isTEXTAREA = ta.tagName == "TEXTAREA";
             ta.classList.add('ta-textContent');
-            ta.dataset.id = ta.tagName == "TEXTAREA" ? i : `w-${i}`;
+            ta.dataset.id = isTEXTAREA ? i : `w-${i}`;
         });
-        document.querySelectorAll('.ta-textContent').forEach( ta => {
+        document.querySelectorAll('.ta-textContent .ta-textContent').forEach(dom => {
+            me.isDEV && console.log('ta-rm-duplicate');
+            dom.classList.remove('ta-textContent');
+        });
+    },
+
+    attachEvents: () => {
+        var me = tcl;
+
+        var allTxtCnt = document.querySelectorAll('.ta-textContent');
+
+        allTxtCnt.forEach( ta => {
+            me.isDEV && console.log('ta-txtcnt-event');
             ta.addEventListener('focus', event => {
-                me.isDEV && console.log('add eventlistener');
+                me.isDEV && console.log('ta-event-fire-focus');
                 event.target.addEventListener('keyup', me.saveToStorage);
             });
+
             ta.addEventListener('blur', event => {
-                me.isDEV && console.log('rm eventlistener');
+                me.isDEV && console.log('ta-event-fire-blur');
                 event.target.removeEventListener('keyup', me.saveToStorage);
             });
         });
     },
 
+    init: () => {
+        var me = tcl;
+        me.isDEV && console.log('ta-init');
+
+        if (!tcl.checkEnable()) return;
+        tcl.initDBTable();
+        tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
+        tcl.findTextContents();
+        tcl.attachEvents();
+    },
+
     checkEnable: () => {
         var url = location.href;
-        for (var site of tcl.exceptWebsites) {
+        for (var site of tcl.except_websites) {
             if (url.includes(site)) return false;
         }
         return true;
