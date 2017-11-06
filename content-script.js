@@ -127,7 +127,7 @@ var tcl = {
 
         browser.runtime.sendMessage({
             behavior: 'save',
-            title: document.title,
+            title: window.parent.document.title,
             url: location.href,
             val: save_info.val,
             id: event.target.dataset.id,
