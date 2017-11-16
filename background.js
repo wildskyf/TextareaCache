@@ -40,7 +40,7 @@ var bg = {
     _fallback: (local_obj, version) => {
         var new_local_obj = {};
         var me = bg;
-        var { log_storage } = me;
+        var { log_storage, _getTime } = me;
 
         if (!version) {
             for (var url in local_obj) {
@@ -72,9 +72,9 @@ var bg = {
             };
             delete local_obj.version;
 
-            for (var key in local_obj) {
-                var new_val = local_obj[key];
-                var key_arr = key.split(' ');
+            for (var obj_key in local_obj) {
+                var new_val = local_obj[obj_key];
+                var key_arr = obj_key.split(' ');
                 var time_arr = key_arr[0].split('/');
                 var month = parseInt(time_arr[1]) + 1;
 
@@ -98,7 +98,6 @@ var bg = {
     },
 
     getOptions: (request, sendBack) => {
-        var me = bg;
         browser.storage.local.get().then( local_obj => {
             var {setting} = local_obj;
             if (sendBack) sendBack(setting);
@@ -131,88 +130,88 @@ var bg = {
 
     onMessage: () => {
         var me = bg;
-        var {_getTime, log_storage, VERSION, isDEV} = me;
+        var {log_storage, isDEV} = me;
 
         browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
 
             if (isDEV) console.log('bg_get_request', request.behavior);
             switch(request.behavior) {
-                case 'set_options':
-                    me.setOptions(request, sendBack);
-                    break;
-                case 'get_options':
-                    me.getOptions(request, sendBack);
-                    break;
-                case 'init':
-                    if (isDEV) console.log('bg_init');
+            case 'set_options':
+                me.setOptions(request, sendBack);
+                break;
+            case 'get_options':
+                me.getOptions(request, sendBack);
+                break;
+            case 'init':
+                if (isDEV) console.log('bg_init');
 
-                    browser.storage.local.get().then( local_obj => {
-                        var {setting} = local_obj;
-                        var {browserAction, pageAction} = setting;
+                browser.storage.local.get().then( local_obj => {
+                    var {setting} = local_obj;
+                    var {browserAction, pageAction} = setting;
 
-                        if (browserAction) {
-                            // can't hide ...
-                        }
+                    if (browserAction) {
+                        // can't hide ...
+                    }
 
-                        if (pageAction) {
-                            browser.tabs.query({ url: request.url }).then(tab_infos => {
-                                tab_infos.forEach(tab_info => {
-                                    browser.pageAction.show(tab_info.id);
-                                });
-                            }).catch(e => console.warn(e));
-                        }
-                    }).catch(e => console.warn(e));
-                    break;
-                case 'save':
-                    if (isDEV) console.log('bg_save');
-                    browser.storage.local.get().then( local_obj => {
-                        var {title, val, type, id, url, sessionKey} = request;
-                        var key = `${sessionKey} ${title} ${id}`;
-
-                        if (isDEV) console.table({ key: key, val: val, type: type, url: url });
-
-                        local_obj[key] = {
-                            time: sessionKey,
-                            type: type,
-                            val: val,
-                            url: url
-                        };
-
-                        browser.storage.local.set(local_obj);
-                        log_storage();
-                    }).catch(e => console.warn(e));
-                    break;
-                case 'load':
-                    if (isDEV) console.log('bg_load');
-
-                    browser.storage.local.get().then( data => {
-                        sendBack({ data: data });
-                    });
-
-                    break;
-                case 'delete':
-                    if (isDEV) console.log('bg_delete');
-                    browser.storage.local.remove(request.id).then(() => {
-                        browser.storage.local.get().then( data => {
-                            sendBack({ done: 1, deleted: request.id, data: data});
-                        });
-                    });
-                    break;
-                case 'clear':
-                    if (isDEV) console.log('bg_clear');
-                    browser.storage.local.get().then( local_obj => {
-                        var old_obj = Object.assign({}, local_obj);
-                        browser.storage.local.clear().then( () => {
-                            browser.storage.local.set({
-                                version: old_obj.version,
-                                setting: old_obj.setting
-                            }).then( () => {
-                                log_storage();
-                                sendBack({ msg: 'done'});
+                    if (pageAction) {
+                        browser.tabs.query({ url: request.url }).then(tab_infos => {
+                            tab_infos.forEach(tab_info => {
+                                browser.pageAction.show(tab_info.id);
                             });
                         }).catch(e => console.warn(e));
+                    }
+                }).catch(e => console.warn(e));
+                break;
+            case 'save':
+                if (isDEV) console.log('bg_save');
+                browser.storage.local.get().then( local_obj => {
+                    var {title, val, type, id, url, sessionKey} = request;
+                    var key = `${sessionKey} ${title} ${id}`;
+
+                    if (isDEV) console.table({ key: key, val: val, type: type, url: url });
+
+                    local_obj[key] = {
+                        time: sessionKey,
+                        type: type,
+                        val: val,
+                        url: url
+                    };
+
+                    browser.storage.local.set(local_obj);
+                    log_storage();
+                }).catch(e => console.warn(e));
+                break;
+            case 'load':
+                if (isDEV) console.log('bg_load');
+
+                browser.storage.local.get().then( data => {
+                    sendBack({ data: data });
+                });
+
+                break;
+            case 'delete':
+                if (isDEV) console.log('bg_delete');
+                browser.storage.local.remove(request.id).then(() => {
+                    browser.storage.local.get().then( data => {
+                        sendBack({ done: 1, deleted: request.id, data: data});
                     });
-                    break;
+                });
+                break;
+            case 'clear':
+                if (isDEV) console.log('bg_clear');
+                browser.storage.local.get().then( local_obj => {
+                    var old_obj = Object.assign({}, local_obj);
+                    browser.storage.local.clear().then( () => {
+                        browser.storage.local.set({
+                            version: old_obj.version,
+                            setting: old_obj.setting
+                        }).then( () => {
+                            log_storage();
+                            sendBack({ msg: 'done'});
+                        });
+                    }).catch(e => console.warn(e));
+                });
+                break;
             }
 
             return true;

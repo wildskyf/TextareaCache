@@ -35,30 +35,32 @@ var panel = {
         // so it should not be escaped.
         //
         // for security issues, I will remove all <script> & </script> tag
+        var me = panel;
 
         if (isWYSIWYG) {
-            $show_cache.type = 'WYSIWYG';
+            me.$show_cache.type = 'WYSIWYG';
             val = val.replace(/<script.*>.*<\/script.*>/g, '');
-            $show_cache.innerHTML = val;
+            me.$show_cache.innerHTML = val;
         }
         else {
-            $show_cache.type = 'txt';
+            me.$show_cache.type = 'txt';
             var text = document.createTextNode(val);
             var textarea = document.createElement('textarea');
             textarea.appendChild(text);
-            $show_cache.innerHTML = '';
-            $show_cache.appendChild(textarea);
+            me.$show_cache.innerHTML = '';
+            me.$show_cache.appendChild(textarea);
         }
     },
 
     selectText: dom => {
+        var range = null;
         if (document.selection) {
-            var range = document.body.createTextRange();
+            range = document.body.createTextRange();
             range.moveToElementText(dom);
             range.select();
         }
         else if (window.getSelection) {
-            var range = document.createRange();
+            range = document.createRange();
             range.selectNode(dom);
             window.getSelection().addRange(range);
         }
@@ -122,11 +124,11 @@ var panel = {
                 return false;
             }
 
-            $select         = me.$select         = document.querySelector('#cache_seletor');
-            $show_cache     = me.$show_cache     = document.querySelector('#show_cache');
-            $copy_btn       = me.$copy_btn       = document.querySelector('#copy_btn');
-            $delete_btn     = me.$delete_btn     = document.querySelector('#delete_btn');
-            $delete_all_btn = me.$delete_all_btn = document.querySelector('#delete_all_btn');
+            var $select         = me.$select         = document.querySelector('#cache_seletor');
+            var $show_cache     = me.$show_cache     = document.querySelector('#show_cache');
+            var $copy_btn       = me.$copy_btn       = document.querySelector('#copy_btn');
+            var $delete_btn     = me.$delete_btn     = document.querySelector('#delete_btn');
+            var $delete_all_btn = me.$delete_all_btn = document.querySelector('#delete_all_btn');
 
             me.showSelect(whole_data);
 

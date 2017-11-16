@@ -19,7 +19,7 @@ var option = {
 
     init: () => {
         var me = option;
-        var $response = me.$response = document.querySelector('.response');
+        me.$response = document.querySelector('.response');
 
         browser.runtime.sendMessage({
             behavior: 'get_options'
@@ -28,11 +28,11 @@ var option = {
                 var dom = document.querySelector('#' + key);
                 if (!dom) continue;
                 switch(dom.type){
-                    case 'checkbox':
-                        if (setting[key]) dom.checked = true;
-                        break;
-                    default:
-                        break;
+                case 'checkbox':
+                    if (setting[key]) dom.checked = true;
+                    break;
+                default:
+                    break;
                 }
             }
         });

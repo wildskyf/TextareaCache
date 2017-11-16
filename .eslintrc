@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "webextensions": true
+  },
+  "globals": {
+    "chrome": true,
+    "URLNormalizer": false
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  rules: {
+    "indent": ["warn", 4],
+    "no-console": "off",
+    "no-constant-condition": ["error", { "checkLoops": false }]
+  }
+}
