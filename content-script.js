@@ -12,9 +12,17 @@ var tcl = {
         "[aria-multiline='true']"
     ],
 
-    except_websites: [
-        "docs.google.com/spreadsheets"
-    ],
+    except_websites: null,
+
+    initExceptionSites: () => {
+        var me = tcl;
+        return browser.runtime.sendMessage({
+            behavior: 'get_exceptions'
+        }).then( res => {
+            var { expts } = res;
+            me.except_websites = expts;
+        });
+    },
 
     findTextContents: () => {
         var me = tcl;
@@ -57,11 +65,13 @@ var tcl = {
         var me = tcl;
         me.isDEV && console.log('ta-init');
 
-        if (!tcl.checkEnable()) return;
-        tcl.initDBTable();
-        tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
-        tcl.findTextContents();
-        tcl.attachEvents();
+        tcl.initExceptionSites().then( () => {
+            if (!tcl.checkEnable()) return;
+            tcl.initDBTable();
+            tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
+            tcl.findTextContents();
+            tcl.attachEvents();
+        })
     },
 
     checkEnable: () => {

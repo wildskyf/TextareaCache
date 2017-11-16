@@ -2,7 +2,7 @@
 
 var bg = {
     isDEV: false,
-    VERSION: '2',
+    VERSION: '4',
 
     init: () => {
         var me = bg;
@@ -21,72 +21,41 @@ var bg = {
     checkStorageVersion: () => {
         var me = bg;
         browser.storage.local.get().then( local_obj => {
+            var exceptions = [ "docs.google.com/spreadsheets", "slack.com", "messenger.com" ];
 
-            if (Object.keys(local_obj).length === 0 && local_obj.constructor === Object) {
-                // if obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+            if ( !local_obj || (Object.keys(local_obj).length === 0 && local_obj.constructor === Object) ) {
+                // obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+                //
+                // if install this add-on first time
+
                 local_obj = {
                     version: me.VERSION,
-                    setting: {}
+                    setting: {},
+                    exceptions: exceptions
                 }
                 browser.storage.local.set(local_obj);
+                return;
             }
 
-            if (!local_obj.version || local_obj.version !== me.VERSION) {
-                me._fallback(local_obj, local_obj.version);
+            if (parseInt(local_obj.version) < me.VERSION) {
+                browser.storage.local.set({
+                    version: me.VERSION,
+                    exceptions: exceptions
+                });
+                return;
             }
-        });
-    },
-
-    _fallback: (local_obj, version) => {
-        var new_local_obj = {};
-        var me = bg;
-        var { log_storage, _getTime } = me;
-
-        if (!version) {
-            for (var url in local_obj) {
-                var title = url;
-                var data_in_url = url[title];
-
-                for (var id in data_in_url) {
-                    if (id.includes('length')) continue;
-
-                    var time = _getTime(new Date());
-                    var key = `${time} ${title} ${id}`;
-                    var type = id.includes('w-') ? 'WYSIWYG' : 'txt';
-                    var { val } = data_in_url[id];
-
-                    new_local_obj.version = '3';
-                    new_local_obj[key] = {
-                        time: new Date(),
-                        type: type,
-                        val: val
-                    };
-                    browser.storage.local.set(new_local_obj);
-                    log_storage();
-                }
+            else if (parseInt(local_obj.version) == me.VERSION) {
+                return;
             }
-        }
-        else if (version == '2') {
-            var new_obj = {
-                version: '3'
-            };
-            delete local_obj.version;
 
-            for (var obj_key in local_obj) {
-                var new_val = local_obj[obj_key];
-                var key_arr = obj_key.split(' ');
-                var time_arr = key_arr[0].split('/');
-                var month = parseInt(time_arr[1]) + 1;
-
-                new_val.time = new Date();
-                key_arr[0] = `${time_arr[0]}/${month}/${time_arr[2]}`;
-                new_obj[key_arr.join(' ')] = new_val;
-            }
+            console.error('There is something wrong with Textarea Cache, reset all data... ')
             browser.storage.local.clear();
-            browser.storage.local.set(new_obj);
-            log_storage();
-        }
-
+            browser.storage.local.set({
+                version: me.VERSION,
+                setting: {},
+                exceptions: exceptions
+            });
+        });
     },
 
     applyOptions: () => {
@@ -136,6 +105,16 @@ var bg = {
 
             if (isDEV) console.log('bg_get_request', request.behavior);
             switch(request.behavior) {
+            case 'get_exceptions':
+                browser.storage.local.get().then( local_obj =>
+                    sendBack({ expts: local_obj.exceptions })
+                );
+                break;
+            case 'set_exceptions':
+                browser.storage.local.set({
+                    exceptions: request.val.split('\n').filter(site => site)
+                }).then( () => sendBack({ msg: 'done'}));
+                break;
             case 'set_options':
                 me.setOptions(request, sendBack);
                 break;

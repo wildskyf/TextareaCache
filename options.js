@@ -17,9 +17,24 @@ var option = {
         }, 2000);
     },
 
+    showExceptionSites: () => {
+
+        browser.runtime.sendMessage({
+            behavior: 'get_exceptions'
+        }).then( res => {
+            var { expts } = res;
+            var $excp = document.querySelector('#exception')
+            $excp.textContent = expts.join('\n');
+            $excp.rows = String(parseInt(expts.length) + 1);
+        })
+
+    },
+
     init: () => {
         var me = option;
         me.$response = document.querySelector('.response');
+
+        me.showExceptionSites();
 
         browser.runtime.sendMessage({
             behavior: 'get_options'
@@ -69,6 +84,17 @@ var option = {
                 behavior: 'set_options',
                 key: 'pageAction',
                 val: isPageAction
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        });
+
+
+        document.querySelector('#exception').addEventListener('change', e => {
+            var { target } = e;
+            browser.runtime.sendMessage({
+                behavior: 'set_exceptions',
+                val: target.value
             }).then( () => {
                 me.showUpdatedMessage('success');
             });

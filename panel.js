@@ -117,6 +117,7 @@ var panel = {
 
             delete resObj.data.version;
             delete resObj.data.setting;
+            delete resObj.data.exceptions;
 
             whole_data = resObj.data;
             if (Object.keys(whole_data).length <= 0) {
