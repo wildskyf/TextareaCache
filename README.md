@@ -1,4 +1,4 @@
-# Textarea Cache Lite
+# Textarea Cache
 Save automatically the content in Textarea.
 
 ## install
