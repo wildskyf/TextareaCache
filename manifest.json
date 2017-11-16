@@ -28,6 +28,7 @@
   },
 
   "page_action": {
+    "browser_style": true,
     "default_title": "Save your data",
     "default_popup": "panel.html",
     "default_icon": "icons/tacache-32-bw.png"
@@ -48,6 +49,7 @@
   },
 
   "options_ui": {
+    "browser_style": true,
     "page": "options.html"
   }
 }

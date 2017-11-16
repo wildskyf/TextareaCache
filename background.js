@@ -1,4 +1,6 @@
 // background script
+var { storage, runtime, pageAction, tabs } = browser;
+var { local } = storage;
 
 var bg = {
     isDEV: false,
@@ -12,183 +14,172 @@ var bg = {
     },
 
     log_storage: () => {
-        var me = bg;
-        browser.storage.local.get().then( thing => {
-            if (me.isDEV) console.log(thing);
+        if (!bg.isDEV) return;
+        local.get().then( thing => {
+            console.log(thing);
         });
     },
 
+    _catchErr: e => console.error(e),
+
+    _isEmptyObj: obj => (
+        // obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+        Object.keys(obj).length === 0 && obj.constructor === Object
+    ),
+
+    _getTime: date => date.getFullYear() + '/' + (parseInt(date.getMonth()) + 1) + '/' + date.getDate(),
+
+    default_exceptions: [
+        "docs.google.com/spreadsheets",
+        "slack.com",
+        "messenger.com"
+    ],
+
     checkStorageVersion: () => {
         var me = bg;
-        browser.storage.local.get().then( local_obj => {
-            var exceptions = [ "docs.google.com/spreadsheets", "slack.com", "messenger.com" ];
+        local.get().then( db_data => {
+            var { default_exceptions, VERSION, _isEmptyObj, _catchErr } = me;
 
-            if ( !local_obj || (Object.keys(local_obj).length === 0 && local_obj.constructor === Object) ) {
-                // obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
-                //
-                // if install this add-on first time
-
-                local_obj = {
-                    version: me.VERSION,
-                    setting: {},
-                    exceptions: exceptions
-                }
-                browser.storage.local.set(local_obj);
-                return;
+            if ( !db_data || _isEmptyObj(db_data) || parseInt(db_data.version) > VERSION) {
+                // if just installed
+                // or db_data.version > VERSION, which should not happen
+                me.initDatabase();
             }
-
-            if (parseInt(local_obj.version) < me.VERSION) {
-                browser.storage.local.set({
-                    version: me.VERSION,
-                    exceptions: exceptions
-                });
-                return;
+            else if (parseInt(db_data.version) < VERSION) {
+                local.set({
+                    version: VERSION,
+                    setting: db_data.setting || {},
+                    exceptions: default_exceptions
+                }).catch(_catchErr);
             }
-            else if (parseInt(local_obj.version) == me.VERSION) {
-                return;
-            }
-
-            console.error('There is something wrong with Textarea Cache, reset all data... ')
-            browser.storage.local.clear();
-            browser.storage.local.set({
-                version: me.VERSION,
-                setting: {},
-                exceptions: exceptions
-            });
-        });
+        }).catch(me._catchErr);
     },
 
     applyOptions: () => {
         var me = bg;
-        browser.storage.local.get().then( local_obj => {
+        local.get().then( local_obj => {
             var {setting} = local_obj;
             me.isDEV = !!(setting && setting.debug);
-        }).catch(e => console.warn(e));
+        }).catch(me._catchErr);
     },
 
-    getOptions: (request, sendBack) => {
-        browser.storage.local.get().then( local_obj => {
-            var {setting} = local_obj;
-            if (sendBack) sendBack(setting);
-        }).catch(e => console.warn(e));
-        return true;
+    getOptions: () => {
+        return local.get().catch(bg._catchErr);
     },
 
-    setOptions: (request, sendBack) => {
+    setOptions: request => {
         var me = bg;
-        var { log_storage } = me;
+        var { log_storage, isDEV } = me;
 
-        browser.storage.local.get().then( local_obj => {
+        return local.get().then( local_obj => {
             log_storage();
-            if (local_obj.setting === undefined) {
-                if (me.isDEV) console.log('creating setting');
+            if (!local_obj.setting) {
+                if (isDEV) console.log('creating setting');
                 local_obj.setting = {};
             }
             local_obj.setting[request.key] = request.val;
-            browser.storage.local.set(local_obj);
+            local.set(local_obj);
             log_storage();
-            sendBack({ msg: 'done'});
-        }).catch(e => console.warn(e));
-        return true;
+        }).catch(bg._catchErr);
     },
 
-    _getTime: date => {
-        var date_str = date.getFullYear() + '/' + (parseInt(date.getMonth()) + 1) + '/' + date.getDate();
-        return date_str;
+    initPageAction: url => {
+        local.get().then( local_obj => {
+            var {setting} = local_obj;
+            var page_action = setting.pageAction;
+
+            if (page_action) {
+                tabs.query({ url: url }).then(tab_infos => {
+                    tab_infos.forEach(tab_info => {
+                        pageAction.show(tab_info.id);
+                    });
+                }).catch(bg._catchErr);
+            }
+        }).catch(bg._catchErr);
     },
+
+    initDatabase: () => local.clear().then( () => {
+        local.set({
+            version: bg.VERSION,
+            setting: {},
+            exceptions: bg.default_exceptions
+        }).catch(bg._catchErr);
+    }).catch(bg._catchErr),
 
     onMessage: () => {
         var me = bg;
         var {log_storage, isDEV} = me;
 
-        browser.runtime.onMessage.addListener( (request, sender, sendBack) => {
+        runtime.onMessage.addListener( (request, sender, sendBack) => {
 
             if (isDEV) console.log('bg_get_request', request.behavior);
             switch(request.behavior) {
             case 'get_exceptions':
-                browser.storage.local.get().then( local_obj =>
+                if (isDEV) console.log('get_exceptionsv');
+                local.get().then( local_obj => {
                     sendBack({ expts: local_obj.exceptions })
-                );
+                }).catch(bg._catchErr);
                 break;
             case 'set_exceptions':
-                browser.storage.local.set({
+                if (isDEV) console.log('set_exceptionsv');
+                local.set({
                     exceptions: request.val.split('\n').filter(site => site)
-                }).then( () => sendBack({ msg: 'done'}));
+                }).then( () => {
+                    sendBack({ msg: 'done'});
+                }).catch(bg._catchErr);
                 break;
             case 'set_options':
-                me.setOptions(request, sendBack);
+                me.setOptions(request).then( () => {
+                    sendBack({ msg: 'done'});
+                });
                 break;
             case 'get_options':
-                me.getOptions(request, sendBack);
+                me.getOptions().then( db_data => {
+                    sendBack(db_data.setting);
+                });
+
                 break;
             case 'init':
                 if (isDEV) console.log('bg_init');
-
-                browser.storage.local.get().then( local_obj => {
-                    var {setting} = local_obj;
-                    var {browserAction, pageAction} = setting;
-
-                    if (browserAction) {
-                        // can't hide ...
-                    }
-
-                    if (pageAction) {
-                        browser.tabs.query({ url: request.url }).then(tab_infos => {
-                            tab_infos.forEach(tab_info => {
-                                browser.pageAction.show(tab_info.id);
-                            });
-                        }).catch(e => console.warn(e));
-                    }
-                }).catch(e => console.warn(e));
+                me.initPageAction(request.url);
                 break;
             case 'save':
                 if (isDEV) console.log('bg_save');
-                browser.storage.local.get().then( local_obj => {
-                    var {title, val, type, id, url, sessionKey} = request;
-                    var key = `${sessionKey} ${title} ${id}`;
+                var {title, val, type, id, url, sessionKey} = request;
+                var key = `${sessionKey} ${title} ${id}`;
 
-                    if (isDEV) console.table({ key: key, val: val, type: type, url: url });
+                if (isDEV) console.table({ key: key, val: val, type: type, url: url });
 
-                    local_obj[key] = {
-                        time: sessionKey,
-                        type: type,
-                        val: val,
-                        url: url
-                    };
+                var tmp = {};
+                tmp[key] = {
+                    time: sessionKey,
+                    type: type,
+                    val: val,
+                    url: url,
+                    last_modified: new Date()
+                };
 
-                    browser.storage.local.set(local_obj);
-                    log_storage();
-                }).catch(e => console.warn(e));
+                local.set(tmp).catch(bg._catchErr);
+                log_storage();
                 break;
             case 'load':
                 if (isDEV) console.log('bg_load');
-
-                browser.storage.local.get().then( data => {
+                local.get().then( data => {
                     sendBack({ data: data });
-                });
-
+                }).catch(bg._catchErr);
                 break;
             case 'delete':
                 if (isDEV) console.log('bg_delete');
-                browser.storage.local.remove(request.id).then(() => {
-                    browser.storage.local.get().then( data => {
-                        sendBack({ done: 1, deleted: request.id, data: data});
-                    });
-                });
+                local.remove(request.id).then( () => {
+                    local.get().then( data => {
+                        sendBack({ msg: 'done', deleted: request.id, data: data});
+                    }).catch(bg._catchErr);
+                }).catch(bg._catchErr);
                 break;
             case 'clear':
                 if (isDEV) console.log('bg_clear');
-                browser.storage.local.get().then( local_obj => {
-                    var old_obj = Object.assign({}, local_obj);
-                    browser.storage.local.clear().then( () => {
-                        browser.storage.local.set({
-                            version: old_obj.version,
-                            setting: old_obj.setting
-                        }).then( () => {
-                            log_storage();
-                            sendBack({ msg: 'done'});
-                        });
-                    }).catch(e => console.warn(e));
+                me.initDatabase().then( () => {
+                    sendBack({ msg: 'done' });
                 });
                 break;
             }
@@ -199,3 +190,4 @@ var bg = {
 
 };
 bg.init();
+

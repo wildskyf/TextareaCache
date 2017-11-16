@@ -66,7 +66,8 @@ var panel = {
         }
     },
 
-    _reverse: obj_array => {
+    _sort: obj_array => {
+        // by last_modified
         var tmp_array = []; // for reverse the order of saved cache
         for (var key in obj_array) {
             if (!obj_array[key]) continue;
@@ -75,14 +76,14 @@ var panel = {
             tmp_array.push(tmp_data);
         }
 
-        return tmp_array.reverse();
+        return tmp_array.sort( (a,b) => (b.last_modified - a.last_modified));
     },
 
     showSelect: (whole_data) => {
         var me = panel;
         var { $select, $show_cache } = me;
 
-        me._reverse(whole_data).forEach(one_data => {
+        me._sort(whole_data).forEach(one_data => {
             var { type } = one_data;
             var cache = one_data.val;
             var txt = me._formatDate(one_data.key).split(" ");

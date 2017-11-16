@@ -19,8 +19,7 @@ var tcl = {
         return browser.runtime.sendMessage({
             behavior: 'get_exceptions'
         }).then( res => {
-            var { expts } = res;
-            me.except_websites = expts;
+            me.except_websites = res.expts;
         });
     },
 

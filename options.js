@@ -64,19 +64,6 @@ var option = {
             });
         });
 
-        // document.querySelector('#browserAction').addEventListener('change', e => {
-        //     var isBrowserAction = e.currentTarget.checked;
-        //
-        //     browser.runtime.sendMessage({
-        //         behavior: 'set_options',
-        //         key: 'browserAction',
-        //         val: isBrowserAction
-        //     }).then( () => {
-        //         showUpdatedMessage('success');
-        //     });
-        // });
-
-
         document.querySelector('#pageAction').addEventListener('change', e => {
             var isPageAction = e.currentTarget.checked;
 
