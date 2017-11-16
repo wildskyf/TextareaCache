@@ -33,10 +33,10 @@ var tcl = {
             ta.classList.add('ta-textContent');
             ta.dataset.id = isTEXTAREA ? i : `w-${i}`;
         });
-        document.querySelectorAll('.ta-textContent .ta-textContent').forEach(dom => {
-            me.isDEV && console.log('ta-rm-duplicate');
-            dom.classList.remove('ta-textContent');
-        });
+
+        window.setInterval( () => {
+            document.querySelectorAll(me.cache_rule.map(rule => (rule+":not(.ta-textContent)")).join(','))
+        }, 2000);
     },
 
     attachEvents: () => {
