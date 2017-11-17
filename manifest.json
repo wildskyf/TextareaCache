@@ -8,7 +8,7 @@
 
   "manifest_version": 2,
   "name": "Textarea Cache",
-  "version": "2.13.0",
+  "version": "2.13.1",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
@@ -29,7 +29,7 @@
 
   "page_action": {
     "browser_style": true,
-    "default_title": "Save your data",
+    "default_title": "View your saved data (Textarea Cache)",
     "default_popup": "panel.html",
     "default_icon": "icons/tacache-32-bw.png"
   },

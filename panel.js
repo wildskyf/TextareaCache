@@ -76,7 +76,12 @@ var panel = {
             tmp_array.push(tmp_data);
         }
 
-        return tmp_array.sort( (a,b) => (b.last_modified - a.last_modified));
+        return tmp_array.sort( (a,b) => {
+            var a_time = new Date(parseInt(a.last_modified || a.time || 0));
+            var b_time = new Date(parseInt(b.last_modified || b.time || 0));
+
+            return b_time - a_time;
+        });
     },
 
     showSelect: (whole_data) => {
