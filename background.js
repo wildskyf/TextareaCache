@@ -11,24 +11,15 @@ var bg = {
         me.checkStorageVersion();
         me.applyOptions();
         me.onMessage();
-        tabs.onUpdated.addListener( () => {
-            me.initPageAction();
-        });
+        tabs.onUpdated.addListener( me.initPageAction );
     },
 
-    log_storage: () => {
-        if (!bg.isDEV) return;
-        local.get().then( thing => {
-            console.log(thing);
-        });
-    },
+    log_storage: () => bg.isDEV && local.get().then( db_data => console.log(db_data)),
 
     _catchErr: e => console.error(e),
 
-    _isEmptyObj: obj => (
-        // obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
-        Object.keys(obj).length === 0 && obj.constructor === Object
-    ),
+    // obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+    _isEmptyObj: obj => (Object.keys(obj).length === 0 && obj.constructor === Object),
 
     _getTime: date => date.getFullYear() + '/' + (parseInt(date.getMonth()) + 1) + '/' + date.getDate(),
 
@@ -40,35 +31,30 @@ var bg = {
 
     checkStorageVersion: () => {
         var me = bg;
+        var { default_exceptions, VERSION, _catchErr } = me;
         local.get().then( db_data => {
-            var { default_exceptions, VERSION, _isEmptyObj, _catchErr } = me;
 
-            if ( !db_data || _isEmptyObj(db_data) || parseInt(db_data.version) > VERSION) {
-                // if just installed
-                // or db_data.version > VERSION, which should not happen
-                me.initDatabase();
-            }
-            else if (parseInt(db_data.version) < VERSION) {
+            if (parseInt( db_data && db_data.version) < VERSION) {
                 local.set({
                     version: VERSION,
                     setting: db_data.setting || {},
                     exceptions: default_exceptions
                 }).catch(_catchErr);
             }
+            else {
+                // if just installed || some other strange situations (e.g., db_data.version > VERSION ... etc)
+                me.initDatabase();
+            }
         }).catch(me._catchErr);
     },
 
     applyOptions: () => {
-        var me = bg;
-        local.get().then( local_obj => {
-            var {setting} = local_obj;
-            me.isDEV = !!(setting && setting.debug);
-        }).catch(me._catchErr);
+        local.get().then( db_data => {
+            bg.isDEV = !!(db_data.setting && db_data.setting.debug);
+        }).catch(bg._catchErr);
     },
 
-    getOptions: () => {
-        return local.get().catch(bg._catchErr);
-    },
+    getOptions: () => local.get().catch(bg._catchErr),
 
     setOptions: request => {
         var me = bg;
@@ -142,9 +128,6 @@ var bg = {
                     sendBack(db_data.setting);
                 });
 
-                break;
-            case 'init':
-                if (isDEV) console.log('bg_init');
                 break;
             case 'save':
                 if (isDEV) console.log('bg_save');

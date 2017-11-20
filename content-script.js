@@ -14,14 +14,11 @@ var tcl = {
 
     except_websites: null, // fetch from background script
 
-    initExceptionSites: () => {
-        var me = tcl;
-        return browser.runtime.sendMessage({
-            behavior: 'get_exceptions'
-        }).then( res => {
-            me.except_websites = res.expts;
-        });
-    },
+    initExceptionSites: () => browser.runtime.sendMessage({
+        behavior: 'get_exceptions'
+    }).then( res => {
+        tcl.except_websites = res.expts;
+    }),
 
     findTextContents: () => {
         var me = tcl;
@@ -33,6 +30,7 @@ var tcl = {
             ta.dataset.id = isTEXTAREA ? i : `w-${i}`;
         });
 
+        // TO-DO: performance issue
         window.setInterval( () => {
             document.querySelectorAll(me.cache_rule.map(rule => (rule+":not(.ta-textContent)")).join(','))
         }, 2000);
@@ -66,11 +64,10 @@ var tcl = {
 
         tcl.initExceptionSites().then( () => {
             if (!tcl.checkEnable()) return;
-            tcl.initDBTable();
             tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
             tcl.findTextContents();
             tcl.attachEvents();
-        })
+        });
     },
 
     checkEnable: () => {
@@ -79,14 +76,6 @@ var tcl = {
             if (url.includes(site)) return false;
         }
         return true;
-    },
-
-    initDBTable: () => {
-        browser.runtime.sendMessage({
-            behavior: 'init',
-            title: document.title,
-            url: location.href
-        });
     },
 
     getContent: target => {
