@@ -54,6 +54,7 @@ html, body {
 .list table th, .list table td {
     padding: .5rem;
     max-width: 120px;
+    overflow: hidden;
 }
 
 .list table th {
@@ -72,4 +73,7 @@ html, body {
     bottom: 0;
     width: 100%;
     height: 0;
+}
+.hide {
+    display: none !important;
 }

@@ -31,6 +31,7 @@ var list = {
             me.onFrameOpen();
             me.onSelect();
             me.initDelBtn();
+            me.initSearchBar();
         }));
 
         me.onDelete();
@@ -69,7 +70,11 @@ var list = {
             </tr>
         `;
         caches.forEach( (cache, index) => {
-            list_dom_str += `<tr data-id="${cache.key}" data-index="${index + 1}" data-date="${cache.last_modified.getTime()}">
+            list_dom_str += `<tr class="cache-row"
+                    data-id="${cache.key}"
+                    data-index="${index + 1}"
+                    data-date="${cache.last_modified.getTime()}"
+                    data-url="${cache.url}">
                 <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
                 <td>${me._escapeHTML(cache.val).trunc(20)}</td>
@@ -92,7 +97,10 @@ var list = {
     },
 
     onDelete: () => {
-        browser.storage.onChanged.addListener(location.reload);
+        browser.storage.onChanged.addListener( () => {
+            document.querySelector('#searchbar').value = "";
+            location.reload();
+        });
         document.querySelector('#detail-frame').src = "./entity.html";
     },
 
@@ -109,19 +117,21 @@ var list = {
                 target = e.target.querySelector('input');
                 target.checked = !target.checked
             }
-            $checkboxes.forEach( $checkbox => {
-                $checkbox.checked = target.checked;
-            });
+            Array.from($checkboxes)
+                .filter(ckbx => !ckbx.parentNode.parentNode.parentNode.classList.contains('hide'))
+                .forEach( $checkbox => {
+                    $checkbox.checked = target.checked;
+                });
             return false;
         });
 
         var checkSelectAllStatus = () => {
-            if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:not(:checked)').length == 0) {
+            if (document.querySelectorAll('.cache-row:not(.hide) [type=checkbox]:not(:checked)').length == 0) {
                 // every checkbox are not checked
                 $checkbox_all.indeterminate = false;
                 $checkbox_all.checked = true;
             }
-            else if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:checked').length == 0) {
+            else if (document.querySelectorAll('.cache-row:not(.hide) [type=checkbox]:checked').length == 0) {
                 // every checkbox are checked
                 $checkbox_all.indeterminate = false;
                 $checkbox_all.checked = false;
@@ -166,12 +176,26 @@ var list = {
 
         // del selected
         document.querySelector('#delete_selected_btn').addEventListener('click', () => {
-            var checkboxes = document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:checked');
+            var checkboxes = document.querySelectorAll('.cache-row:not(.hide) input[type=checkbox]:checked');
             Array.from(checkboxes).map(cks => cks.parentNode.parentNode.dataset.id).forEach( id => {
                 browser.runtime.sendMessage({
                     behavior: 'delete',
                     id: id
-                })
+                });
+            });
+        });
+    },
+
+    initSearchBar: () => {
+        document.querySelector('#searchbar').addEventListener('keyup', e => {
+            var filter_text = e.target.value;
+            var rows = Array.from(document.querySelectorAll('.cache-row'));
+
+            rows.filter( row => row.dataset.url.includes(filter_text) ).forEach( cache => {
+                cache.classList.remove('hide');
+            });
+            rows.filter( row => !row.dataset.url.includes(filter_text) ).forEach( cache => {
+                cache.classList.add('hide');
             });
         });
     }
