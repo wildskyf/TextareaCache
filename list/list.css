@@ -38,11 +38,11 @@ html, body {
 
 .ctrls {
     height: 10vh;
-    padding: 1rem;
+    padding: 0 1rem;
 }
 
 .list {
-    max-height: 75vh;
+    max-height: 70vh;
     overflow: auto;
 }
 

@@ -179,10 +179,19 @@ var bg = {
         var popupList = () => {
             browser.windows.create({
                 url: browser.extension.getURL("list/list.html"),
-                type: "detached_panel", // "normal", "popup", "panel", "detached_panel"
+                type: "panel", // "normal", "popup", "panel", "detached_panel"
                 height: 450,
                 width: 800
-            })
+            }).then( windowInfo => {
+                var panel_id = windowInfo.id;
+                var focusListener = windowId => {
+                    if (windowId !== panel_id) {
+                        browser.windows.remove(panel_id);
+                        browser.windows.onFocusChanged.removeListener(focusListener);
+                    }
+                };
+                browser.windows.onFocusChanged.addListener(focusListener);
+            });
         };
         browserAction.onClicked.addListener(popupList);
         pageAction.onClicked.addListener(popupList);

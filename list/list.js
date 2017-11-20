@@ -84,7 +84,7 @@ var list = {
     onFrameOpen: () => {
         document.querySelectorAll('.open-frame').forEach( frame => {
             frame.addEventListener('click', () => {
-                document.querySelector('#detail-frame').style.height = '40vh';
+                document.querySelector('#detail-frame').style.height = '35vh';
                 document.querySelector('.list').style.maxHeight = '40vh';
             })
         })
