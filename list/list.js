@@ -3,6 +3,7 @@ String.prototype.trunc = String.prototype.trunc || function(n){
 };
 
 var list = {
+    last_selected_index: null,
 
     _escapeHTML: str =>  str.replace(/[&"'<>]/g, m => ({
         "&": "&amp;",
@@ -25,7 +26,7 @@ var list = {
             delete res.data.setting;
             delete res.data.exceptions;
 
-            var list_data = me.makeArray(res.data);
+            var list_data = me.makeArray(res.data).reverse();
             me.showList(list_data);
             me.onFrameOpen();
             me.onSelect();
@@ -67,8 +68,8 @@ var list = {
                 <th></th>
             </tr>
         `;
-        caches.forEach( cache => {
-            list_dom_str += `<tr data-id="${cache.key}">
+        caches.forEach( (cache, index) => {
+            list_dom_str += `<tr data-id="${cache.key}" data-index="${index + 1}" data-date="${cache.last_modified.getTime()}">
                 <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
                 <td>${me._escapeHTML(cache.val).trunc(20)}</td>
@@ -91,13 +92,12 @@ var list = {
     },
 
     onDelete: () => {
-        browser.storage.onChanged.addListener( () => {
-            location.reload();
-        });
+        browser.storage.onChanged.addListener(location.reload);
         document.querySelector('#detail-frame').src = "./entity.html";
     },
 
     onSelect: () => {
+        var me = list;
         var $checkbox_all = document.querySelector('.select-title input[type=checkbox]');
         var $checkboxes   = document.querySelectorAll('.checkbox-wrapper input[type=checkbox]');
 
@@ -115,23 +115,43 @@ var list = {
             return false;
         });
 
+        var checkSelectAllStatus = () => {
+            if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:not(:checked)').length == 0) {
+                // every checkbox are not checked
+                $checkbox_all.indeterminate = false;
+                $checkbox_all.checked = true;
+            }
+            else if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:checked').length == 0) {
+                // every checkbox are checked
+                $checkbox_all.indeterminate = false;
+                $checkbox_all.checked = false;
+            }
+            else {
+                $checkbox_all.checked = false;
+                $checkbox_all.indeterminate = true;
+            }
+        };
+
         // each checkbox
         $checkboxes.forEach( $checkbox => {
-            $checkbox.addEventListener('click', () => {
-                if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:not(:checked)').length == 0) {
-                    // every checkbox are not checked
-                    $checkbox_all.indeterminate = false;
-                    $checkbox_all.checked = true;
+            $checkbox.addEventListener('click', e => {
+                var current_selected_index = e.target.parentNode.parentNode.dataset.index;
+                var val = e.target.checked;
+                if (e.shiftKey && me.last_selected_index) {
+
+                    if (me.last_selected_index < current_selected_index) {
+                        for (var i = me.last_selected_index ; i < current_selected_index ; i++ ) {
+                            document.querySelector(`[data-index="${i}"] input[type=checkbox]`).checked = val;
+                        }
+                    }
+                    else if (me.last_selected_index > current_selected_index) {
+                        for (var j = me.last_selected_index ; j > current_selected_index ; j-- ) {
+                            document.querySelector(`[data-index="${j}"] input[type=checkbox]`).checked = val;
+                        }
+                    }
                 }
-                else if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:checked').length == 0) {
-                    // every checkbox are checked
-                    $checkbox_all.indeterminate = false;
-                    $checkbox_all.checked = false;
-                }
-                else {
-                    $checkbox_all.checked = false;
-                    $checkbox_all.indeterminate = true;
-                }
+                checkSelectAllStatus();
+                me.last_selected_index = current_selected_index;
             });
         });
     },
