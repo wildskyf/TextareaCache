@@ -23,14 +23,12 @@
   "browser_action": {
     "browser_style": true,
     "default_title": "View your saved data (Textarea Cache)",
-    "default_popup": "panel.html",
     "default_icon": "icons/tacache-32.png"
   },
 
   "page_action": {
     "browser_style": true,
     "default_title": "View your saved data (Textarea Cache)",
-    "default_popup": "panel.html",
     "default_icon": "icons/tacache-32-bw.png"
   },
 

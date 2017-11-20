@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    height: auto;
+    overflow: hidden;
+    padding: 0;
+    min-width: 200px;
+}
+#show_cache {
+    border-top: 1px solid #343434;
+    border-bottom: 1px solid #343434;
+    box-sizing: border-box;
+    margin: 0;
+    width: 100%;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    bottom: 3rem;
+}
+#show_cache textarea {
+    box-sizing: border-box;
+    height: 100%;
+    padding: 1rem;
+    margin: 0;
+    width: 100%;
+}
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+.footer button {
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    background: #eee;
+    float: left;
+    height: 3rem;
+    padding: .5rem;
+    text-align: center;
+    width: 50%;
+}
+.footer button:hover{
+    background: #ddd;
+}

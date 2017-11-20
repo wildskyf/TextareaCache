@@ -1,5 +1,5 @@
 // background script
-var { storage, runtime, pageAction, tabs } = browser;
+var { storage, runtime, browserAction, pageAction, tabs } = browser;
 var { local } = storage;
 
 var bg = {
@@ -12,6 +12,7 @@ var bg = {
         me.applyOptions();
         me.onMessage();
         tabs.onUpdated.addListener( me.initPageAction );
+        me.setupCacheList();
     },
 
     log_storage: () => bg.isDEV && local.get().then( db_data => console.log(db_data)),
@@ -172,8 +173,20 @@ var bg = {
 
             return true;
         });
-    }
+    },
 
+    setupCacheList: () => {
+        var popupList = () => {
+            browser.windows.create({
+                url: browser.extension.getURL("list/list.html"),
+                type: "detached_panel", // "normal", "popup", "panel", "detached_panel"
+                height: 450,
+                width: 800
+            })
+        };
+        browserAction.onClicked.addListener(popupList);
+        pageAction.onClicked.addListener(popupList);
+    }
 };
 bg.init();
 
