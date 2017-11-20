@@ -28,6 +28,8 @@ var list = {
             var list_data = me.makeArray(res.data);
             me.showList(list_data);
             me.onFrameOpen();
+            me.onSelect();
+            me.initDelBtn();
         }));
 
         me.onDelete();
@@ -47,9 +49,7 @@ var list = {
     },
 
     showNoCache: () => {
-        var $list = document.querySelector('.list');
-        $list.querySelector('table').remove();
-        $list.textContent = 'You have no cache';
+        document.body.textContent = 'You have no cache';
     },
 
     showList: caches => {
@@ -69,7 +69,7 @@ var list = {
         `;
         caches.forEach( cache => {
             list_dom_str += `<tr data-id="${cache.key}">
-                <td><input type="checkbox" /></td>
+                <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
                 <td>${me._escapeHTML(cache.val).trunc(20)}</td>
                 <td>${cache.last_modified.toLocaleString()}</td>
@@ -84,8 +84,8 @@ var list = {
     onFrameOpen: () => {
         document.querySelectorAll('.open-frame').forEach( frame => {
             frame.addEventListener('click', () => {
-                document.querySelector('#detail-frame').style.height = '45vh';
-                document.querySelector('.list').style.maxHeight = '45vh';
+                document.querySelector('#detail-frame').style.height = '40vh';
+                document.querySelector('.list').style.maxHeight = '40vh';
             })
         })
     },
@@ -94,7 +94,66 @@ var list = {
         browser.storage.onChanged.addListener( () => {
             location.reload();
         });
-        document.querySelector('#detail-frame').src = "./entity.html"
+        document.querySelector('#detail-frame').src = "./entity.html";
+    },
+
+    onSelect: () => {
+        var $checkbox_all = document.querySelector('.select-title input[type=checkbox]');
+        var $checkboxes   = document.querySelectorAll('.checkbox-wrapper input[type=checkbox]');
+
+        // checkbox which is able to select all
+        document.querySelector('.select-title').addEventListener('click', e => {
+            var target = e.target;
+            if (e.target.classList.contains('select-title')) {
+                // click nearby
+                target = e.target.querySelector('input');
+                target.checked = !target.checked
+            }
+            $checkboxes.forEach( $checkbox => {
+                $checkbox.checked = target.checked;
+            });
+            return false;
+        });
+
+        // each checkbox
+        $checkboxes.forEach( $checkbox => {
+            $checkbox.addEventListener('click', () => {
+                if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:not(:checked)').length == 0) {
+                    // every checkbox are not checked
+                    $checkbox_all.indeterminate = false;
+                    $checkbox_all.checked = true;
+                }
+                else if (document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:checked').length == 0) {
+                    // every checkbox are checked
+                    $checkbox_all.indeterminate = false;
+                    $checkbox_all.checked = false;
+                }
+                else {
+                    $checkbox_all.checked = false;
+                    $checkbox_all.indeterminate = true;
+                }
+            });
+        });
+    },
+
+    initDelBtn: () => {
+        // del all btn
+        document.querySelector('#delete_all_btn').addEventListener('click', () => {
+            browser.runtime.sendMessage({
+                behavior: 'clear'
+            });
+        });
+
+        // del selected
+        document.querySelector('#delete_selected_btn').addEventListener('click', () => {
+            var checkboxes = document.querySelectorAll('.checkbox-wrapper input[type=checkbox]:checked');
+            Array.from(checkboxes).map(cks => cks.parentNode.parentNode.dataset.id).forEach( id => {
+                browser.runtime.sendMessage({
+                    behavior: 'delete',
+                    id: id
+                })
+            });
+        });
     }
 };
 

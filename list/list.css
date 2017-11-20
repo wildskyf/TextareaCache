@@ -36,8 +36,13 @@ html, body {
     vertical-align: text-bottom;
 }
 
+.ctrls {
+    height: 10vh;
+    padding: 1rem;
+}
+
 .list {
-    max-height: 85vh;
+    max-height: 75vh;
     overflow: auto;
 }
 
