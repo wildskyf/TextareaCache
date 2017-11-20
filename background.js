@@ -11,6 +11,9 @@ var bg = {
         me.checkStorageVersion();
         me.applyOptions();
         me.onMessage();
+        tabs.onUpdated.addListener( () => {
+            me.initPageAction();
+        });
     },
 
     log_storage: () => {
@@ -83,18 +86,18 @@ var bg = {
         }).catch(bg._catchErr);
     },
 
-    initPageAction: url => {
+    initPageAction: () => {
         local.get().then( local_obj => {
-            var {setting} = local_obj;
-            var page_action = setting.pageAction;
-
-            if (page_action) {
-                tabs.query({ url: url }).then(tab_infos => {
-                    tab_infos.forEach(tab_info => {
+            tabs.query({}).then(tab_infos => {
+                tab_infos.forEach(tab_info => {
+                    if (local_obj.setting.pageAction) {
                         pageAction.show(tab_info.id);
-                    });
-                }).catch(bg._catchErr);
-            }
+                    }
+                    else {
+                        pageAction.hide(tab_info.id);
+                    }
+                });
+            }).catch(bg._catchErr);
         }).catch(bg._catchErr);
     },
 
@@ -130,6 +133,7 @@ var bg = {
                 break;
             case 'set_options':
                 me.setOptions(request).then( () => {
+                    me.initPageAction();
                     sendBack({ msg: 'done'});
                 });
                 break;
@@ -141,7 +145,6 @@ var bg = {
                 break;
             case 'init':
                 if (isDEV) console.log('bg_init');
-                me.initPageAction(request.url);
                 break;
             case 'save':
                 if (isDEV) console.log('bg_save');
