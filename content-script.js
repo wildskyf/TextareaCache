@@ -2,7 +2,7 @@
 
 var tcl = {
     isDEV: false,
-    sessionKey: null,
+    sessionKey: null, // the timestamp at which user open a website
 
     cache_rule: [
         "textarea",
@@ -12,7 +12,7 @@ var tcl = {
         "[aria-multiline='true']"
     ],
 
-    except_websites: null,
+    except_websites: null, // fetch from background script
 
     initExceptionSites: () => {
         var me = tcl;
