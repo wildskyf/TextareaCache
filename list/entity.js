@@ -53,12 +53,12 @@ var entity = {
     init: () => {
         var me = entity;
         me.$show_cache = document.querySelector('#show_cache');
-        var key_arry = decodeURI(location.search).split("=");
-        if (key_arry[0] != "?id") {
+        var key_arry = decodeURI(location.search + location.hash).split("=");
+        if (key_arry.shirt().include("?id")) {
             document.body.textContent = "";
             return;
         }
-        var key = me.key = key_arry[1];
+        var key = me.key = key_arry.join('=');
 
         browser.runtime.sendMessage({
             behavior: 'load'
@@ -71,7 +71,7 @@ var entity = {
             delete res.data.exceptions;
 
             var db_data = res.data;
-            me.showPreview(db_data[key].isWYSIWYG, db_data[key].val); // *
+            me.showPreview(db_data[key].isWYSIWYG, db_data[key].val);
 
         }));
         me.initButtonEvent();

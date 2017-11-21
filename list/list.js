@@ -36,7 +36,8 @@ var list = {
             delete res.data.exceptions;
 
             var list_data = me.makeArray(res.data).reverse();
-            me.showList(list_data);
+            var show_something = me.showList(list_data);
+            if (!show_something) return false;
             me.onFrameOpen();
             me.onSelect();
             me.initDelBtn();
@@ -67,7 +68,7 @@ var list = {
         var me = list;
         if (caches.length == 0) {
             me.showNoCache();
-            return;
+            return false;
         }
         var list_dom_str = `
             <tr class="list-title">
@@ -94,6 +95,7 @@ var list = {
             </tr>`;
         });
         document.querySelector('.list table').innerHTML = list_dom_str;
+        return true;
     },
 
     onFrameOpen: () => {
@@ -176,15 +178,18 @@ var list = {
     },
 
     initDelBtn: () => {
+        var $del_all_btn = document.querySelector('#delete_all_btn');
+        var $del_selected_btn = document.querySelector('#delete_selected_btn');
+
         // del all btn
-        document.querySelector('#delete_all_btn').addEventListener('click', () => {
+        $del_all_btn.addEventListener('click', () => {
             browser.runtime.sendMessage({
                 behavior: 'clear'
             });
         });
 
         // del selected
-        document.querySelector('#delete_selected_btn').addEventListener('click', () => {
+        $del_selected_btn.addEventListener('click', () => {
             var checkboxes = document.querySelectorAll('.cache-row:not(.hide) input[type=checkbox]:checked');
             Array.from(checkboxes).map(cks => cks.parentNode.parentNode.dataset.id).forEach( id => {
                 browser.runtime.sendMessage({
@@ -196,7 +201,9 @@ var list = {
     },
 
     initSearchBar: () => {
-        document.querySelector('#searchbar').addEventListener('keyup', e => {
+        var $searchbar = document.querySelector('#searchbar');
+
+        $searchbar.addEventListener('keyup', e => {
             var filter_text = e.target.value;
             var rows = Array.from(document.querySelectorAll('.cache-row'));
 
