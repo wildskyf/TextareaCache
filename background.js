@@ -35,7 +35,10 @@ var bg = {
         var { default_exceptions, VERSION, _catchErr } = me;
         local.get().then( db_data => {
 
-            if (parseInt( db_data && db_data.version) < VERSION) {
+            if (parseInt( db_data && db_data.version) == VERSION) {
+                return
+            }
+            else if (parseInt( db_data && db_data.version) < VERSION) {
                 local.set({
                     version: VERSION,
                     setting: db_data.setting || {},
