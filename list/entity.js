@@ -2,6 +2,20 @@ var entity = {
     key: null,
     $show_cache: null,
 
+    selectText: dom => {
+        var range = null;
+        if (document.selection) {
+            range = document.body.createTextRange();
+            range.moveToElementText(dom);
+            range.select();
+        }
+        else if (window.getSelection) {
+            range = document.createRange();
+            range.selectNode(dom);
+            window.getSelection().addRange(range);
+        }
+    },
+
     initButtonEvent: () => {
         var me = entity;
         var $show_cache     = me.$show_cache;
@@ -29,6 +43,7 @@ var entity = {
     },
 
     showPreview: (isWYSIWYG, val) => {
+
         // val is used to show preview of WYSIWYG,
         // so it should not be escaped.
         //
@@ -53,12 +68,10 @@ var entity = {
     init: () => {
         var me = entity;
         me.$show_cache = document.querySelector('#show_cache');
-        var key_arry = decodeURI(location.search + location.hash).split("=");
-        if (key_arry.shift().includes("?id")) {
-            document.body.textContent = "";
-            return;
-        }
-        var key = me.key = key_arry.join('=');
+        var key_arry = decodeURI(location.href).split("entity.html?id=");
+        var key = key_arry[1];
+
+        if (!key) return;
 
         browser.runtime.sendMessage({
             behavior: 'load'
@@ -71,7 +84,7 @@ var entity = {
             delete res.data.exceptions;
 
             var db_data = res.data;
-            me.showPreview(db_data[key].isWYSIWYG, db_data[key].val);
+            me.showPreview(db_data[key].type == 'WYSIWYG', db_data[key].val);
 
         }));
         me.initButtonEvent();
