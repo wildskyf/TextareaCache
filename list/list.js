@@ -72,11 +72,11 @@ var list = {
         }
         var list_dom_str = `
             <tr class="list-title">
-                <th class="select-title"><input type="checkbox" /></th>
-                <th class="url-title">url</th>
-                <th class="summary-title">summary</th>
-                <th class="date-title">date</th>
-                <th></th>
+                <th class="select-title" width="1%"><input type="checkbox" /></th>
+                <th class="url-title" width="20%">url</th>
+                <th class="summary-title" width="64%">summary</th>
+                <th class="date-title" width="10%">date</th>
+                <th width="5%"></th>
             </tr>
         `;
         caches.forEach( (cache, index) => {
