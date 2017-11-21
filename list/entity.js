@@ -54,7 +54,7 @@ var entity = {
         var me = entity;
         me.$show_cache = document.querySelector('#show_cache');
         var key_arry = decodeURI(location.search + location.hash).split("=");
-        if (key_arry.shirt().include("?id")) {
+        if (key_arry.shift().include("?id")) {
             document.body.textContent = "";
             return;
         }
