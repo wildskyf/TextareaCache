@@ -104,11 +104,11 @@ var bg = {
         }).catch(bg._catchErr);
     },
 
-    initDatabase: () => local.clear().then( () => {
+    initDatabase: old_data => local.clear().then( () => {
         local.set({
             version: bg.VERSION,
-            setting: {},
-            exceptions: bg.default_exceptions
+            setting: (old_data && old_data.setting) || {},
+            exceptions: (old_data && old_data.exceptions)|| bg.default_exceptions
         }).catch(bg._catchErr);
     }).catch(bg._catchErr),
 
@@ -181,8 +181,13 @@ var bg = {
                 break;
             case 'clear':
                 if (isDEV) console.log('bg_clear');
-                me.initDatabase().then( () => {
-                    sendBack({ msg: 'done' });
+                local.get().then( data => {
+                    me.initDatabase({
+                        setting: data.setting,
+                        exceptions: data.exceptions
+                    }).then( () => {
+                        sendBack({ msg: 'done' });
+                    });
                 });
                 break;
             }
