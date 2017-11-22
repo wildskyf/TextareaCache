@@ -87,7 +87,7 @@ var list = {
                     data-url="${cache.url}">
                 <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
-                <td>${me._escapeHTML(cache.val).trunc(20)}</td>
+                <td>${me._escapeHTML(cache.val).trunc(30)}</td>
                 <td>${(new Date(cache.last_modified)).toLocaleString()}</td>
                 <td>
                     <a class="open-frame" href="./entity.html?id=${encodeURI(cache.key)}" target="detail-frame">show</a>
