@@ -11,7 +11,9 @@ var bg = {
         me.checkStorageVersion();
         me.applyOptions();
         me.onMessage();
-        tabs.onUpdated.addListener( me.initPageAction );
+        tabs.onCreated.addListener( tab => {
+            me.initPageAction(false, tab.id);
+        });
         me.setupCacheList();
     },
 
@@ -76,18 +78,29 @@ var bg = {
         }).catch(bg._catchErr);
     },
 
-    initPageAction: () => {
+    initPageAction: (forAll, tab_id) => {
         local.get().then( local_obj => {
-            tabs.query({}).then(tab_infos => {
-                tab_infos.forEach(tab_info => {
-                    if (local_obj.setting.pageAction) {
-                        pageAction.show(tab_info.id);
-                    }
-                    else {
-                        pageAction.hide(tab_info.id);
-                    }
-                });
-            }).catch(bg._catchErr);
+            var show_page_action = local_obj.setting.pageAction;
+            if (forAll) {
+                tabs.query({}).then(tab_infos => {
+                    tab_infos.forEach(tab_info => {
+                        if (show_page_action) {
+                            pageAction.show(tab_info.id);
+                        }
+                        else {
+                            pageAction.hide(tab_info.id);
+                        }
+                    });
+                }).catch(bg._catchErr);
+            }
+            else {
+                if (show_page_action) {
+                    pageAction.show(tab_id);
+                }
+                else {
+                    pageAction.hide(tab_id);
+                }
+            }
         }).catch(bg._catchErr);
     },
 
@@ -123,7 +136,7 @@ var bg = {
                 break;
             case 'set_options':
                 me.setOptions(request).then( () => {
-                    me.initPageAction();
+                    me.initPageAction(true);
                     sendBack({ msg: 'done'});
                 });
                 break;
