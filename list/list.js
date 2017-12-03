@@ -5,6 +5,8 @@ String.prototype.trunc = String.prototype.trunc || function(n){
 var list = {
     last_selected_index: null,
 
+    _strip: html => html.replace(/<(?:.|\n)*?>/gm, ''),
+
     _escapeHTML: str =>  str.replace(/[&"'<>]/g, m => ({
         "&": "&amp;",
         '"': "&quot;",
@@ -95,7 +97,7 @@ var list = {
                     data-url="${cache.url}">
                 <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
-                <td>${me._escapeHTML(cache.val).trunc(30)}</td>
+                <td>${me._escapeHTML(me._strip(cache.val)).trunc(120)}</td>
                 <td>${(new Date(cache.last_modified)).toLocaleString()}</td>
                 <td>
                     <a class="open-frame" href="./entity.html?id=${encodeURI(cache.key)}" target="detail-frame">show</a>
