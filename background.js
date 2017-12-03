@@ -254,14 +254,16 @@ var bg = {
                 pageAction.onClicked.addListener(bg._popupListInTab);
             }
 
-            if (setting.pageActionLite) {
-                pageAction.onClicked.removeListener(bg._popupListInWindow);
-                pageAction.onClicked.removeListener(bg._popupListInTab);
+            if (setting.pageAction) {
+                if (setting.pageActionLite) {
+                    pageAction.onClicked.removeListener(bg._popupListInWindow);
+                    pageAction.onClicked.removeListener(bg._popupListInTab);
 
-                pageAction.onClicked.addListener(bg._popupLite);
-            }
-            else {
-                pageAction.onClicked.removeListener(bg._popupLite);
+                    pageAction.onClicked.addListener(bg._popupLite);
+                }
+                else {
+                    pageAction.onClicked.removeListener(bg._popupLite);
+                }
             }
 
         }).catch(bg._catchErr);

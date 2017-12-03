@@ -26,19 +26,19 @@ var tcl = {
         document.querySelectorAll(me.cache_rule.join(',')).forEach( (ta, i) => {
             me.isDEV && console.log('ta-class-append');
             var isTEXTAREA = ta.tagName == "TEXTAREA";
-            ta.classList.add('ta-textContent');
+            ta.setAttribute('tc-textContent', true);
             ta.dataset.id = isTEXTAREA ? i : `w-${i}`;
         });
 
         // TO-DO: performance issue
         window.setInterval( () => {
-            document.querySelectorAll(me.cache_rule.map(rule => (rule+":not(.ta-textContent)")).join(','))
+            document.querySelectorAll(me.cache_rule.map(rule => (rule+":not([tc-textContent])")).join(','))
         }, 2000);
     },
 
     attachEvents: () => {
         var me = tcl;
-        var allTxtCnt = document.querySelectorAll('.ta-textContent');
+        var allTxtCnt = document.querySelectorAll('[tc-textContent]');
 
         allTxtCnt.forEach( ta => {
             me.isDEV && console.log('ta-txtcnt-event');
@@ -53,8 +53,8 @@ var tcl = {
                     event.target.removeEventListener('keyup', me.saveToStorage);
                 }
             };
-            ta.onfocus = saveFunction.add;
-            ta.onblur  = saveFunction.remove;
+            ta.addEventListener('focus', saveFunction.add);
+            ta.addEventListenter('blur', saveFunction.remove);
         });
     },
 
