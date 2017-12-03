@@ -13,6 +13,23 @@ var list = {
         ">": "&gt;"
     })[m]),
 
+    _sort: obj_array => {
+        // by last_modified
+        var tmp_array = []; // for reverse the order of saved cache
+        for (var key in obj_array) {
+            if (!obj_array[key]) continue;
+            var tmp_data = obj_array[key];
+            tmp_array.push(tmp_data);
+        }
+
+        return tmp_array.sort( (a,b) => {
+            var a_time = a.last_modified || new Date(parseInt( a.time || 0));
+            var b_time = b.last_modified || new Date(parseInt( b.time || 0));
+
+            return b_time - a_time;
+        });
+    },
+
     init: () => {
         var me = list;
 
@@ -26,7 +43,7 @@ var list = {
             delete res.data.setting;
             delete res.data.exceptions;
 
-            var list_data = me.makeArray(res.data).reverse();
+            var list_data = me._sort(me.makeArray(res.data));
             var show_something = me.showList(list_data);
             if (!show_something) return false;
             me.onFrameOpen();
