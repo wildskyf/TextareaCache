@@ -11,8 +11,11 @@ var bg = {
         me.checkStorageVersion();
         me.applyOptions();
         me.onMessage();
-        tabs.onCreated.addListener( tab => {
-            me.initPageAction(false, tab.id);
+        tabs.onUpdated.addListener( tab_id => {
+            me.initPageAction({
+                forAll: false,
+                tab_id: tab_id
+            });
         });
         me.setupCacheList();
     },
@@ -78,7 +81,8 @@ var bg = {
         }).catch(bg._catchErr);
     },
 
-    initPageAction: (forAll, tab_id) => {
+    initPageAction: info => {
+        var { forAll, tab_id } = info;
         local.get().then( local_obj => {
             var show_page_action = local_obj.setting.pageAction;
             if (forAll) {
@@ -136,7 +140,9 @@ var bg = {
                 break;
             case 'set_options':
                 me.setOptions(request).then( () => {
-                    me.initPageAction(true);
+                    me.initPageAction({
+                        forAll: true
+                    });
                     sendBack({ msg: 'done'});
                 });
                 break;
