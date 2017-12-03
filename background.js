@@ -232,6 +232,13 @@ var bg = {
         local.get('setting').then( data => {
             var { setting } = data;
 
+            if (!setting) {
+                setting = {
+                    popupType: "tab",
+                    pageActionLite: false
+                };
+            }
+
             if (setting.popupType == "window") {
                 browserAction.onClicked.removeListener(bg._popupListInTab);
                 pageAction.onClicked.removeListener(bg._popupListInTab);
