@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Save your cache</title>
+        <style>
+            body {
+                margin: 0;
+                height: auto;
+                overflow: hidden;
+                padding: 0;
+                min-width: 200px;
+            }
+			#cache_seletor {
+			    border-radius: 0;
+			    box-sizing: content-box;
+                height: 2rem;
+				margin: 0;
+                padding: .25rem 5%;
+				width: 90%;
+			}
+			#show_cache {
+				border-top: 1px solid #343434;
+				border-bottom: 1px solid #343434;
+			    box-sizing: content-box;
+				margin: 0;
+				max-height: 400px;
+				max-width: 800px;
+				overflow: auto;
+			}
+			#show_cache textarea {
+				min-height: 200px;
+				min-width: 300px;
+				width: 100%;
+			}
+            #copy_btn, #delete_all_btn, #delete_btn {
+			    box-sizing: border-box;
+			    border: 1px solid #ccc;
+			    border-radius: 0;
+                background: #eee;
+                float: left;
+                height: 3rem;
+                padding: .5rem;
+                text-align: center;
+                width: 33%;
+            }
+            #copy_btn:hover, #delete_all_btn:hover, #delete_btn:hover {
+                background: #ddd;
+            }
+		</style>
+        <script src="./lite.js"></script>
+    </head>
+    <body>
+    	<select id="cache_seletor" name="cache_seletor"></select>
+    	<div id="show_cache" contenteditable='true'></div>
+    	<div>
+            <button id="copy_btn">Copy</button>
+            <button id="delete_all_btn">Delete All Cache</button>
+            <button id="delete_btn">Delete</button>
+        </div>
+    </body>
+</html>

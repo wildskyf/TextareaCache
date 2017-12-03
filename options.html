@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Options</title>
     <style>
+        .hide {
+            display: none !important;
+        }
         .response {
             min-height: 1.5rem;
             color: #555;
@@ -16,6 +19,9 @@
             line-height: 35px;
             text-shadow: 0 1px 1px #fefffe;
         }
+        .row .offset {
+            padding-left: 20px;
+        }
         .row .title {
             width: 264px;
             display: inline-block;
@@ -26,6 +32,10 @@
             font: message-box;
             font-size: 1rem;
             color: #333;
+        }
+        #exception {
+            vertical-align: top;
+            margin: 10px 0;
         }
         .fake-button {
             float: right;
@@ -48,14 +58,17 @@
     <div class="row">
         <label class="title" for="pageAction">Show Icon at navigation bar</label>
         <input id="pageAction" type="checkbox">
-        <!--
-            <input id="browserAction" type="checkbox">
-            <label class="option-text" for="browserAction">toolbox</label>
-        -->
+    </div>
+    <div class="row hide" id="lite-list">
+        <label class="title offset" for="pageActionLite">PageAction (icon on url bar) using lite list</label>
+        <input id="pageActionLite" type="checkbox">
     </div>
     <div class="row">
-        <label class="title" for="debug">Debug Mode</label>
-        <input id="debug" type="checkbox">
+        <label class="title" for="popupType">Popup what to show list</label>
+        <select id="popupType">
+            <option value="tab">Tab</option>
+            <option value="window">Window</option>
+        </select>
     </div>
     <div class="row">
         <label class="title" for="exception">Exception List</label>

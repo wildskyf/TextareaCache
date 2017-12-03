@@ -1,5 +1,5 @@
 // background script
-var { storage, runtime, browserAction, pageAction, tabs } = browser;
+var { storage, runtime, browserAction, pageAction, tabs, windows } = browser;
 var { local } = storage;
 
 var bg = {
@@ -143,6 +143,7 @@ var bg = {
                     me.initPageAction({
                         forAll: true
                     });
+                    me.setupCacheList();
                     sendBack({ msg: 'done'});
                 });
                 break;
@@ -202,26 +203,61 @@ var bg = {
         });
     },
 
+    _popupListInWindow: () => {
+        windows.create({
+            url: browser.extension.getURL("list/list.html"),
+            type: "detached_panel", // "normal", "popup", "panel", "detached_panel"
+            height: 450,
+            width: 800
+        });
+    },
+
+    _popupListInTab: () => {
+        tabs.create({
+            url: browser.extension.getURL("list/list.html")
+        });
+    },
+
+    _popupLite: tab => {
+        pageAction.setPopup({
+            tabId: tab.id,
+            popup: browser.extension.getURL("list/lite.html")
+        });
+        pageAction.openPopup();
+    },
+
     setupCacheList: () => {
-        var popupList = () => {
-            browser.windows.create({
-                url: browser.extension.getURL("list/list.html"),
-                type: "panel", // "normal", "popup", "panel", "detached_panel"
-                height: 450,
-                width: 800
-            }).then( windowInfo => {
-                var panel_id = windowInfo.id;
-                var focusListener = windowId => {
-                    if (windowId !== panel_id) {
-                        browser.windows.remove(panel_id);
-                        browser.windows.onFocusChanged.removeListener(focusListener);
-                    }
-                };
-                browser.windows.onFocusChanged.addListener(focusListener);
-            });
-        };
-        browserAction.onClicked.addListener(popupList);
-        pageAction.onClicked.addListener(popupList);
+        var me = bg;
+
+        local.get('setting').then( data => {
+            var { setting } = data;
+
+            if (setting.popupType == "window") {
+                browserAction.onClicked.removeListener(bg._popupListInTab);
+                pageAction.onClicked.removeListener(bg._popupListInTab);
+
+                browserAction.onClicked.addListener(bg._popupListInWindow);
+                pageAction.onClicked.addListener(bg._popupListInWindow);
+            }
+            else {
+                browserAction.onClicked.removeListener(bg._popupListInWindow);
+                pageAction.onClicked.removeListener(bg._popupListInWindow);
+
+                browserAction.onClicked.addListener(bg._popupListInTab);
+                pageAction.onClicked.addListener(bg._popupListInTab);
+            }
+
+            if (setting.pageActionLite) {
+                pageAction.onClicked.removeListener(bg._popupListInWindow);
+                pageAction.onClicked.removeListener(bg._popupListInTab);
+
+                pageAction.onClicked.addListener(bg._popupLite);
+            }
+            else {
+                pageAction.onClicked.removeListener(bg._popupLite);
+            }
+
+        }).catch(bg._catchErr);
     }
 };
 bg.init();

@@ -42,26 +42,25 @@ var option = {
             for (var key in setting) {
                 var dom = document.querySelector('#' + key);
                 if (!dom) continue;
-                switch(dom.type){
+                switch (dom.type) {
                 case 'checkbox':
                     if (setting[key]) dom.checked = true;
                     break;
+                case 'select-one':
+                    var value = setting[key];
+                    if (!value) return;
+                    dom.querySelector(`[value=${value}]`).selected = true;
                 default:
                     break;
                 }
             }
-        });
 
-        document.querySelector('#debug').addEventListener('change', e => {
-            var isDebug = e.currentTarget.checked;
-
-            browser.runtime.sendMessage({
-                behavior: 'set_options',
-                key: 'debug',
-                val: isDebug
-            }).then( () => {
-                me.showUpdatedMessage('success');
-            });
+            if (setting.pageAction) {
+                document.querySelector('#lite-list').classList.remove('hide');
+            }
+            else {
+                document.querySelector('#lite-list').classList.add('hide');
+            }
         });
 
         document.querySelector('#pageAction').addEventListener('change', e => {
@@ -73,9 +72,38 @@ var option = {
                 val: isPageAction
             }).then( () => {
                 me.showUpdatedMessage('success');
+                if (isPageAction) {
+                    document.querySelector('#lite-list').classList.remove('hide');
+                }
+                else {
+                    document.querySelector('#lite-list').classList.add('hide');
+                }
             });
         });
 
+        document.querySelector('#pageActionLite').addEventListener('change', e => {
+            var isLite = e.currentTarget.checked;
+
+            browser.runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'pageActionLite',
+                val: isLite
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        });
+
+        document.querySelector('#popupType').addEventListener('change', e => {
+            var { value } = e.target;
+
+            browser.runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'popupType',
+                val: value
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        });
 
         document.querySelector('#exception').addEventListener('change', e => {
             var { target } = e;
