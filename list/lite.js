@@ -9,7 +9,7 @@ var panel = {
     $delete_all_btn: null,
 
     setBodyEmpty: () => {
-        var textnode = document.createTextNode('There is no cache here!');
+        var textnode = document.createTextNode(browser.i18n.getMessage('noCache'));
         document.body.textContent = '';
         document.body.style.padding = '20px';
         document.body.appendChild(textnode);
@@ -137,6 +137,9 @@ var panel = {
             var $delete_btn     = me.$delete_btn     = document.querySelector('#delete_btn');
             var $delete_all_btn = me.$delete_all_btn = document.querySelector('#delete_all_btn');
 
+            $copy_btn.textContent = browser.i18n.getMessage('copy');
+            $delete_btn.textContent = browser.i18n.getMessage('delete');
+            $delete_all_btn.textContent = browser.i18n.getMessage('deleteAll');
             me.showSelect(whole_data);
 
             $select.addEventListener('change', e => {

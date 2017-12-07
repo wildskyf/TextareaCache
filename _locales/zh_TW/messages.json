@@ -1,0 +1,29 @@
+{
+    "noCache":{
+      "message": "你還沒有任何 Cache"
+    },
+    "url":{
+      "message": "網址"
+    },
+    "date":{
+      "message": "日期"
+    },
+    "summary":{
+      "message": "摘要"
+    },
+    "copy":{
+      "message": "複製"
+    },
+    "delete":{
+      "message": "刪除"
+    },
+    "deleteSelected":{
+      "message": "刪除選取的 Cache"
+    },
+    "deleteAllinc":{
+      "message": "刪除全部（包含你沒選的 Cache）"
+    },
+    "deleteAll":{
+      "message": "刪除全部"
+    }
+}

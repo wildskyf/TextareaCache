@@ -22,6 +22,8 @@ var entity = {
         var $copy_btn       = document.querySelector('#copy_btn');
         var $delete_btn     = document.querySelector('#delete_btn');
 
+        $copy_btn.textContent = browser.i18n.getMessage("copy");
+        $delete_btn.textContent = browser.i18n.getMessage("delete");
         $copy_btn.addEventListener('click', () => {
             if ($show_cache.type == 'WYSIWYG') {
                 me.selectText($show_cache);

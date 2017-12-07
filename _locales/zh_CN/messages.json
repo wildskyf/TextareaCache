@@ -1,0 +1,29 @@
+{
+    "noCache":{
+      "message": "你尚未储存任何 Cache"
+    },
+    "url":{
+      "message": "网址"
+    },
+    "date":{
+      "message": "日期"
+    },
+    "summary":{
+      "message": "摘要"
+    },
+    "copy":{
+      "message": "复制"
+    },
+    "delete":{
+      "message": "删除"
+    },
+    "deleteSelected":{
+      "message": "删除选取的 Cache"
+    },
+    "deleteAllinc":{
+      "message": "删除全部（包含未选中的 Cache）"
+    },
+    "deleteAll":{
+      "message": "删除全部"
+    }
+}

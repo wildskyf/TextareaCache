@@ -1,1 +1,30 @@
-{}
+{
+    "noCache":{
+      "message": "There is no cache here!"
+    },
+    "url":{
+      "message": "URL"
+    },
+    "date":{
+      "message": "Date"
+    },
+    "summary":{
+      "message": "Summary"
+    },
+    "copy":{
+      "message": "Copy"
+    },
+    "delete":{
+      "message": "Delete"
+    },
+    "deleteSelected":{
+      "message": "Delete Selected Cache"
+    },
+    "deleteAllinc":{
+      "message": "Delete All (including those you didn't select)"
+    },
+    "deleteAll":{
+      "message": "Delete All"
+    }
+
+}

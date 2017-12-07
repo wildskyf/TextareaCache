@@ -71,7 +71,7 @@ var list = {
     },
 
     showNoCache: () => {
-        document.body.textContent = 'You have no cache';
+        document.body.textContent = browser.i18n.getMessage('noCache');
     },
 
     showList: caches => {
@@ -83,9 +83,9 @@ var list = {
         var list_dom_str = `
             <tr class="list-title">
                 <th class="select-title" width="1%"><input type="checkbox" /></th>
-                <th class="url-title" width="20%">url</th>
-                <th class="summary-title" width="64%">summary</th>
-                <th class="date-title" width="10%">date</th>
+                <th class="url-title" width="20%">${browser.i18n.getMessage('url')}</th>
+                <th class="summary-title" width="64%">${browser.i18n.getMessage('summary')}</th>
+                <th class="date-title" width="10%">${browser.i18n.getMessage('date')}</th>
                 <th width="5%"></th>
             </tr>
         `;
@@ -190,6 +190,9 @@ var list = {
     initDelBtn: () => {
         var $del_all_btn = document.querySelector('#delete_all_btn');
         var $del_selected_btn = document.querySelector('#delete_selected_btn');
+
+        $del_all_btn = browser.i18n.getMessage('deleteAllinc');
+        $del_selected_btn.textContent = browser.i18n.getMessage('deleteSelected');
 
         // del all btn
         $del_all_btn.addEventListener('click', () => {
