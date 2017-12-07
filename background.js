@@ -6,6 +6,8 @@ var bg = {
     isDEV: false,
     VERSION: '4',
 
+    currentData: null,
+
     init: () => {
         var me = bg;
         me.checkStorageVersion();
@@ -20,7 +22,7 @@ var bg = {
         me.setupCacheList();
     },
 
-    log_storage: () => bg.isDEV && local.get().then( db_data => console.log(db_data)),
+    log_storage: () => bg.isDEV && console.log(bg.currentData),
 
     _catchErr: e => console.error(e),
 
@@ -39,16 +41,19 @@ var bg = {
         var me = bg;
         var { default_exceptions, VERSION, _catchErr } = me;
         local.get().then( db_data => {
+            me.currentData = db_data;
 
             if (parseInt( db_data && db_data.version) == VERSION) {
                 return
             }
             else if (parseInt( db_data && db_data.version) < VERSION) {
-                local.set({
+                var updateData = {
                     version: VERSION,
                     setting: db_data.setting || {},
                     exceptions: default_exceptions
-                }).catch(_catchErr);
+                };
+                me.currentData = Object.assign( db_data, updateData);
+                local.set(updateData).catch(_catchErr);
             }
             else {
                 // if just installed || some other strange situations (e.g., db_data.version > VERSION ... etc)
@@ -58,62 +63,57 @@ var bg = {
     },
 
     applyOptions: () => {
-        local.get().then( db_data => {
-            bg.isDEV = !!(db_data.setting && db_data.setting.debug);
-        }).catch(bg._catchErr);
+        bg.isDEV = !!(bg.currentData.setting && bg.currentData.setting.debug);
     },
-
-    getOptions: () => local.get().catch(bg._catchErr),
 
     setOptions: request => {
         var me = bg;
         var { log_storage, isDEV } = me;
 
-        return local.get().then( local_obj => {
             log_storage();
-            if (!local_obj.setting) {
+            if (!me.currentData.setting) {
                 if (isDEV) console.log('creating setting');
-                local_obj.setting = {};
+                me.currentData.setting = {};
             }
-            local_obj.setting[request.key] = request.val;
-            local.set(local_obj);
+            me.currentData.setting[request.key] = request.val;
+            local.set(me.currentData);
             log_storage();
-        }).catch(bg._catchErr);
     },
 
     initPageAction: info => {
         var { forAll, tab_id } = info;
-        local.get().then( local_obj => {
-            var show_page_action = local_obj.setting.pageAction;
-            if (forAll) {
-                tabs.query({}).then(tab_infos => {
-                    tab_infos.forEach(tab_info => {
-                        if (show_page_action) {
-                            pageAction.show(tab_info.id);
-                        }
-                        else {
-                            pageAction.hide(tab_info.id);
-                        }
-                    });
-                }).catch(bg._catchErr);
+        var show_page_action = bg.currentData.setting.pageAction;
+        if (forAll) {
+            tabs.query({}).then(tab_infos => {
+                tab_infos.forEach(tab_info => {
+                    if (show_page_action) {
+                        pageAction.show(tab_info.id);
+                    }
+                    else {
+                        pageAction.hide(tab_info.id);
+                    }
+                });
+            }).catch(bg._catchErr);
+        }
+        else {
+            if (show_page_action) {
+                pageAction.show(tab_id);
             }
             else {
-                if (show_page_action) {
-                    pageAction.show(tab_id);
-                }
-                else {
-                    pageAction.hide(tab_id);
-                }
+                pageAction.hide(tab_id);
             }
-        }).catch(bg._catchErr);
+        }
     },
 
     initDatabase: old_data => local.clear().then( () => {
-        local.set({
+        var me = bg;
+        var resetData = {
             version: bg.VERSION,
             setting: (old_data && old_data.setting) || {},
             exceptions: (old_data && old_data.exceptions)|| bg.default_exceptions
-        }).catch(bg._catchErr);
+        };
+        me.currentData = resetData;
+        local.set(resetData).catch(me._catchErr);
     }).catch(bg._catchErr),
 
     onMessage: () => {
@@ -126,9 +126,7 @@ var bg = {
             switch(request.behavior) {
             case 'get_exceptions':
                 if (isDEV) console.log('get_exceptionsv');
-                local.get().then( local_obj => {
-                    sendBack({ expts: local_obj.exceptions })
-                }).catch(bg._catchErr);
+                sendBack({ expts: me.currentData.exceptions })
                 break;
             case 'set_exceptions':
                 if (isDEV) console.log('set_exceptionsv');
@@ -148,10 +146,7 @@ var bg = {
                 });
                 break;
             case 'get_options':
-                me.getOptions().then( db_data => {
-                    sendBack(db_data.setting);
-                });
-
+                sendBack(me.currentData.setting);
                 break;
             case 'save':
                 if (isDEV) console.log('bg_save');
@@ -174,27 +169,21 @@ var bg = {
                 break;
             case 'load':
                 if (isDEV) console.log('bg_load');
-                local.get().then( data => {
-                    sendBack({ data: data });
-                }).catch(bg._catchErr);
+                sendBack({ data: me.currentData });
                 break;
             case 'delete':
                 if (isDEV) console.log('bg_delete');
                 local.remove(request.id).then( () => {
-                    local.get().then( data => {
-                        sendBack({ msg: 'done', deleted: request.id, data: data});
-                    }).catch(bg._catchErr);
+                    sendBack({ msg: 'done', deleted: request.id, data: me.currentData});
                 }).catch(bg._catchErr);
                 break;
             case 'clear':
                 if (isDEV) console.log('bg_clear');
-                local.get().then( data => {
-                    me.initDatabase({
-                        setting: data.setting,
-                        exceptions: data.exceptions
-                    }).then( () => {
-                        sendBack({ msg: 'done' });
-                    });
+                me.initDatabase({
+                    setting: me.currentData.setting,
+                    exceptions: me.currentData.exceptions
+                }).then( () => {
+                    sendBack({ msg: 'done' });
                 });
                 break;
             }
@@ -229,44 +218,42 @@ var bg = {
     setupCacheList: () => {
         var me = bg;
 
-        local.get('setting').then( data => {
-            var { setting } = data;
+        var { setting } = me.currentData;
 
-            if (!setting) {
-                setting = {
-                    popupType: "tab",
-                    pageActionLite: false
-                };
-            }
+        if (!setting) {
+            setting = {
+                popupType: "tab",
+                pageActionLite: false
+            };
+        }
 
-            if (setting.popupType == "window") {
-                browserAction.onClicked.removeListener(bg._popupListInTab);
+        if (setting.popupType == "window") {
+            browserAction.onClicked.removeListener(bg._popupListInTab);
+            pageAction.onClicked.removeListener(bg._popupListInTab);
+
+            browserAction.onClicked.addListener(bg._popupListInWindow);
+            pageAction.onClicked.addListener(bg._popupListInWindow);
+        }
+        else {
+            browserAction.onClicked.removeListener(bg._popupListInWindow);
+            pageAction.onClicked.removeListener(bg._popupListInWindow);
+
+            browserAction.onClicked.addListener(bg._popupListInTab);
+            pageAction.onClicked.addListener(bg._popupListInTab);
+        }
+
+        if (setting.pageAction) {
+            if (setting.pageActionLite) {
+                pageAction.onClicked.removeListener(bg._popupListInWindow);
                 pageAction.onClicked.removeListener(bg._popupListInTab);
 
-                browserAction.onClicked.addListener(bg._popupListInWindow);
-                pageAction.onClicked.addListener(bg._popupListInWindow);
+                pageAction.onClicked.addListener(bg._popupLite);
             }
             else {
-                browserAction.onClicked.removeListener(bg._popupListInWindow);
-                pageAction.onClicked.removeListener(bg._popupListInWindow);
-
-                browserAction.onClicked.addListener(bg._popupListInTab);
-                pageAction.onClicked.addListener(bg._popupListInTab);
+                pageAction.onClicked.removeListener(bg._popupLite);
             }
+        }
 
-            if (setting.pageAction) {
-                if (setting.pageActionLite) {
-                    pageAction.onClicked.removeListener(bg._popupListInWindow);
-                    pageAction.onClicked.removeListener(bg._popupListInTab);
-
-                    pageAction.onClicked.addListener(bg._popupLite);
-                }
-                else {
-                    pageAction.onClicked.removeListener(bg._popupLite);
-                }
-            }
-
-        }).catch(bg._catchErr);
     }
 };
 bg.init();
