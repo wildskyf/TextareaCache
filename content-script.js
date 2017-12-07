@@ -32,29 +32,21 @@ var tcl = {
 
         // TO-DO: performance issue
         window.setInterval( () => {
-            document.querySelectorAll(me.cache_rule.map(rule => (rule+":not([tc-textContent])")).join(','))
+            var not_yet_tc_txt = document.querySelectorAll(me.cache_rule.map( rule => (rule+":not([tc-textContent])") ).join(','));
+            if (not_yet_tc_txt.length == 0) return;
+            not_yet_tc_txt.forEach( t => t.setAttribute('tc-textContent', true));
+            me.attachEvents(not_yet_tc_txt);
+
         }, 2000);
     },
 
-    attachEvents: () => {
+    attachEvents: doms => {
         var me = tcl;
-        var allTxtCnt = document.querySelectorAll('[tc-textContent]');
+        var allTxtCnt = doms;
 
         allTxtCnt.forEach( ta => {
             me.isDEV && console.log('ta-txtcnt-event');
-
-            var saveFunction = {
-                add: event => {
-                    me.isDEV && console.log('ta-event-fire-focus', event);
-                    event.target.addEventListener('keyup', me.saveToStorage);
-                },
-                remove: event => {
-                    me.isDEV && console.log('ta-event-fire-blur');
-                    event.target.removeEventListener('keyup', me.saveToStorage);
-                }
-            };
-            ta.addEventListener('focus', saveFunction.add);
-            ta.addEventListenter('blur', saveFunction.remove);
+            ta.addEventListener('keyup', me.saveToStorage);
         });
     },
 
@@ -66,7 +58,7 @@ var tcl = {
             if (!tcl.checkEnable()) return;
             tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
             tcl.findTextContents();
-            tcl.attachEvents();
+            tcl.attachEvents(document.querySelectorAll('[tc-textContent]'));
         });
     },
 
