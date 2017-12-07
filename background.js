@@ -10,16 +10,17 @@ var bg = {
 
     init: () => {
         var me = bg;
-        me.checkStorageVersion();
-        me.applyOptions();
-        me.onMessage();
-        tabs.onUpdated.addListener( tab_id => {
-            me.initPageAction({
-                forAll: false,
-                tab_id: tab_id
+        me.checkStorageVersion().then( () => {
+            me.applyOptions();
+            me.onMessage();
+            tabs.onUpdated.addListener( tab_id => {
+                me.initPageAction({
+                    forAll: false,
+                    tab_id: tab_id
+                });
             });
+            me.setupCacheList();
         });
-        me.setupCacheList();
     },
 
     log_storage: () => bg.isDEV && console.log(bg.currentData),
@@ -40,11 +41,11 @@ var bg = {
     checkStorageVersion: () => {
         var me = bg;
         var { default_exceptions, VERSION, _catchErr } = me;
-        local.get().then( db_data => {
+        return local.get().then( db_data => {
             me.currentData = db_data;
 
             if (parseInt( db_data && db_data.version) == VERSION) {
-                return
+                return;
             }
             else if (parseInt( db_data && db_data.version) < VERSION) {
                 var updateData = {
@@ -52,8 +53,9 @@ var bg = {
                     setting: db_data.setting || {},
                     exceptions: default_exceptions
                 };
-                me.currentData = Object.assign( db_data, updateData);
-                local.set(updateData).catch(_catchErr);
+                local.set(updateData).then( () => {
+                    me.currentData = Object.assign( db_data, updateData);
+                }).catch(_catchErr);
             }
             else {
                 // if just installed || some other strange situations (e.g., db_data.version > VERSION ... etc)
@@ -63,7 +65,7 @@ var bg = {
     },
 
     applyOptions: () => {
-        bg.isDEV = !!(bg.currentData.setting && bg.currentData.setting.debug);
+        bg.isDEV = bg.currentData && !!(bg.currentData.setting && bg.currentData.setting.debug);
     },
 
     setOptions: request => {
@@ -75,8 +77,9 @@ var bg = {
                 if (isDEV) console.log('creating setting');
                 me.currentData.setting = {};
             }
-            me.currentData.setting[request.key] = request.val;
-            local.set(me.currentData);
+            local.set(me.currentData).then( () => {
+                me.currentData.setting[request.key] = request.val;
+            });
             log_storage();
     },
 
@@ -112,8 +115,9 @@ var bg = {
             setting: (old_data && old_data.setting) || {},
             exceptions: (old_data && old_data.exceptions)|| bg.default_exceptions
         };
-        me.currentData = resetData;
-        local.set(resetData).catch(me._catchErr);
+        local.set(resetData).then( () => {
+            me.currentData = resetData;
+        }).catch(me._catchErr);
     }).catch(bg._catchErr),
 
     onMessage: () => {
@@ -130,9 +134,11 @@ var bg = {
                 break;
             case 'set_exceptions':
                 if (isDEV) console.log('set_exceptionsv');
+
                 local.set({
                     exceptions: request.val.split('\n').filter(site => site)
                 }).then( () => {
+                    me.currentData.exceptions = request.val.split('\n').filter(site => site);
                     sendBack({ msg: 'done'});
                 }).catch(bg._catchErr);
                 break;
@@ -164,7 +170,9 @@ var bg = {
                     last_modified: new Date()
                 };
 
-                local.set(tmp).catch(bg._catchErr);
+                local.set(tmp).then( () => {
+                    me.currentData = Object.assign(me.currentData, tmp);
+                }).catch(bg._catchErr);
                 log_storage();
                 break;
             case 'load':

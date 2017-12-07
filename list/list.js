@@ -44,6 +44,7 @@ var list = {
             delete res.data.version;
             delete res.data.setting;
             delete res.data.exceptions;
+            console.log(res);
 
             var list_data = me._sort(me.makeArray(res.data));
             var show_something = me.showList(list_data);
@@ -191,7 +192,7 @@ var list = {
         var $del_all_btn = document.querySelector('#delete_all_btn');
         var $del_selected_btn = document.querySelector('#delete_selected_btn');
 
-        $del_all_btn = browser.i18n.getMessage('deleteAllinc');
+        $del_all_btn.textContent = browser.i18n.getMessage('deleteAllinc');
         $del_selected_btn.textContent = browser.i18n.getMessage('deleteSelected');
 
         // del all btn
