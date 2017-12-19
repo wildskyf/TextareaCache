@@ -44,7 +44,6 @@ var list = {
             delete res.data.version;
             delete res.data.setting;
             delete res.data.exceptions;
-            console.log(res);
 
             var list_data = me._sort(me.makeArray(res.data));
             var show_something = me.showList(list_data);

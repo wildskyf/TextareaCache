@@ -118,16 +118,20 @@ var panel = {
         browser.runtime.sendMessage({
             behavior: 'load'
         }).then( ( resObj => {
+            var { data } = resObj;
 
-            if (!(resObj && resObj.data)) return false;
+            if (!data) {
+                console.error('loading error', resObj);
+                return false;
+            }
 
-            delete resObj.data.version;
-            delete resObj.data.setting;
-            delete resObj.data.exceptions;
+            delete data.version;
+            delete data.setting;
+            delete data.exceptions;
 
-            whole_data = resObj.data;
+            whole_data = data;
             if (Object.keys(whole_data).length <= 0) {
-                // me.setBodyEmpty();
+                me.setBodyEmpty();
                 return false;
             }
 
