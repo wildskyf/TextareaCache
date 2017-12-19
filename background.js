@@ -72,15 +72,13 @@ var bg = {
         var me = bg;
         var { log_storage, isDEV } = me;
 
-            log_storage();
-            if (!me.currentData.setting) {
-                if (isDEV) console.log('creating setting');
-                me.currentData.setting = {};
-            }
-            local.set(me.currentData).then( () => {
-                me.currentData.setting[request.key] = request.val;
-            });
-            log_storage();
+        log_storage();
+        if (!me.currentData.setting) {
+            if (isDEV) console.log('creating setting');
+            me.currentData.setting = {};
+        }
+        me.currentData.setting[request.key] = request.val;
+        return local.set(me.currentData).then(log_storage);
     },
 
     initPageAction: info => {
@@ -144,10 +142,10 @@ var bg = {
                 break;
             case 'set_options':
                 me.setOptions(request).then( () => {
+                    me.setupCacheList();
                     me.initPageAction({
                         forAll: true
                     });
-                    me.setupCacheList();
                     sendBack({ msg: 'done'});
                 });
                 break;
@@ -225,7 +223,6 @@ var bg = {
 
     setupCacheList: () => {
         var me = bg;
-
         var { setting } = me.currentData;
 
         if (!setting) {
@@ -237,31 +234,23 @@ var bg = {
 
         if (setting.popupType == "window") {
             browserAction.onClicked.removeListener(bg._popupListInTab);
-            pageAction.onClicked.removeListener(bg._popupListInTab);
-
             browserAction.onClicked.addListener(bg._popupListInWindow);
-            pageAction.onClicked.addListener(bg._popupListInWindow);
+        }
+        else if (setting.popupType == "tab") {
+            browserAction.onClicked.removeListener(bg._popupListInWindow);
+            browserAction.onClicked.addListener(bg._popupListInTab);
+        }
+
+        if (!setting.pageAction) return;
+        var target_function = setting.popupType == "window" ? bg._popupListInWindow : bg._popupListInTab;
+        if (setting.pageActionLite) {
+            pageAction.onClicked.removeListener(target_function);
+            pageAction.onClicked.addListener(bg._popupLite);
         }
         else {
-            browserAction.onClicked.removeListener(bg._popupListInWindow);
-            pageAction.onClicked.removeListener(bg._popupListInWindow);
-
-            browserAction.onClicked.addListener(bg._popupListInTab);
-            pageAction.onClicked.addListener(bg._popupListInTab);
+            pageAction.onClicked.removeListener(bg._popupLite);
+            pageAction.onClicked.addListener(target_function);
         }
-
-        if (setting.pageAction) {
-            if (setting.pageActionLite) {
-                pageAction.onClicked.removeListener(bg._popupListInWindow);
-                pageAction.onClicked.removeListener(bg._popupListInTab);
-
-                pageAction.onClicked.addListener(bg._popupLite);
-            }
-            else {
-                pageAction.onClicked.removeListener(bg._popupLite);
-            }
-        }
-
     }
 };
 bg.init();
