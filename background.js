@@ -110,7 +110,10 @@ var bg = {
         var me = bg;
         var resetData = {
             version: bg.VERSION,
-            setting: (old_data && old_data.setting) || {},
+            setting: (old_data && old_data.setting) || {
+                pageActionLite: true,
+                popupType: 'tab'
+            },
             exceptions: (old_data && old_data.exceptions)|| bg.default_exceptions
         };
         local.set(resetData).then( () => {
@@ -236,7 +239,7 @@ var bg = {
             browserAction.onClicked.removeListener(bg._popupListInTab);
             browserAction.onClicked.addListener(bg._popupListInWindow);
         }
-        else if (setting.popupType == "tab") {
+        else {
             browserAction.onClicked.removeListener(bg._popupListInWindow);
             browserAction.onClicked.addListener(bg._popupListInTab);
         }
