@@ -1,5 +1,5 @@
 // background script
-var { storage, runtime, browserAction, pageAction, tabs, windows } = browser;
+var { storage, runtime, browserAction, pageAction, tabs, windows, menus } = browser;
 var { local } = storage;
 
 var bg = {
@@ -129,6 +129,11 @@ var bg = {
 
             if (isDEV) console.log('bg_get_request', request.behavior);
             switch(request.behavior) {
+            case 'init':
+                menus.removeAll();
+                menus.onClicked.removeListener(me._menuOnClick);
+                me.setupContext(request);
+                break;
             case 'get_exceptions':
                 if (isDEV) console.log('get_exceptionsv');
                 sendBack({ expts: me.currentData.exceptions })
@@ -254,6 +259,33 @@ var bg = {
             pageAction.onClicked.removeListener(bg._popupLite);
             pageAction.onClicked.addListener(target_function);
         }
+    },
+
+    setupContext: req => {
+        var me = bg;
+        var site_names = Object.keys(me.currentData).filter( t => t.includes(req.title));
+        var datas = site_names.map( name => me.currentData[name] ).filter( d => d.url == req.url ).map( d => d.val );
+        me.showCachesInContext(datas);
+    },
+
+    _menuOnClick: (info, tab) => {
+        tabs.sendMessage(tab.id, {
+            behavior: 'pasteToTextarea',
+            val: info.menuItemId,
+            skipConfirmPaste: bg.currentData.setting.skipConfirmPaste
+        });
+    },
+
+    showCachesInContext: caches => {
+        caches.forEach( cache => {
+            menus.create({
+                id: cache,
+                title: cache,
+                contexts: ["editable"]
+            });
+
+        });
+        menus.onClicked.addListener(bg._menuOnClick);
     }
 };
 bg.init();

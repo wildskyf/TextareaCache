@@ -56,9 +56,26 @@ var tcl = {
 
         tcl.initExceptionSites().then( () => {
             if (!tcl.checkEnable()) return;
+            tcl.initContextMenu();
             tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
             tcl.findTextContents();
             tcl.attachEvents(document.querySelectorAll('[tc-textContent]'));
+        });
+    },
+
+    initContextMenu: () => {
+        browser.runtime.sendMessage({
+            behavior: 'init',
+            title: window.parent.document.title,
+            url: location.href
+        });
+        browser.runtime.onMessage.addListener( req => {
+            if (req.behavior != "pasteToTextarea") return;
+            if (!req.skipConfirmPaste) {
+                if (!confirm(`paste "${req.val}" ?`)) return;
+            }
+
+            document.activeElement.innerHTML = req.val
         });
     },
 

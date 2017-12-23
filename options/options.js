@@ -63,6 +63,18 @@ var option = {
             }
         });
 
+        document.querySelector('#skipConfirmPaste').addEventListener('change', e => {
+            var isSkip = e.currentTarget.checked;
+
+            browser.runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'skipConfirmPaste',
+                val: isSkip
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        });
+
         document.querySelector('#pageAction').addEventListener('change', e => {
             var isPageAction = e.currentTarget.checked;
 
