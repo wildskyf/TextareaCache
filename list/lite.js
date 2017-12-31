@@ -80,7 +80,7 @@ var panel = {
             var a_time = a.last_modified || new Date(parseInt( a.time || 0));
             var b_time = b.last_modified || new Date(parseInt( b.time || 0));
 
-            return a_time - b_time;
+            return b_time - a_time;
         });
     },
 
