@@ -30,10 +30,18 @@ var option = {
 
     },
 
+    i18nLabels: () => {
+        document.querySelectorAll("label[for]").forEach( label => {
+            label.textContent = browser.i18n.getMessage("option_"+label.htmlFor);
+        });
+        document.querySelector(".hint").textContent = browser.i18n.getMessage("option_exp_site_hint");
+    },
+
     init: () => {
         var me = option;
         me.$response = document.querySelector('.response');
 
+        me.i18nLabels();
         me.showExceptionSites();
 
         browser.runtime.sendMessage({

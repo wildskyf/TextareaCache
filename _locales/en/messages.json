@@ -25,6 +25,26 @@
     },
     "deleteAll":{
       "message": "Delete All"
+    },
+
+    "option_skipConfirmPaste": {
+      "message": "Skip Confirm When Paste From Context Menu"
+    },
+    "option_pageAction": {
+      "message": "Show Icon at navigation bar"
+    },
+    "option_pageActionLite": {
+      "message": "PageAction (icon on url bar) using lite list"
+    },
+    "option_popupType": {
+      "message": "Popup what to show list"
+    },
+    "option_exception": {
+      "message": "Exception List"
+    },
+    "option_exp_site_hint": {
+      "message": "(one site one line)"
     }
+
 
 }

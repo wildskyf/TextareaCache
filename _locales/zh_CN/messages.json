@@ -25,5 +25,25 @@
     },
     "deleteAll":{
       "message": "删除全部"
+    },
+
+    "option_skipConfirmPaste": {
+      "message": "从右键选单贴上时不再次确认"
+    },
+    "option_pageAction": {
+      "message": "在网址列显示 Icon"
+    },
+    "option_pageActionLite": {
+      "message": "网址列 Icon 使用简单版的清单"
+    },
+    "option_popupType": {
+      "message": "要用哪种方式显示 Cache 列表"
+    },
+    "option_exception": {
+      "message": "不储存 Cache 的网站"
+    },
+    "option_exp_site_hint": {
+      "message": "（一行一个网站）"
     }
+
 }
