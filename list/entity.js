@@ -71,7 +71,7 @@ var entity = {
         var me = entity;
         me.$show_cache = document.querySelector('#show_cache');
         var key_arry = decodeURI(location.href).split("entity.html?id=");
-        var key = key_arry[1];
+        var key = me.key = key_arry[1];
 
         if (!key) return;
 

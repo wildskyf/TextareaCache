@@ -2,154 +2,144 @@
 var { storage, runtime, browserAction, pageAction, tabs, windows, menus } = browser;
 var { local } = storage;
 
-var bg = {
-    isDEV: false,
+var catchErr = e => console.error(e);
+
+var ta_database = {
     VERSION: '5',
+    data: null,
 
-    currentData: null,
-
-    init: () => {
-        var me = bg;
-        me.checkStorageVersion().then( () => {
-            me.applyOptions();
-            me.onMessage();
-            tabs.onUpdated.addListener( tab_id => {
-                me.initPageAction({
-                    forAll: false,
-                    tab_id: tab_id
-                });
-            });
-            me.setupCacheList();
-        });
+    _resetData: {
+        version: '5',
+        setting: {
+            pageActionLite: true,
+            popupType: 'tab'
+        },
+        exceptions: [
+            "docs.google.com/spreadsheets",
+            "slack.com",
+            "messenger.com"
+        ]
     },
 
-    log_storage: () => bg.isDEV && console.log(bg.currentData),
+    _loadFromStorage: () => local.get().then( db_data => {
+        ta_database.data = db_data;
+    }),
 
-    _catchErr: e => console.error(e),
+    _checkVersion: () => ta_database._loadFromStorage().then( () => {
+        var { VERSION, _resetData, data, reset } = ta_database;
 
-    // obj empty: https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
-    _isEmptyObj: obj => (Object.keys(obj).length === 0 && obj.constructor === Object),
-
-    _getTime: date => date.getFullYear() + '/' + (parseInt(date.getMonth()) + 1) + '/' + date.getDate(),
-
-    default_exceptions: [
-        "docs.google.com/spreadsheets",
-        "slack.com",
-        "messenger.com"
-    ],
-
-    initDatabase: old_data => local.clear().then( () => {
-        var me = bg;
-        var resetData = {
-            version: bg.VERSION,
-            setting: (old_data && old_data.setting) || {
-                pageActionLite: true,
-                popupType: 'tab'
-            },
-            exceptions: (old_data && old_data.exceptions)|| bg.default_exceptions
-        };
-
-        local.set(resetData).then( () => {
-            me.currentData = resetData;
-        }).catch(me._catchErr);
-    }).catch(bg._catchErr),
-
-    checkStorageVersion: () => {
-        var me = bg;
-        var { default_exceptions, VERSION, _catchErr } = me;
-        return local.get().then( db_data => {
-            me.currentData = db_data;
-
-            if (!db_data || !db_data.version) {
-                me.initDatabase();
-            }
-            else if (db_data.version == VERSION) {
-                return
-            }
-            else if (db_data.version < VERSION) {
-                for (var d in db_data) {
-                    if (d.includes('"')) {
-                        // avoid wrong render when listing
-                        delete db_data[d];
-                        local.remove(d);
-                    }
-
-                    if ((new Date(db_data.last_modified)).toLocaleString() == 'Invalid Date') {
-                        // avoid Invalid Date
-                        if (!db_data[d]) return;
-
-                        db_data[d].last_modified = new Date();
-                        var tmp = {};
-                        tmp[d] = db_data[d];
-                        local.set(tmp);
-                    }
+        if (!data || !data.version) {
+            reset();
+        }
+        else if (data.version == VERSION) {
+            return
+        }
+        else if (data.version < VERSION) {
+            for (var d in data) {
+                if (d.includes('"')) {
+                    // avoid wrong render when listing
+                    delete data[d];
+                    local.remove(d);
                 }
 
-                var updateData = {
-                    version: VERSION,
-                    setting: db_data.setting || {},
-                    exceptions: default_exceptions
-                };
+                if ( (new Date(data.last_modified)).toLocaleString() == 'Invalid Date' ) {
+                    // avoid Invalid Date
+                    if (!data[d]) return;
 
-                local.set(updateData).then( () => {
-                    me.currentData = Object.assign( db_data, updateData);
-                }).catch(_catchErr);
+                    data[d].last_modified = new Date();
+                    var tmp = {};
+                    tmp[d] = data[d];
+                    local.set(tmp);
+                }
             }
-            else {
-                me.initDatabase();
-            }
-        }).catch(me._catchErr);
-    },
 
-    applyOptions: () => {
-        bg.isDEV = bg.currentData && !!(bg.currentData.setting && bg.currentData.setting.debug);
-    },
-
-    setOptions: request => {
-        var me = bg;
-        var { log_storage, isDEV } = me;
-
-        log_storage();
-        if (!me.currentData.setting) {
-            if (isDEV) console.log('creating setting');
-            me.currentData.setting = {};
+            local.set(data).catch(catchErr);
         }
-        me.currentData.setting[request.key] = request.val;
-        return local.set(me.currentData).then(log_storage);
+        else {
+            reset();
+        }
+    }),
+
+    reset: () => local.clear().then( () => {
+        var { data, _resetData } = ta_database;
+
+        var keep_config = Object.assign({}, _resetData);
+        if (data.setting) keep_config.setting = data.setting;
+        if (data.exceptions) keep_config.exceptions = data.exceptions;
+
+        return local.set(keep_config).then( () => {
+            ta_database.data = keep_config;
+        });
+    }),
+
+    remove: key => local.remove(key).then( () => {
+        delete ta_database.data[key];
+    }),
+
+    set: (name, obj) => {
+        ta_database.data[name] = obj
+
+        var tmp = {};
+        tmp[name] = obj;
+        return local.set(tmp);
+    },
+
+    setOptions: config => {
+        var { setting } = ta_database.data;
+        var { key, val } = config;
+        setting[key] = val;
+        return ta_database.set('setting', setting);
+    },
+
+    print: () => console.log(ta_database.data),
+
+    init: () => {
+        return ta_database._checkVersion();
+    }
+};
+
+
+var ta_bg = {
+    init: () => {
+        var me = ta_bg;
+        me.onMessage();
+
+        // FIXME: the timing for event binding is wrong
+        tabs.onUpdated.addListener( tab_id => {
+            me.initPageAction({
+                forAll: false,
+                tab_id: tab_id
+            });
+        });
+
+        me.setupCacheList();
     },
 
     initPageAction: info => {
         var { forAll, tab_id } = info;
-        var show_page_action = bg.currentData.setting.pageAction;
+        var show_page_action = ta_database.data.setting.pageAction;
+
         if (forAll) {
             tabs.query({}).then(tab_infos => {
                 tab_infos.forEach(tab_info => {
-                    if (show_page_action) {
-                        pageAction.show(tab_info.id);
-                    }
-                    else {
+                    show_page_action ?
+                        pageAction.show(tab_info.id) :
                         pageAction.hide(tab_info.id);
-                    }
                 });
-            }).catch(bg._catchErr);
+            }).catch(catchErr);
         }
         else {
-            if (show_page_action) {
-                pageAction.show(tab_id);
-            }
-            else {
+            show_page_action ?
+                pageAction.show(tab_id) :
                 pageAction.hide(tab_id);
-            }
         }
     },
 
     onMessage: () => {
-        var me = bg;
-        var {log_storage, isDEV} = me;
+        var me = ta_bg;
 
         runtime.onMessage.addListener( (request, sender, sendBack) => {
 
-            if (isDEV) console.log('bg_get_request', request.behavior);
             switch(request.behavior) {
             case 'init':
                 menus.removeAll();
@@ -157,21 +147,15 @@ var bg = {
                 me.setupContext(request);
                 break;
             case 'get_exceptions':
-                if (isDEV) console.log('get_exceptionsv');
-                sendBack({ expts: me.currentData.exceptions })
+                sendBack({ expts: ta_database.data.exceptions })
                 break;
             case 'set_exceptions':
-                if (isDEV) console.log('set_exceptionsv');
-
-                local.set({
-                    exceptions: request.val.split('\n').filter(site => site)
-                }).then( () => {
-                    me.currentData.exceptions = request.val.split('\n').filter(site => site);
-                    sendBack({ msg: 'done'});
-                }).catch(bg._catchErr);
+                ta_database.set(
+                    'exceptions', request.val.split('\n').filter(site => site)
+                ).then( () => sendBack({ msg: 'done'}) );
                 break;
             case 'set_options':
-                me.setOptions(request).then( () => {
+                ta_database.setOptions(request).then( () => {
                     me.setupCacheList();
                     me.initPageAction({
                         forAll: true
@@ -180,46 +164,28 @@ var bg = {
                 });
                 break;
             case 'get_options':
-                sendBack(me.currentData.setting);
+                sendBack(ta_database.data.setting);
                 break;
             case 'save':
-                if (isDEV) console.log('bg_save');
                 var {title, val, type, id, url, sessionKey} = request;
-                var key = `${sessionKey} ${url} ${id}`;
-
-                if (isDEV) console.table({ key: key, val: val, type: type, url: url });
-
-                var tmp = {};
-                tmp[key] = {
+                ta_database.set(`${sessionKey} ${url} ${id}`, {
                     time: sessionKey,
                     type: type,
                     val: val,
                     url: url,
                     last_modified: new Date()
-                };
-
-                local.set(tmp).then( () => {
-                    me.currentData = Object.assign(me.currentData, tmp);
-                }).catch(bg._catchErr);
-                log_storage();
+                });
                 break;
             case 'load':
-                if (isDEV) console.log('bg_load');
-                sendBack({ data: me.currentData });
+                sendBack({ data: ta_database.data });
                 break;
             case 'delete':
-                if (isDEV) console.log('bg_delete');
-                local.remove(request.id).then( res => {
-                    delete (me.currentData[request.id]);
-                    sendBack({ msg: 'done', deleted: request.id, data: me.currentData });
-                }).catch(bg._catchErr);
+                ta_database.remove(request.id).then( () => {
+                    sendBack({ msg: 'done', deleted: request.id, data: ta_database.data });
+                });
                 break;
             case 'clear':
-                if (isDEV) console.log('bg_clear');
-                me.initDatabase({
-                    setting: me.currentData.setting,
-                    exceptions: me.currentData.exceptions
-                }).then( () => {
+                ta_database.reset().then( () => {
                     sendBack({ msg: 'done' });
                 });
                 break;
@@ -253,41 +219,41 @@ var bg = {
     },
 
     setupCacheList: () => {
-        var me = bg;
-        var { setting } = me.currentData;
+        var me = ta_bg;
+        var { setting } = ta_database.data;
 
         if (!setting) {
             setting = {
                 popupType: "tab",
-                pageActionLite: false
+                pageActionLite: true
             };
         }
 
         if (setting.popupType == "window") {
-            browserAction.onClicked.removeListener(bg._popupListInTab);
-            browserAction.onClicked.addListener(bg._popupListInWindow);
+            browserAction.onClicked.removeListener(ta_bg._popupListInTab);
+            browserAction.onClicked.addListener(ta_bg._popupListInWindow);
         }
         else {
-            browserAction.onClicked.removeListener(bg._popupListInWindow);
-            browserAction.onClicked.addListener(bg._popupListInTab);
+            browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
+            browserAction.onClicked.addListener(ta_bg._popupListInTab);
         }
 
         if (!setting.pageAction) return;
-        var target_function = setting.popupType == "window" ? bg._popupListInWindow : bg._popupListInTab;
+        var target_function = setting.popupType == "window" ? ta_bg._popupListInWindow : ta_bg._popupListInTab;
         if (setting.pageActionLite) {
             pageAction.onClicked.removeListener(target_function);
-            pageAction.onClicked.addListener(bg._popupLite);
+            pageAction.onClicked.addListener(ta_bg._popupLite);
         }
         else {
-            pageAction.onClicked.removeListener(bg._popupLite);
+            pageAction.onClicked.removeListener(ta_bg._popupLite);
             pageAction.onClicked.addListener(target_function);
         }
     },
 
     setupContext: req => {
-        var me = bg;
-        var site_names = Object.keys(me.currentData).filter( t => t.includes(req.url));
-        var datas = site_names.map( name => me.currentData[name] ).filter( d => d.url == req.url ).map( d => d.val );
+        var me = ta_bg;
+        var site_names = Object.keys(ta_database.data).filter( t => t.includes(req.url));
+        var datas = site_names.map( name => ta_database.data[name] ).filter( d => d.url == req.url ).map( d => d.val );
         me.showCachesInContext(datas);
     },
 
@@ -295,7 +261,7 @@ var bg = {
         tabs.sendMessage(tab.id, {
             behavior: 'pasteToTextarea',
             val: info.menuItemId,
-            skipConfirmPaste: bg.currentData.setting.skipConfirmPaste
+            skipConfirmPaste: ta_database.data.setting.skipConfirmPaste
         });
     },
 
@@ -308,8 +274,11 @@ var bg = {
             });
 
         });
-        menus.onClicked.addListener(bg._menuOnClick);
+        menus.onClicked.addListener(ta_bg._menuOnClick);
     }
 };
-bg.init();
+
+ta_database.init().then( () => {
+    ta_bg.init();
+});
 
