@@ -4,7 +4,7 @@ var { local } = storage;
 
 var bg = {
     isDEV: false,
-    VERSION: '4',
+    VERSION: '5',
 
     currentData: null,
 
@@ -38,27 +38,64 @@ var bg = {
         "messenger.com"
     ],
 
+    initDatabase: old_data => local.clear().then( () => {
+        var me = bg;
+        var resetData = {
+            version: bg.VERSION,
+            setting: (old_data && old_data.setting) || {
+                pageActionLite: true,
+                popupType: 'tab'
+            },
+            exceptions: (old_data && old_data.exceptions)|| bg.default_exceptions
+        };
+
+        local.set(resetData).then( () => {
+            me.currentData = resetData;
+        }).catch(me._catchErr);
+    }).catch(bg._catchErr),
+
     checkStorageVersion: () => {
         var me = bg;
         var { default_exceptions, VERSION, _catchErr } = me;
         return local.get().then( db_data => {
             me.currentData = db_data;
 
-            if (parseInt( db_data && db_data.version) == VERSION) {
-                return;
+            if (!db_data || !db_data.version) {
+                me.initDatabase();
             }
-            else if (parseInt( db_data && db_data.version) < VERSION) {
+            else if (db_data.version == VERSION) {
+                return
+            }
+            else if (db_data.version < VERSION) {
+                for (var d in db_data) {
+                    if (d.includes('"')) {
+                        // avoid wrong render when listing
+                        delete db_data[d];
+                        local.remove(d);
+                    }
+
+                    if ((new Date(db_data.last_modified)).toLocaleString() == 'Invalid Date') {
+                        // avoid Invalid Date
+                        if (!db_data[d]) return;
+
+                        db_data[d].last_modified = new Date();
+                        var tmp = {};
+                        tmp[d] = db_data[d];
+                        local.set(tmp);
+                    }
+                }
+
                 var updateData = {
                     version: VERSION,
                     setting: db_data.setting || {},
                     exceptions: default_exceptions
                 };
+
                 local.set(updateData).then( () => {
                     me.currentData = Object.assign( db_data, updateData);
                 }).catch(_catchErr);
             }
             else {
-                // if just installed || some other strange situations (e.g., db_data.version > VERSION ... etc)
                 me.initDatabase();
             }
         }).catch(me._catchErr);
@@ -106,21 +143,6 @@ var bg = {
         }
     },
 
-    initDatabase: old_data => local.clear().then( () => {
-        var me = bg;
-        var resetData = {
-            version: bg.VERSION,
-            setting: (old_data && old_data.setting) || {
-                pageActionLite: true,
-                popupType: 'tab'
-            },
-            exceptions: (old_data && old_data.exceptions)|| bg.default_exceptions
-        };
-        local.set(resetData).then( () => {
-            me.currentData = resetData;
-        }).catch(me._catchErr);
-    }).catch(bg._catchErr),
-
     onMessage: () => {
         var me = bg;
         var {log_storage, isDEV} = me;
@@ -163,7 +185,7 @@ var bg = {
             case 'save':
                 if (isDEV) console.log('bg_save');
                 var {title, val, type, id, url, sessionKey} = request;
-                var key = `${sessionKey} ${title} ${id}`;
+                var key = `${sessionKey} ${url} ${id}`;
 
                 if (isDEV) console.table({ key: key, val: val, type: type, url: url });
 
@@ -187,8 +209,9 @@ var bg = {
                 break;
             case 'delete':
                 if (isDEV) console.log('bg_delete');
-                local.remove(request.id).then( () => {
-                    sendBack({ msg: 'done', deleted: request.id, data: me.currentData});
+                local.remove(request.id).then( res => {
+                    delete (me.currentData[request.id]);
+                    sendBack({ msg: 'done', deleted: request.id, data: me.currentData });
                 }).catch(bg._catchErr);
                 break;
             case 'clear':
@@ -263,7 +286,7 @@ var bg = {
 
     setupContext: req => {
         var me = bg;
-        var site_names = Object.keys(me.currentData).filter( t => t.includes(req.title));
+        var site_names = Object.keys(me.currentData).filter( t => t.includes(req.url));
         var datas = site_names.map( name => me.currentData[name] ).filter( d => d.url == req.url ).map( d => d.val );
         me.showCachesInContext(datas);
     },
