@@ -5,14 +5,16 @@ var { local } = storage;
 var catchErr = e => console.error(e);
 
 var ta_database = {
-    VERSION: '5',
+    VERSION: '6',
     data: null,
 
     _resetData: {
-        version: '5',
+        version: '6',
         setting: {
             pageActionLite: true,
-            popupType: 'tab'
+            popupType: 'tab',
+            skipConfirmPaste: false,
+            showContextMenu: true
         },
         exceptions: [
             "docs.google.com/spreadsheets",
@@ -42,6 +44,14 @@ var ta_database = {
                     local.remove(d);
                 }
 
+                if (d == 'setting') {
+                    if (d.skipConfirmPaste == undefined) {
+                        d.skipConfirmPaste = false;
+                    }
+                    if (d.showContextMenu == undefined) {
+                        d.skipConfirmPaste = true;
+                    }
+                }
                 if ( (new Date(data.last_modified)).toLocaleString() == 'Invalid Date' ) {
                     // avoid Invalid Date
                     if (!data[d]) return;
@@ -142,9 +152,15 @@ var ta_bg = {
 
             switch(request.behavior) {
             case 'init':
-                menus.removeAll();
-                menus.onClicked.removeListener(me._menuOnClick);
-                me.setupContext(request);
+                if (ta_database &&
+                    ta_database.data &&
+                    ta_database.data.setting &&
+                    ta_database.data.setting.showContextMenu
+                ) {
+                    menus.removeAll();
+                    menus.onClicked.removeListener(me._menuOnClick);
+                    me.setupContext(request);
+                }
                 break;
             case 'get_exceptions':
                 sendBack({ expts: ta_database.data.exceptions })
@@ -224,8 +240,10 @@ var ta_bg = {
 
         if (!setting) {
             setting = {
-                popupType: "tab",
-                pageActionLite: true
+                popupType: 'tab',
+                pageActionLite: true,
+                skipConfirmPaste: false,
+                showContextMenu: true
             };
         }
 
@@ -258,6 +276,8 @@ var ta_bg = {
     },
 
     _menuOnClick: (info, tab) => {
+        if (/^\[TEXTAREA CACHE\] /.test(info.menuItemId)) return;
+
         tabs.sendMessage(tab.id, {
             behavior: 'pasteToTextarea',
             val: info.menuItemId,
@@ -266,13 +286,25 @@ var ta_bg = {
     },
 
     showCachesInContext: caches => {
+        if (caches.length == 0) return;
+
+        menus.create({
+            id: '[TEXTAREA CACHE] open-cache-list',
+            title: 'View your caches',
+            contexts: ["editable"],
+            command: '_execute_browser_action'
+        });
+
+        menus.create({
+            type: 'separator'
+        });
+
         caches.forEach( cache => {
             menus.create({
                 id: cache,
                 title: cache,
                 contexts: ["editable"]
             });
-
         });
         menus.onClicked.addListener(ta_bg._menuOnClick);
     }

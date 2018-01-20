@@ -44,8 +44,8 @@
     },
     "option_exp_site_hint": {
       "message": "（一行一個網站）"
+    },
+    "option_showContextMenu": {
+      "message": "顯示右鍵選單"
     }
-
-
-
 }

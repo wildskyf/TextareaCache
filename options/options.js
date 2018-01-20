@@ -113,6 +113,18 @@ var option = {
             });
         });
 
+        document.querySelector('#showContextMenu').addEventListener('change', e => {
+            var showContextMenu = e.currentTarget.checked;
+
+            browser.runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'showContextMenu',
+                val: showContextMenu
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        });
+
         document.querySelector('#popupType').addEventListener('change', e => {
             var { value } = e.target;
 

@@ -44,6 +44,8 @@
     },
     "option_exp_site_hint": {
       "message": "（一行一个网站）"
+    },
+    "option_showContextMenu": {
+      "message": "显示右键选单"
     }
-
 }

@@ -44,7 +44,8 @@
     },
     "option_exp_site_hint": {
       "message": "(one site one line)"
+    },
+    "option_showContextMenu": {
+      "message": "show context menu"
     }
-
-
 }
