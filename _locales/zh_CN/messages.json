@@ -1,6 +1,6 @@
 {
     "noCache":{
-      "message": "你尚未储存任何 Cache"
+      "message": "你尚未保存任何 Cache"
     },
     "url":{
       "message": "网址"
@@ -18,7 +18,7 @@
       "message": "删除"
     },
     "deleteSelected":{
-      "message": "删除选取的 Cache"
+      "message": "删除选中的 Cache"
     },
     "deleteAllinc":{
       "message": "删除全部（包含未选中的 Cache）"
@@ -28,24 +28,24 @@
     },
 
     "option_skipConfirmPaste": {
-      "message": "从右键选单贴上时不再次确认"
+      "message": "从右键菜单粘贴时不再次确认"
     },
     "option_pageAction": {
-      "message": "在网址列显示 Icon"
+      "message": "在地址栏显示图标"
     },
     "option_pageActionLite": {
-      "message": "网址列 Icon 使用简单版的清单"
+      "message": "地址栏图标使用简单版的清单"
     },
     "option_popupType": {
       "message": "要用哪种方式显示 Cache 列表"
     },
     "option_exception": {
-      "message": "不储存 Cache 的网站"
+      "message": "不保存 Cache 的网站"
     },
     "option_exp_site_hint": {
       "message": "（一行一个网站）"
     },
     "option_showContextMenu": {
-      "message": "显示右键选单"
+      "message": "显示右键菜单"
     }
 }
