@@ -63,10 +63,11 @@ var tcl = {
             Array.from(document.querySelectorAll(
                 cache_rule.map( rule => (rule+`:not([${SAVE_TARGET}])`) ).join(',')
             ))
-            .map( (ta, i) => {
+            .map( ta => {
+                var rn = Math.random();
                 var isTEXTAREA = ta.tagName == "TEXTAREA";
                 ta.setAttribute(SAVE_TARGET, true);
-                ta.dataset['tcId'] = isTEXTAREA ? i : `w-${i}`;
+                ta.dataset['tcId'] = isTEXTAREA ? rn : `w-${rn}`;
                 return ta;
             }).forEach( ta => {
                 ta.addEventListener('keyup', me.saveToStorage);
