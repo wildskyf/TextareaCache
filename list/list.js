@@ -90,15 +90,22 @@ var list = {
             </tr>
         `;
         caches.forEach( (cache, index) => {
+
+            var time = cache.last_modified;
+
+            if (typeof time == 'string') {
+                time = new Date(time);
+            }
+
             list_dom_str += `<tr class="cache-row"
                     data-id="${cache.key}"
                     data-index="${index + 1}"
-                    data-date="${String(cache.last_modified.getTime())}"
+                    data-date="${String(time.getTime())}"
                     data-url="${cache.url}">
                 <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
                 <td>${me._escapeHTML(me._strip(cache.val)).trunc(120)}</td>
-                <td>${cache.last_modified.toLocaleString()}</td>
+                <td>${time.toLocaleString()}</td>
                 <td>
                     <a class="open-frame" href="./entity.html?id=${encodeURI(cache.key)}" target="detail-frame">show</a>
                 </td>

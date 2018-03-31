@@ -14,7 +14,7 @@ var tcl = {
 
         if (!tcl.checkEnable()) return;
 
-        // tcl.initContextMenu();
+        tcl.initContextMenu();
 
         tcl.findTextContentsAndAttachEvents();
     },

@@ -41,10 +41,13 @@ var ta_database = {
     _checkVersion: () => ta_database._loadFromStorage().then( () => {
         var me = ta_database;
         var add_on_version = me.VERSION;
-        var current_version = me.data.version;
+        var current_version = me.data && me.data.version;
 
-        if (me.VERSION != me.data.version) {
-            me.set('version', me.VERSION);
+        if (!me.data || !me.data.version) {
+            return me.reset();
+        }
+        else if (add_on_version != current_version) {
+            return me.set('version', add_on_version);
         }
     }),
 
@@ -82,7 +85,8 @@ var ta_database = {
     print: () => console.log(ta_database.data),
 
     init: () => {
-        return ta_database._checkVersion();
+        var me = ta_database;
+        return me._checkVersion();
     }
 };
 
