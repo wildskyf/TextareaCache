@@ -47,5 +47,11 @@
     },
     "option_showContextMenu": {
       "message": "显示右键菜单"
+    },
+    "option_saved": {
+      "message": "设置已保存"
+    },
+    "option_save_error": {
+      "message": "出错了，请联络开发者"
     }
 }

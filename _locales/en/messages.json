@@ -47,5 +47,11 @@
     },
     "option_showContextMenu": {
       "message": "show context menu"
+    },
+    "option_saved": {
+      "message": "Your change has been saved."
+    },
+    "option_save_error": {
+      "message": "There is something wrong, please report to developer."
     }
 }

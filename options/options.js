@@ -7,9 +7,9 @@ var option = {
         var { $response } = me;
 
         if (status == 'success')
-            $response.textContent = 'Your change has been saved.';
+            $response.textContent = browser.i18n.getMessage('option_saved');
         else {
-            $response.textContent = 'There is something wrong, please report to developer.';
+            $response.textContent = browser.i18n.getMessage('option_save_error');
         }
         $response.style.opacity = 1;
         setTimeout( () => {
