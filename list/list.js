@@ -35,8 +35,8 @@ var list = {
                 b_mod = new Date(b_mod);
             }
 
-            var a_time = time || new Date(parseInt( a.time || 0));
-            var b_time = time || new Date(parseInt( b.time || 0));
+            var a_time = a_mod || new Date(parseInt( a.time || 0));
+            var b_time = b_mod || new Date(parseInt( b.time || 0));
 
             return b_time - a_time;
         });
