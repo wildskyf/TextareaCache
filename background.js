@@ -39,45 +39,12 @@ var ta_database = {
     }),
 
     _checkVersion: () => ta_database._loadFromStorage().then( () => {
-        var { VERSION, _resetData, data, reset } = ta_database;
+        var me = ta_database;
+        var add_on_version = me.VERSION;
+        var current_version = me.data.version;
 
-        if (!data || !data.version) {
-            reset();
-        }
-        else if (data.version == VERSION) {
-            return
-        }
-        else if (data.version < VERSION) {
-            for (var d in data) {
-                if (d.includes('"')) {
-                    // avoid wrong render when listing
-                    delete data[d];
-                    local.remove(d);
-                }
-
-                if (d == 'setting') {
-                    if (d.skipConfirmPaste == undefined) {
-                        d.skipConfirmPaste = false;
-                    }
-                    if (d.showContextMenu == undefined) {
-                        d.skipConfirmPaste = true;
-                    }
-                }
-                if ( (new Date(data.last_modified)).toLocaleString() == 'Invalid Date' ) {
-                    // avoid Invalid Date
-                    if (!data[d]) return;
-
-                    data[d].last_modified = new Date();
-                    var tmp = {};
-                    tmp[d] = data[d];
-                    local.set(tmp);
-                }
-            }
-
-            local.set(data).catch(catchErr);
-        }
-        else {
-            reset();
+        if (me.VERSION != me.data.version) {
+            me.set('version', me.VERSION);
         }
     }),
 
