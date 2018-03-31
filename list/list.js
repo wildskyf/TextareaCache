@@ -16,6 +16,13 @@ var list = {
     })[m]),
 
     _sort: obj_array => {
+
+        var time = cache.last_modified;
+
+        if (typeof time != 'object') {
+            time = new Date(time);
+        }
+
         // by last_modified
         var tmp_array = []; // for reverse the order of saved cache
         for (var key in obj_array) {
@@ -25,8 +32,8 @@ var list = {
         }
 
         return tmp_array.sort( (a,b) => {
-            var a_time = a.last_modified || new Date(parseInt( a.time || 0));
-            var b_time = b.last_modified || new Date(parseInt( b.time || 0));
+            var a_time = time || new Date(parseInt( a.time || 0));
+            var b_time = time || new Date(parseInt( b.time || 0));
 
             return b_time - a_time;
         });
@@ -93,7 +100,7 @@ var list = {
 
             var time = cache.last_modified;
 
-            if (typeof time == 'string') {
+            if (typeof time != 'object') {
                 time = new Date(time);
             }
 
