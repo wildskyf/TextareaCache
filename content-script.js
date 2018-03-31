@@ -1,18 +1,23 @@
 // content script
 
+var strip = html => html.replace(/<(?:.|\n)*?>/gm, '')
+
+const SAVE_TARGET = 'tc-textContent';
 var tcl = {
-    isDEV: false,
-    sessionKey: null, // the timestamp at which user open a website
-
-    cache_rule: [
-        "textarea",
-        "iframe",
-        "[contentEditable]",
-        "[role='textbox']",
-        "[aria-multiline='true']"
-    ],
-
+    sessionKey: String((new Date()).getTime()), // the timestamp at which user open a website
     except_websites: null, // fetch from background script
+
+    init: async () => {
+        var me = tcl;
+
+        await tcl.initExceptionSites();
+
+        if (!tcl.checkEnable()) return;
+
+        // tcl.initContextMenu();
+
+        tcl.findTextContentsAndAttachEvents();
+    },
 
     initExceptionSites: () => browser.runtime.sendMessage({
         behavior: 'get_exceptions'
@@ -20,47 +25,12 @@ var tcl = {
         tcl.except_websites = res.expts;
     }),
 
-    findTextContents: () => {
-        var me = tcl;
-
-        document.querySelectorAll(me.cache_rule.join(',')).forEach( (ta, i) => {
-            me.isDEV && console.log('ta-class-append');
-            var isTEXTAREA = ta.tagName == "TEXTAREA";
-            ta.setAttribute('tc-textContent', true);
-            ta.dataset.id = isTEXTAREA ? i : `w-${i}`;
-        });
-
-        // TO-DO: performance issue
-        window.setInterval( () => {
-            var not_yet_tc_txt = document.querySelectorAll(me.cache_rule.map( rule => (rule+":not([tc-textContent])") ).join(','));
-            if (not_yet_tc_txt.length == 0) return;
-            not_yet_tc_txt.forEach( t => t.setAttribute('tc-textContent', true));
-            me.attachEvents(not_yet_tc_txt);
-
-        }, 2000);
-    },
-
-    attachEvents: doms => {
-        var me = tcl;
-        var allTxtCnt = doms;
-
-        allTxtCnt.forEach( ta => {
-            me.isDEV && console.log('ta-txtcnt-event');
-            ta.addEventListener('keyup', me.saveToStorage);
-        });
-    },
-
-    init: () => {
-        var me = tcl;
-        me.isDEV && console.log('ta-init');
-
-        tcl.initExceptionSites().then( () => {
-            if (!tcl.checkEnable()) return;
-            tcl.initContextMenu();
-            tcl.sessionKey = document.querySelector('body').dataset['taTime'] = String((new Date()).getTime());
-            tcl.findTextContents();
-            tcl.attachEvents(document.querySelectorAll('[tc-textContent]'));
-        });
+    checkEnable: () => {
+        var url = location.href;
+        for (var site of tcl.except_websites) {
+            if (url.includes(site)) return false;
+        }
+        return true;
     },
 
     initContextMenu: () => {
@@ -79,12 +49,53 @@ var tcl = {
         });
     },
 
-    checkEnable: () => {
-        var url = location.href;
-        for (var site of tcl.except_websites) {
-            if (url.includes(site)) return false;
-        }
-        return true;
+    findTextContentsAndAttachEvents: () => {
+        var me = tcl;
+        const cache_rule = [
+            "textarea",
+            "iframe",
+            "[contentEditable]",
+            "[role='textbox']",
+            "[aria-multiline='true']"
+        ];
+
+        const attachEvent = () => {
+            Array.from(document.querySelectorAll(
+                cache_rule.map( rule => (rule+`:not([${SAVE_TARGET}])`) ).join(',')
+            ))
+            .map( (ta, i) => {
+                var isTEXTAREA = ta.tagName == "TEXTAREA";
+                ta.setAttribute(SAVE_TARGET, true);
+                ta.dataset['tcId'] = isTEXTAREA ? i : `w-${i}`;
+                return ta;
+            }).forEach( ta => {
+                ta.addEventListener('keyup', me.saveToStorage);
+            });
+        };
+
+        // TO-DO: performance issue
+        //        some textarea might not appear when document finished
+        //        loading, but appear when user do something, code here is use
+        //        to check every two seconds.
+
+        window.setInterval(attachEvent, 2000);
+        attachEvent();
+    },
+
+    saveToStorage: event => {
+        var save_info = tcl.getContent(event.target);
+
+        if (strip(save_info.val).length == 0) return;
+
+        browser.runtime.sendMessage({
+            behavior: 'save',
+            title: window.parent.document.title,
+            url: location.href,
+            val: save_info.val,
+            id: event.target.dataset['tcId'],
+            type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt',
+            sessionKey: tcl.sessionKey
+        });
     },
 
     getContent: target => {
@@ -123,24 +134,9 @@ var tcl = {
                 isWYSIWYG: true
             };
         }
-    },
-
-    _strip: html => html.replace(/<(?:.|\n)*?>/gm, ''),
-
-    saveToStorage: event => {
-        var save_info = tcl.getContent(event.target);
-
-        if (tcl._strip(save_info.val).length == 0) return;
-
-        browser.runtime.sendMessage({
-            behavior: 'save',
-            title: window.parent.document.title,
-            url: location.href,
-            val: save_info.val,
-            id: event.target.dataset.id,
-            type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt',
-            sessionKey: tcl.sessionKey
-        });
+        else {
+            alert('Something wrong, please report to developer!');
+        }
     }
 };
 

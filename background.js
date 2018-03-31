@@ -1,4 +1,15 @@
-// background script
+// background script, data from content script:
+//
+//  {
+//      behavior:   'save',
+//      title:      'the website title',       /* String */
+//      url:        'https://the.website/url', /* String */
+//      val:        'the text in textarea',    /* String */
+//      id:         'the No. of textarea',     /* String */
+//      type:       'is the textarea WYSIWYG', /* String, [WYSIWYG|txt] */
+//      sessionKey: 'the timeing open page'    /* String */
+//  }
+
 var { storage, runtime, browserAction, pageAction, tabs, windows, menus } = browser;
 var { local } = storage;
 
@@ -107,7 +118,6 @@ var ta_database = {
         return ta_database._checkVersion();
     }
 };
-
 
 var ta_bg = {
     init: () => {
