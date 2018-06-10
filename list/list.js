@@ -58,6 +58,7 @@ var list = {
             var list_data = me._sort(me.makeArray(res.data));
             var show_something = me.showList(list_data);
             if (!show_something) return false;
+            me.onCopy(list_data);
             me.onFrameOpen();
             me.onSelect();
             me.initDelBtn();
@@ -114,15 +115,52 @@ var list = {
                     data-url="${cache.url}">
                 <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
-                <td>${me._escapeHTML(me._strip(cache.val)).trunc(120)}</td>
+                <td>
+                    <a class="open-frame" href="./entity.html?id=${encodeURI(cache.key)}" target="detail-frame">
+                        ${me._escapeHTML(me._strip(cache.val)).trunc(120)}
+                    </a>
+                </td>
                 <td>${time.toLocaleString()}</td>
                 <td>
-                    <a class="open-frame" href="./entity.html?id=${encodeURI(cache.key)}" target="detail-frame">show</a>
+                    <a class="copy-btn" href="javascript:void(0)">copy</a>
                 </td>
             </tr>`;
         });
         document.querySelector('.list table').innerHTML = list_dom_str;
         return true;
+    },
+
+    onCopy: caches => {
+
+        Array.from(document.querySelectorAll('.copy-btn')).forEach( $btn => {
+            $btn.addEventListener('click', event => {
+                var index = parseInt(event.target.parentElement.parentElement.dataset.index) - 1;
+                var cache = caches[index];
+
+                if (!cache) return;
+
+                var text = document.createTextNode(cache.val);
+                var textarea = document.createElement('textarea');
+                textarea.style = {
+                    visibility: 'hidden'
+                };
+                textarea.appendChild(text);
+                document.querySelector('.tmp').innerHTML = '';
+                document.querySelector('.tmp').appendChild(textarea);
+                textarea.select();
+                document.execCommand("Copy");
+                textarea.remove();
+
+                var $noti_container = document.createElement('div');
+                var $noti = document.createElement('div');
+                var $noti_text = document.createTextNode(browser.i18n.getMessage('cache_copied'));
+                $noti_container.classList.add('noti');
+                $noti.classList.add('noti_inner');
+                $noti.append($noti_text);
+                $noti_container.append($noti);
+                document.body.append($noti_container);
+            });
+        })
     },
 
     onFrameOpen: () => {

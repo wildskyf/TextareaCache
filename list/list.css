@@ -77,3 +77,15 @@ html, body {
 .hide {
     display: none !important;
 }
+.noti {
+    box-sizing: border-box;
+    width: 300px;
+    position: absolute;
+    top: 60px;
+    left: calc(50% - 150px);
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+}
