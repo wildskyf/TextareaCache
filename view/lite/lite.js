@@ -115,6 +115,13 @@ var panel = {
         var me = panel;
         var whole_data = null;
 
+        document.querySelector('#list_page_btn').addEventListener('click', () => {
+            browser.tabs.create({
+                url: browser.runtime.getURL('/view/list/list.html')
+            });
+            window.close();
+        });
+
         browser.runtime.sendMessage({
             behavior: 'load'
         }).then( ( resObj => {

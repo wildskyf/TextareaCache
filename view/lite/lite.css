@@ -1,0 +1,88 @@
+* { box-sizing: border-box !important; }
+
+body {
+    margin: 0;
+    height: auto;
+    overflow: hidden;
+    padding: 0;
+    min-width: 200px;
+}
+
+#header {
+    background: #343434;
+    color: #fff;
+    padding: 10px;
+    font-weight: 600;
+}
+
+#header h1 {
+    font-size: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+#header #list_page_btn {
+    float: right;
+}
+
+#main {
+    padding: 10px;
+    width: 100%;
+}
+
+#cache_seletor {
+    background: transparent;
+    border: 1px solid #777;
+    border-radius: 0;
+    box-sizing: content-box;
+    height: 2rem;
+    margin: 0 0 10px;
+    padding: .25rem 25px .25rem 5px;
+    width: 100%;
+    /* remove default arrow */
+    -moz-appearance: none;
+    appearance: none;
+    /* add custom arrow */
+    background: url('./carrot.png') right 10px top 10px no-repeat;
+    background-size: 7px 7px;
+}
+
+#show_cache {
+    box-sizing: content-box;
+    margin: 0;
+    max-height: 400px;
+    max-width: 800px;
+    overflow: auto;
+}
+#show_cache textarea {
+    min-height: 200px;
+    min-width: 300px;
+    width: 100%;
+    padding: 5px;
+    resize: none;
+}
+
+#footer .cta_btn {
+    box-sizing: border-box;
+    border: 0;
+    border-right: 1px solid #777;
+    border-radius: 0;
+    float: left;
+    width: calc(100%/3);
+    background: #343434;
+    color: #fff;
+}
+
+#footer .cta_btn:last-of-type {
+    border-right: 0;
+}
+
+#copy_btn, #delete_all_btn, #delete_btn {
+    height: 3rem;
+    padding: .5rem;
+    text-align: center;
+}
+#copy_btn:hover, #delete_all_btn:hover, #delete_btn:hover {
+    background: #777;
+}
+
