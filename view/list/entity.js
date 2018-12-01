@@ -1,3 +1,4 @@
+var { i18n, runtime } = browser;
 var entity = {
     key: null,
     $show_cache: null,
@@ -22,8 +23,8 @@ var entity = {
         var $copy_btn       = document.querySelector('#copy_btn');
         var $delete_btn     = document.querySelector('#delete_btn');
 
-        $copy_btn.textContent = browser.i18n.getMessage("copy");
-        $delete_btn.textContent = browser.i18n.getMessage("delete");
+        $copy_btn.textContent = i18n.getMessage("copy");
+        $delete_btn.textContent = i18n.getMessage("delete");
         $copy_btn.addEventListener('click', () => {
             if ($show_cache.type == 'WYSIWYG') {
                 me.selectText($show_cache);
@@ -35,7 +36,7 @@ var entity = {
         });
 
         $delete_btn.addEventListener('click', () => {
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'delete',
                 id: me.key
             }).then( () => {
@@ -75,7 +76,7 @@ var entity = {
 
         if (!key) return;
 
-        browser.runtime.sendMessage({
+        runtime.sendMessage({
             behavior: 'load'
         }).then( ( res => {
 

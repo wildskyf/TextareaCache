@@ -1,5 +1,7 @@
 // popup script
 
+var { i18n, runtime, tabs } = browser;
+
 var panel = {
 
     $select        : null,
@@ -13,8 +15,8 @@ var panel = {
         document.body.textContent = '';
 
         var img = document.createElement('IMG');
-        img.src = browser.runtime.getURL('icons/tacache-48-bw.png');
-        var textnode = document.createTextNode(browser.i18n.getMessage('noCache'));
+        img.src = runtime.getURL('icons/tacache-48-bw.png');
+        var textnode = document.createTextNode(i18n.getMessage('noCache'));
         document.body.appendChild(img);
         document.body.appendChild(textnode);
     },
@@ -120,13 +122,13 @@ var panel = {
         var whole_data = null;
 
         document.querySelector('#list_page_btn').addEventListener('click', () => {
-            browser.tabs.create({
-                url: browser.runtime.getURL('/view/list/list.html')
+            tabs.create({
+                url: runtime.getURL('/view/list/list.html')
             });
             window.close();
         });
 
-        browser.runtime.sendMessage({
+        runtime.sendMessage({
             behavior: 'load'
         }).then( ( resObj => {
             var { data } = resObj;
@@ -152,9 +154,9 @@ var panel = {
             var $delete_btn     = me.$delete_btn     = document.querySelector('#delete_btn');
             var $delete_all_btn = me.$delete_all_btn = document.querySelector('#delete_all_btn');
 
-            $copy_btn.textContent = browser.i18n.getMessage('copy');
-            $delete_btn.textContent = browser.i18n.getMessage('delete');
-            $delete_all_btn.textContent = browser.i18n.getMessage('deleteAll');
+            $copy_btn.textContent = i18n.getMessage('copy');
+            $delete_btn.textContent = i18n.getMessage('delete');
+            $delete_all_btn.textContent = i18n.getMessage('deleteAll');
             me.showSelect(whole_data);
 
             $select.addEventListener('change', e => {
@@ -176,7 +178,7 @@ var panel = {
             });
 
             $delete_all_btn.addEventListener('click', () => {
-                browser.runtime.sendMessage({
+                runtime.sendMessage({
                     behavior: 'clear'
                 }).then(res => {
                     if (res.msg == 'done') {
@@ -186,7 +188,7 @@ var panel = {
             });
 
             $delete_btn.addEventListener('click', () => {
-                browser.runtime.sendMessage({
+                runtime.sendMessage({
                     behavior: 'delete',
                     id: $select.value
                 }).then( res => {

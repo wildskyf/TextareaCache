@@ -1,3 +1,4 @@
+var { i18n, runtime } = browser;
 var option = {
 
     $response: null,
@@ -7,9 +8,9 @@ var option = {
         var { $response } = me;
 
         if (status == 'success')
-            $response.textContent = browser.i18n.getMessage('option_saved');
+            $response.textContent = i18n.getMessage('option_saved');
         else {
-            $response.textContent = browser.i18n.getMessage('option_save_error');
+            $response.textContent = i18n.getMessage('option_save_error');
         }
         $response.style.opacity = 1;
         setTimeout( () => {
@@ -19,7 +20,7 @@ var option = {
 
     showExceptionSites: () => {
 
-        browser.runtime.sendMessage({
+        runtime.sendMessage({
             behavior: 'get_exceptions'
         }).then( res => {
             var { expts } = res;
@@ -32,9 +33,9 @@ var option = {
 
     i18nLabels: () => {
         document.querySelectorAll("label[for]").forEach( label => {
-            label.textContent = browser.i18n.getMessage("option_"+label.htmlFor);
+            label.textContent = i18n.getMessage("option_"+label.htmlFor);
         });
-        document.querySelector(".hint").textContent = browser.i18n.getMessage("option_exp_site_hint");
+        document.querySelector(".hint").textContent = i18n.getMessage("option_exp_site_hint");
     },
 
     init: () => {
@@ -44,7 +45,7 @@ var option = {
         me.i18nLabels();
         me.showExceptionSites();
 
-        browser.runtime.sendMessage({
+        runtime.sendMessage({
             behavior: 'get_options'
         }).then( setting => {
             for (var key in setting) {
@@ -74,7 +75,7 @@ var option = {
         document.querySelector('#skipConfirmPaste').addEventListener('change', e => {
             var isSkip = e.currentTarget.checked;
 
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'set_options',
                 key: 'skipConfirmPaste',
                 val: isSkip
@@ -86,7 +87,7 @@ var option = {
         document.querySelector('#pageAction').addEventListener('change', e => {
             var isPageAction = e.currentTarget.checked;
 
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'set_options',
                 key: 'pageAction',
                 val: isPageAction
@@ -104,7 +105,7 @@ var option = {
         document.querySelector('#pageActionLite').addEventListener('change', e => {
             var isLite = e.currentTarget.checked;
 
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'set_options',
                 key: 'pageActionLite',
                 val: isLite
@@ -116,7 +117,7 @@ var option = {
         document.querySelector('#showContextMenu').addEventListener('change', e => {
             var showContextMenu = e.currentTarget.checked;
 
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'set_options',
                 key: 'showContextMenu',
                 val: showContextMenu
@@ -128,7 +129,7 @@ var option = {
         document.querySelector('#popupType').addEventListener('change', e => {
             var { value } = e.target;
 
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'set_options',
                 key: 'popupType',
                 val: value
@@ -139,7 +140,7 @@ var option = {
 
         document.querySelector('#exception').addEventListener('change', e => {
             var { target } = e;
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'set_exceptions',
                 val: target.value
             }).then( () => {

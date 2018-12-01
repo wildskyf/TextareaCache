@@ -1,49 +1,36 @@
 // content script
 
+var { runtime } = browser;
 var strip = html => html.replace(/<(?:.|\n)*?>/gm, '')
 
 const SAVE_TARGET = 'tc-textContent';
 var tcl = {
     sessionKey: String((new Date()).getTime()), // the timestamp at which user open a website
-    except_websites: null, // fetch from background script
 
     init: async () => {
         var me = tcl;
 
-        await tcl.initExceptionSites();
-
-        if (!tcl.checkEnable()) return;
+        if (await tcl.initExceptionSites()) return;
 
         tcl.initContextMenu();
 
         tcl.findTextContentsAndAttachEvents();
     },
 
-    initExceptionSites: () => browser.runtime.sendMessage({
-        behavior: 'get_exceptions'
-    }).then( res => {
-        tcl.except_websites = res.expts;
-    }),
-
-    checkEnable: () => {
-        var url = location.href;
-        for (var site of tcl.except_websites) {
-            if (url.includes(site)) return false;
-        }
-        return true;
+    initExceptionSites: async () => {
+        var res = await runtime.sendMessage({ behavior: 'get_exceptions' });
+        return res.expts.some(site => location.href.includes(site));
     },
 
     initContextMenu: () => {
-        browser.runtime.sendMessage({
+        runtime.sendMessage({
             behavior: 'init',
             title: window.parent.document.title,
             url: location.href
         });
-        browser.runtime.onMessage.addListener( req => {
+        runtime.onMessage.addListener( req => {
             if (req.behavior != "pasteToTextarea") return;
-            if (!req.skipConfirmPaste) {
-                if (!confirm(`paste "${req.val}" ?`)) return;
-            }
+            if (!req.skipConfirmPaste && !confirm(`paste "${req.val}" ?`)) return;
 
             document.activeElement.innerHTML = req.val
         });
@@ -51,33 +38,28 @@ var tcl = {
 
     findTextContentsAndAttachEvents: () => {
         var me = tcl;
-        const cache_rule = [
-            "textarea",
-            "iframe",
-            "[contentEditable]",
-            "[role='textbox']",
-            "[aria-multiline='true']"
-        ];
 
         const attachEvent = () => {
-            Array.from(document.querySelectorAll(
-                cache_rule.map( rule => (rule+`:not([${SAVE_TARGET}])`) ).join(',')
-            ))
-            .map( ta => {
-                var rn = Math.random();
-                var isTEXTAREA = ta.tagName == "TEXTAREA";
+            const cache_rule = [
+                "textarea",
+                "iframe",
+                "[contentEditable]",
+                "[role='textbox']",
+                "[aria-multiline='true']"
+            ].map( rule => (rule+`:not([${SAVE_TARGET}])`) ).join(',');
+
+            document.querySelectorAll(cache_rule).forEach(ta => {
+                var rn = Math.random(), isTEXTAREA = ta.tagName == "TEXTAREA";
                 ta.setAttribute(SAVE_TARGET, true);
                 ta.dataset['tcId'] = isTEXTAREA ? rn : `w-${rn}`;
-                return ta;
-            }).forEach( ta => {
                 ta.addEventListener('keyup', me.saveToStorage);
             });
         };
 
-        // TO-DO: performance issue
-        //        some textarea might not appear when document finished
-        //        loading, but appear when user do something, code here is use
-        //        to check every two seconds.
+        // TODO: PERFORMANCE ISSUE
+        //       some textarea might not appear when document finished
+        //       loading, but appear when user do something, code here is use
+        //       to check every two seconds.
 
         window.setInterval(attachEvent, 2000);
         attachEvent();
@@ -88,7 +70,7 @@ var tcl = {
 
         if (strip(save_info.val).length == 0) return;
 
-        browser.runtime.sendMessage({
+        runtime.sendMessage({
             behavior: 'save',
             title: window.parent.document.title,
             url: location.href,

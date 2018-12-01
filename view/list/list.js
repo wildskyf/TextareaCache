@@ -1,3 +1,5 @@
+var { i18n, runtime, storage } = browser;
+
 String.prototype.trunc = String.prototype.trunc || function(n){
     return (this.length > n) ? this.substr(0, n-1) + '&hellip;' : this;
 };
@@ -45,7 +47,7 @@ var list = {
     init: () => {
         var me = list;
 
-        browser.runtime.sendMessage({
+        runtime.sendMessage({
             behavior: 'load'
         }).then( ( res => {
 
@@ -82,7 +84,7 @@ var list = {
     },
 
     showNoCache: () => {
-        document.body.textContent = browser.i18n.getMessage('noCache');
+        document.body.textContent = i18n.getMessage('noCache');
     },
 
     showList: caches => {
@@ -94,9 +96,9 @@ var list = {
         var list_dom_str = `
             <tr class="list-title">
                 <th class="select-title" width="1%"><input type="checkbox" /></th>
-                <th class="url-title" width="20%">${browser.i18n.getMessage('url')}</th>
-                <th class="summary-title" width="64%">${browser.i18n.getMessage('summary')}</th>
-                <th class="date-title" width="10%">${browser.i18n.getMessage('date')}</th>
+                <th class="url-title" width="20%">${i18n.getMessage('url')}</th>
+                <th class="summary-title" width="64%">${i18n.getMessage('summary')}</th>
+                <th class="date-title" width="10%">${i18n.getMessage('date')}</th>
                 <th width="5%"></th>
             </tr>
         `;
@@ -153,7 +155,7 @@ var list = {
 
                 var $noti_container = document.createElement('div');
                 var $noti = document.createElement('div');
-                var $noti_text = document.createTextNode(browser.i18n.getMessage('cache_copied'));
+                var $noti_text = document.createTextNode(i18n.getMessage('cache_copied'));
                 $noti_container.classList.add('noti');
                 $noti.classList.add('noti_inner');
                 $noti.append($noti_text);
@@ -173,7 +175,7 @@ var list = {
     },
 
     onDelete: () => {
-        browser.storage.onChanged.addListener( () => {
+        storage.onChanged.addListener( () => {
             document.querySelector('#searchbar').value = "";
             location.reload();
         });
@@ -246,12 +248,12 @@ var list = {
         var $del_all_btn = document.querySelector('#delete_all_btn');
         var $del_selected_btn = document.querySelector('#delete_selected_btn');
 
-        $del_all_btn.textContent = browser.i18n.getMessage('deleteAllinc');
-        $del_selected_btn.textContent = browser.i18n.getMessage('deleteSelected');
+        $del_all_btn.textContent = i18n.getMessage('deleteAllinc');
+        $del_selected_btn.textContent = i18n.getMessage('deleteSelected');
 
         // del all btn
         $del_all_btn.addEventListener('click', () => {
-            browser.runtime.sendMessage({
+            runtime.sendMessage({
                 behavior: 'clear'
             });
         });
@@ -260,7 +262,7 @@ var list = {
         $del_selected_btn.addEventListener('click', () => {
             var checkboxes = document.querySelectorAll('.cache-row:not(.hide) input[type=checkbox]:checked');
             Array.from(checkboxes).map(cks => cks.parentNode.parentNode.dataset.id).forEach( id => {
-                browser.runtime.sendMessage({
+                runtime.sendMessage({
                     behavior: 'delete',
                     id: id
                 });

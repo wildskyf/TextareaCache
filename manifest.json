@@ -12,7 +12,7 @@
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
-  "homepage_url": "https://addons.mozilla.org/en-US/firefox/addon/textarea-cache/",
+  "homepage_url": "https://addons.mozilla.org/firefox/addon/textarea-cache/",
 
   "icons": {
     "48": "icons/icon.png"
@@ -43,7 +43,7 @@
   ],
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["common.js", "ta_database.js", "ta_bg.js", "background.js"]
   },
 
   "options_ui": {
