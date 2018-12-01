@@ -54,7 +54,7 @@
       "message": "每几秒进行保存 (ms)"
     },
     "option_intervalCantBeZero": {
-      "message": "interval can't be zero."
+      "message": "间隔不可为零"
     },
     "option_saved": {
       "message": "设置已保存"

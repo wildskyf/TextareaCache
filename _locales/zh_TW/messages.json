@@ -54,7 +54,7 @@
       "message": "每幾秒進行儲存 (ms)"
     },
     "option_intervalCantBeZero": {
-      "message": "interval can't be zero."
+      "message": "間隔不可為零"
     },
     "option_saved": {
       "message": "設定已儲存"
