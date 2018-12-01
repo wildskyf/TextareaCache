@@ -207,12 +207,20 @@ var ta_bg = {
         });
     },
 
-    _popupLite: tab => {
+    _popupLiteByPageAction: tab => {
         pageAction.setPopup({
             tabId: tab.id,
             popup: browser.extension.getURL("view/lite/lite.html")
         });
         pageAction.openPopup();
+    },
+
+    _popupLiteByBrowserAction: tab => {
+        browserAction.setPopup({
+            tabId: tab.id,
+            popup: browser.extension.getURL("view/lite/lite.html")
+        });
+        browserAction.openPopup();
     },
 
     setupCacheList: () => {
@@ -229,22 +237,22 @@ var ta_bg = {
         }
 
         if (setting.popupType == "window") {
-            browserAction.onClicked.removeListener(ta_bg._popupListInTab);
+            browserAction.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
             browserAction.onClicked.addListener(ta_bg._popupListInWindow);
         }
         else {
             browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
-            browserAction.onClicked.addListener(ta_bg._popupListInTab);
+            browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
         }
 
         if (!setting.pageAction) return;
-        var target_function = setting.popupType == "window" ? ta_bg._popupListInWindow : ta_bg._popupListInTab;
+        var target_function = setting.popupType == "window" ? ta_bg._popupListInWindow : ta_bg._popupLiteByPageAction;
         if (setting.pageActionLite) {
             pageAction.onClicked.removeListener(target_function);
-            pageAction.onClicked.addListener(ta_bg._popupLite);
+            pageAction.onClicked.addListener(ta_bg._popupLiteByPageAction);
         }
         else {
-            pageAction.onClicked.removeListener(ta_bg._popupLite);
+            pageAction.onClicked.removeListener(ta_bg._popupLiteByPageAction);
             pageAction.onClicked.addListener(target_function);
         }
     },
