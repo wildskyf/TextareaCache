@@ -9,9 +9,13 @@ var panel = {
     $delete_all_btn: null,
 
     setBodyEmpty: () => {
-        var textnode = document.createTextNode(browser.i18n.getMessage('noCache'));
+        document.body.classList.add('empty_list');
         document.body.textContent = '';
-        document.body.style.padding = '20px';
+
+        var img = document.createElement('IMG');
+        img.src = browser.runtime.getURL('icons/tacache-48-bw.png');
+        var textnode = document.createTextNode(browser.i18n.getMessage('noCache'));
+        document.body.appendChild(img);
         document.body.appendChild(textnode);
     },
 

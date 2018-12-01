@@ -86,3 +86,16 @@ body {
     background: #777;
 }
 
+
+/* EMPTY STATE */
+body.empty_list {
+    text-align: center;
+    padding: 40px;
+}
+
+body.empty_list img {
+    width: 36px;
+    height: 36px;
+    margin: 0 auto 10px;
+    opacity: .5;
+}
