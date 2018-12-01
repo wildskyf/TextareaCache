@@ -21,8 +21,17 @@ body {
     padding: 0;
 }
 
-#header #list_page_btn {
+#header .btn {
     float: right;
+    margin-top: 3px;
+    margin-right: 5px;
+    margin-left: 10px;
+    color: #fff;
+    cursor: pointer;
+}
+
+#header .btn:hover {
+    color: #ccc;
 }
 
 #main {

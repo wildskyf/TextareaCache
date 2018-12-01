@@ -117,16 +117,25 @@ var panel = {
         });
     },
 
-    init: () => {
-        var me = panel;
-        var whole_data = null;
-
+    initHeaderBtns: () => {
         document.querySelector('#list_page_btn').addEventListener('click', () => {
             tabs.create({
                 url: runtime.getURL('/view/list/list.html')
             });
             window.close();
         });
+
+        document.querySelector('#setting_page_btn').addEventListener('click', () => {
+            runtime.openOptionsPage()
+            window.close();
+        });
+    },
+
+    init: () => {
+        var me = panel;
+        var whole_data = null;
+
+        me.initHeaderBtns();
 
         runtime.sendMessage({
             behavior: 'load'
