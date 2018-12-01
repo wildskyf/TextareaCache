@@ -194,7 +194,7 @@ var ta_bg = {
 
     _popupListInWindow: () => {
         windows.create({
-            url: browser.extension.getURL("list/list.html"),
+            url: browser.extension.getURL("view/list/list.html"),
             type: "detached_panel", // "normal", "popup", "panel", "detached_panel"
             height: 450,
             width: 800
@@ -203,14 +203,14 @@ var ta_bg = {
 
     _popupListInTab: () => {
         tabs.create({
-            url: browser.extension.getURL("list/list.html")
+            url: browser.extension.getURL("view/list/list.html")
         });
     },
 
     _popupLite: tab => {
         pageAction.setPopup({
             tabId: tab.id,
-            popup: browser.extension.getURL("list/lite.html")
+            popup: browser.extension.getURL("view/lite/lite.html")
         });
         pageAction.openPopup();
     },
