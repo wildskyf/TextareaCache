@@ -52,6 +52,8 @@ var option = {
                 var dom = document.querySelector('#' + key);
                 if (!dom) continue;
                 switch (dom.type) {
+                case 'number':
+                    if (setting[key]) dom.value = setting[key];
                 case 'checkbox':
                     if (setting[key]) dom.checked = true;
                     break;
@@ -121,6 +123,24 @@ var option = {
                 behavior: 'set_options',
                 key: 'showContextMenu',
                 val: showContextMenu
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        });
+
+        document.querySelector('#intervalToSave').addEventListener('change', e => {
+            var intervalToSave = parseInt(e.currentTarget.value);
+
+            if (Number.isNaN(intervalToSave)) return;
+            if (intervalToSave == 0) {
+                e.currentTarget.value = 2000;
+                return alert(i18n.getMessage('option_intervalCantBeZero'));
+            }
+
+            runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'intervalToSave',
+                val: intervalToSave
             }).then( () => {
                 me.showUpdatedMessage('success');
             });

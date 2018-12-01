@@ -1,14 +1,15 @@
 var ta_database = {
-    VERSION: '6',
+    VERSION: '7',
     data: null,
 
     _resetData: {
-        version: '6',
+        version: '7',
         setting: {
             pageActionLite: true,
             popupType: 'tab',
             skipConfirmPaste: false,
-            showContextMenu: true
+            showContextMenu: true,
+            intervalToSave: 2000
         },
         exceptions: [
             "docs.google.com/spreadsheets",
@@ -21,7 +22,7 @@ var ta_database = {
         ta_database.data = db_data;
     }),
 
-    init: () => ta_database._loadFromStorage().then( () => {
+    init: () => ta_database._loadFromStorage().then( async () => {
         var me = ta_database;
         var add_on_version = me.VERSION;
         var current_version = me.data && me.data.version;
@@ -29,8 +30,22 @@ var ta_database = {
         if (!current_version) return me.reset();
         if (add_on_version == current_version) return Promise.resolve();
 
-        return me.set('version', add_on_version);
+        await me.updateDatabaseVersion();
+
+        // return me.set('version', add_on_version);
     }),
+
+    updateDatabaseVersion: async () => {
+        var me = ta_database;
+
+        for (var key in me._resetData.setting) {
+
+            if (me.data.setting[key] == undefined) {
+                me.data.setting[key] = me._resetData.setting[key];
+                await me.set('setting', me.data.setting);
+            }
+        }
+    },
 
     reset: () => local.clear().then( () => {
         // reserve setting, clean caches

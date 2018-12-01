@@ -50,6 +50,12 @@
     "option_showContextMenu": {
       "message": "顯示右鍵選單"
     },
+    "option_intervalToSave": {
+      "message": "每幾秒進行儲存 (ms)"
+    },
+    "option_intervalCantBeZero": {
+      "message": "interval can't be zero."
+    },
     "option_saved": {
       "message": "設定已儲存"
     },

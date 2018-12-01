@@ -61,7 +61,12 @@ var tcl = {
         //       loading, but appear when user do something, code here is use
         //       to check every two seconds.
 
-        window.setInterval(attachEvent, 2000);
+
+        runtime.sendMessage({
+            behavior: 'get_options'
+        }).then( setting => {
+            window.setInterval(attachEvent, setting.intervalToSave);
+        });
         attachEvent();
     },
 

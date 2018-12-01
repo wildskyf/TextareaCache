@@ -50,6 +50,12 @@
     "option_showContextMenu": {
       "message": "show context menu"
     },
+    "option_intervalToSave": {
+      "message": "interval to save text (ms)"
+    },
+    "option_intervalCantBeZero": {
+      "message": "interval can't be zero."
+    },
     "option_saved": {
       "message": "Your change has been saved."
     },
