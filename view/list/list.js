@@ -141,11 +141,10 @@ var list = {
 
                 if (!cache) return;
 
+                // copy text to user's clipboard
                 var text = document.createTextNode(cache.val);
                 var textarea = document.createElement('textarea');
-                textarea.style = {
-                    visibility: 'hidden'
-                };
+                textarea.style = { visibility: 'hidden' };
                 textarea.appendChild(text);
                 document.querySelector('.tmp').innerHTML = '';
                 document.querySelector('.tmp').appendChild(textarea);
@@ -153,6 +152,7 @@ var list = {
                 document.execCommand("Copy");
                 textarea.remove();
 
+                // show notification
                 var $noti_container = document.createElement('div');
                 var $noti = document.createElement('div');
                 var $noti_text = document.createTextNode(i18n.getMessage('cache_copied'));
@@ -161,6 +161,7 @@ var list = {
                 $noti.append($noti_text);
                 $noti_container.append($noti);
                 document.body.append($noti_container);
+                window.setTimeout(() => $noti_container.remove(), 3000)
             });
         })
     },
