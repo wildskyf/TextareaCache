@@ -1,4 +1,7 @@
 # Textarea Cache
+
+[![Join the chat at https://gitter.im/textarea-cache/community](https://badges.gitter.im/textarea-cache/community.svg)](https://gitter.im/textarea-cache/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Save automatically the content in Textarea.
 
 ## install
