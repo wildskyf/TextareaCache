@@ -19,7 +19,6 @@ var option = {
     },
 
     showExceptionSites: () => {
-
         runtime.sendMessage({
             behavior: 'get_exceptions'
         }).then( res => {
@@ -28,7 +27,6 @@ var option = {
             $excp.textContent = expts.join('\n');
             $excp.rows = String(parseInt(expts.length) + 1);
         })
-
     },
 
     i18nLabels: () => {
@@ -38,13 +36,7 @@ var option = {
         document.querySelector(".hint").textContent = i18n.getMessage("option_exp_site_hint");
     },
 
-    init: () => {
-        var me = option;
-        me.$response = document.querySelector('.response');
-
-        me.i18nLabels();
-        me.showExceptionSites();
-
+    getSettings: () => {
         runtime.sendMessage({
             behavior: 'get_options'
         }).then( setting => {
@@ -53,7 +45,7 @@ var option = {
                 if (!dom) continue;
                 switch (dom.type) {
                 case 'number':
-                    if (setting[key]) dom.value = setting[key];
+                    if (setting[key] !== undefined) dom.value = setting[key];
                 case 'checkbox':
                     if (setting[key]) dom.checked = true;
                     break;
@@ -73,6 +65,15 @@ var option = {
                 document.querySelector('#lite-list').classList.add('hide');
             }
         });
+    },
+
+    init: () => {
+        var me = option;
+        me.$response = document.querySelector('.response');
+
+        me.i18nLabels();
+        me.showExceptionSites();
+        me.getSettings();
 
         document.querySelector('#skipConfirmPaste').addEventListener('change', e => {
             var isSkip = e.currentTarget.checked;
@@ -158,6 +159,31 @@ var option = {
             });
         });
 
+        document.querySelector('#shouldAutoClear').addEventListener('change', e => {
+            var shouldAutoClear = e.currentTarget.checked;
+
+            runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'shouldAutoClear',
+                val: shouldAutoClear
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        });
+
+        Array.from(document.querySelectorAll('.autoclear_input')).forEach( input => {
+            input.addEventListener('change', e => {
+                var { target } = e;
+                runtime.sendMessage({
+                    behavior: 'set_options',
+                    key: target.id,
+                    val: target.value
+                }).then( () => {
+                    me.showUpdatedMessage('success');
+                });
+            })
+        })
+
         document.querySelector('#exception').addEventListener('change', e => {
             var { target } = e;
             runtime.sendMessage({
@@ -171,4 +197,4 @@ var option = {
     }
 };
 
-window.onload = option.init;
+window.addEventListener('load', option.init);

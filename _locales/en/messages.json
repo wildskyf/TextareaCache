@@ -53,6 +53,9 @@
     "option_intervalToSave": {
       "message": "interval to save text (ms)"
     },
+    "option_shouldAutoClear": {
+      "message": "auto clear old cache"
+    },
     "option_intervalCantBeZero": {
       "message": "interval can't be zero."
     },

@@ -37,6 +37,7 @@
             vertical-align: top;
             margin: 10px 0;
         }
+        .autoclear_input { width: 50px; }
         .fake-button {
             float: right;
             border: 1px solid #ddd;
@@ -82,6 +83,16 @@
         <label class="title" for="intervalToSave"></label>
         <input id="intervalToSave" type="number">
     </div>
+
+    <div class="row">
+        <label class="title" for="shouldAutoClear"></label>
+        <input id="shouldAutoClear" type="checkbox">
+
+        <input class="autoclear_input" type="number" id="autoClear_day" /> day
+        <input class="autoclear_input" type="number" id="autoClear_hour" /> hour
+        <input class="autoclear_input" type="number" id="autoClear_min" /> min
+    </div>
+
     <div class="row">
         <label class="title" for="exception"></label>
         <textarea id="exception" name="exception" cols="30" rows="10"></textarea>

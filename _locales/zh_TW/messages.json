@@ -53,6 +53,9 @@
     "option_intervalToSave": {
       "message": "每幾秒進行儲存 (ms)"
     },
+    "option_shouldAutoClear": {
+      "message": "自動清除舊快取"
+    },
     "option_intervalCantBeZero": {
       "message": "間隔不可為零"
     },

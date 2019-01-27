@@ -1,15 +1,19 @@
 var ta_database = {
-    VERSION: '7',
+    VERSION: '8',
     data: null,
 
     _resetData: {
-        version: '7',
+        version: '8',
         setting: {
             pageActionLite: true,
             popupType: 'tab',
             skipConfirmPaste: false,
             showContextMenu: true,
-            intervalToSave: 2000
+            intervalToSave: 2000,
+            shouldAutoClear: false,
+            autoClear_day: 0,
+            autoClear_hour: 0,
+            autoClear_min: 0
         },
         exceptions: [
             "docs.google.com/spreadsheets",
