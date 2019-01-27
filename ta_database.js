@@ -49,6 +49,11 @@ var ta_database = {
                 await me.set('setting', me.data.setting);
             }
         }
+
+        if (me.data.setting.version != me.VERSION) {
+            me.data.setting.version = me.VERSION;
+            await me.set('setting', me.data.setting);
+        }
     },
 
     reset: () => local.clear().then( () => {
