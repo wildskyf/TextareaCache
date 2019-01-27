@@ -13,6 +13,7 @@ ta_bg.init = () => {
     });
 
     me.setupCacheList();
+    me.setupAutoClear();
 };
 
 ta_bg.initPageAction = info => {
@@ -205,4 +206,46 @@ ta_bg.showCachesInContext = caches => {
         });
     });
     menus.onClicked.addListener(ta_bg._menuOnClick);
+};
+
+ta_bg.setupAutoClear = () => {
+    // XXX: might causing performance issue (not sure)
+    // should remove alarm when shouldAutoClear is set to false
+    // and add back when shouldAutoClear is set to true
+
+    browser.alarms.create('check-auto-clear', {
+        periodInMinutes: 1
+    });
+
+    var checkAutoClear = () => {
+        var data = ta_database.data;
+
+        if (!data.setting.shouldAutoClear) return;
+
+        var day  = data.setting.autoClear_day,
+            hour = data.setting.autoClear_hour,
+            min  = data.setting.autoClear_min;
+
+        if (day + hour + min == 0) return;
+
+        var lifetime = day  * 86400 +
+                       hour * 3600 +
+                       min  * 60;      // by second
+
+        var now = new Date();
+
+        for (var key in data) {
+            if (['version', 'setting', 'exceptions'].includes(key)) continue;
+
+            var cache_time = new Date(parseInt(data[key].time));
+            var diff = (now.getTime() - cache_time.getTime()) / 1000; // by second
+
+            if (diff > lifetime) {
+                ta_database.remove(key);
+            }
+        }
+    };
+
+    browser.alarms.onAlarm.addListener(checkAutoClear);
+    checkAutoClear();
 };
