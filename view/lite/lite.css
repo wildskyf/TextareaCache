@@ -97,14 +97,20 @@ body {
 
 
 /* EMPTY STATE */
+
 body.empty_list {
+    min-width: 300px;
     text-align: center;
-    padding: 40px;
+}
+
+body.empty_list #main {
+    padding: 20px 40px 40px;
 }
 
 body.empty_list img {
+    display: block;
     width: 36px;
     height: 36px;
-    margin: 0 auto 10px;
+    margin: 16px auto;
     opacity: .5;
 }

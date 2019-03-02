@@ -11,14 +11,19 @@ var panel = {
     $delete_all_btn: null,
 
     setBodyEmpty: () => {
+        let $main = document.querySelector('#main');
+        let $footer = document.querySelector('#footer');
+
+        $main.textContent = '';
+        $footer.textContent = '';
+
         document.body.classList.add('empty_list');
-        document.body.textContent = '';
 
         var img = document.createElement('IMG');
         img.src = runtime.getURL('icons/tacache-48-bw.png');
         var textnode = document.createTextNode(i18n.getMessage('noCache'));
-        document.body.appendChild(img);
-        document.body.appendChild(textnode);
+        $main.appendChild(img);
+        $main.appendChild(textnode);
     },
 
     _formatDate: key => {
