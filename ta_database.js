@@ -1,9 +1,9 @@
 var ta_database = {
-    VERSION: '8',
+    VERSION: '9',
     data: null,
 
     _resetData: {
-        version: '8',
+        version: '9',
         setting: {
             pageActionLite: true,
             popupType: 'tab',
@@ -42,12 +42,21 @@ var ta_database = {
     updateDatabaseVersion: async () => {
         var me = ta_database;
 
-        for (var key in me._resetData.setting) {
+        for (var key in me.data) {
+            if (key == 'setting') continue;
 
-            if (me.data.setting[key] == undefined) {
-                me.data.setting[key] = me._resetData.setting[key];
-                await me.set('setting', me.data.setting);
+            let { last_modified } = me.data[key];
+
+            if (typeof last_modified == 'string') {
+                // do nothing
             }
+            else if (typeof last_modified == 'object' && last_modified.getTime) {
+                me.data[key].last_modified = String(last_modified.getTime())
+            }
+            else {
+                me.data[key].last_modified = me.data[key].time;
+            }
+            me.set(key, me.data[key]);
         }
 
         if (me.data.setting.version != me.VERSION) {

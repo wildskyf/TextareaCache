@@ -83,7 +83,7 @@ ta_bg.listenMessageFromContentScript = () => {
                     type: type,
                     val: val,
                     url: url,
-                    last_modified: new Date()
+                    last_modified: String((new Date()).getTime())
                 });
                 break;
             case 'load':

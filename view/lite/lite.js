@@ -88,8 +88,11 @@ var panel = {
         }
 
         return tmp_array.sort( (a,b) => {
-            var a_time = a.last_modified || new Date(parseInt( a.time || 0));
-            var b_time = b.last_modified || new Date(parseInt( b.time || 0));
+            var a_mod = new Date(parseInt(a.last_modified));
+            var b_mod = new Date(parseInt(b.last_modified));
+
+            var a_time = a_mod || new Date(parseInt( a.time || 0));
+            var b_time = b_mod || new Date(parseInt( b.time || 0));
 
             return b_time - a_time;
         });

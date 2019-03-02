@@ -27,15 +27,8 @@ var list = {
         }
 
         return tmp_array.sort( (a,b) => {
-            var a_mod = a.last_modified;
-            var b_mod = b.last_modified;
-
-            if (typeof a_mod != 'object') {
-                a_mod = new Date(a_mod);
-            }
-            if (typeof b_mod != 'object') {
-                b_mod = new Date(b_mod);
-            }
+            var a_mod = new Date(parseInt(a.last_modified));
+            var b_mod = new Date(parseInt(b.last_modified));
 
             var a_time = a_mod || new Date(parseInt( a.time || 0));
             var b_time = b_mod || new Date(parseInt( b.time || 0));
@@ -103,17 +96,12 @@ var list = {
             </tr>
         `;
         caches.forEach( (cache, index) => {
-
-            var time = cache.last_modified;
-
-            if (typeof time != 'object') {
-                time = new Date(time);
-            }
+            var time = new Date(parseInt(cache.last_modified)); // new Data(string)
 
             list_dom_str += `<tr class="cache-row"
                     data-id="${cache.key}"
                     data-index="${index + 1}"
-                    data-date="${String(time.getTime())}"
+                    data-date="${String(time.getTime && time.getTime())}"
                     data-url="${cache.url}">
                 <td class="checkbox-wrapper"><input type="checkbox" /></td>
                 <td><a href="${cache.url}">${cache.url}</a></td>
