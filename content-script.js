@@ -27,7 +27,8 @@ var tcl = {
             behavior: 'init',
             title: window.parent.document.title,
             url: location.href
-        });
+        }).then(()=>{}).catch(()=>{});
+
         runtime.onMessage.addListener( req => {
             if (req.behavior != "pasteToTextarea") return;
             if (!req.skipConfirmPaste && !confirm(`paste "${req.val}" ?`)) return;

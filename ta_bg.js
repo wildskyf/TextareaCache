@@ -20,6 +20,8 @@ ta_bg.initPageAction = info => {
     var { forAll, tab_id } = info;
     var show_page_action = ta_database.data.setting.pageAction;
 
+    if (!pageAction) return;
+
     if (forAll) {
         tabs.query({}).then(tab_infos => {
             tab_infos.forEach(tab_info => {
@@ -46,7 +48,8 @@ ta_bg.listenMessageFromContentScript = () => {
                 if (ta_database &&
                     ta_database.data &&
                     ta_database.data.setting &&
-                    ta_database.data.setting.showContextMenu
+                    ta_database.data.setting.showContextMenu &&
+                    menus
                 ) {
                     menus.removeAll();
                     menus.onClicked.removeListener(me._menuOnClick);
@@ -105,10 +108,10 @@ ta_bg.listenMessageFromContentScript = () => {
 ta_bg._popupListInWindow = () => {
     windows.create({
         url: extension.getURL("view/list/list.html"),
-        type: "detached_panel", // "normal", "popup", "panel", "detached_panel"
+        type: "popup", // "normal", "popup"
         height: 450,
         width: 800
-    });
+    }).then(()=>{});
 };
 
 ta_bg._popupListInTab = () => {
@@ -135,12 +138,8 @@ ta_bg._popupLiteByPageAction = tab => {
     pageAction.openPopup();
 };
 
-ta_bg._popupLiteByBrowserAction = tab => {
-    browserAction.setPopup({
-        tabId: tab.id,
-        popup: extension.getURL("view/lite/lite.html")
-    });
-    browserAction.openPopup();
+ta_bg._popupLiteByBrowserAction = () => {
+    browseraction.openpopup();
 };
 
 ta_bg.setupCacheList = () => {
@@ -158,10 +157,18 @@ ta_bg.setupCacheList = () => {
 
     if (setting.popupType == "window") {
         browserAction.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
+
+        browserAction.setPopup({ popup: "" });
+
         browserAction.onClicked.addListener(ta_bg._popupListInWindow);
     }
     else {
         browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
+
+        browserAction.setPopup({
+            popup: extension.getURL("view/lite/lite.html")
+        });
+
         browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
     }
 
