@@ -1,0 +1,68 @@
+{
+    "noCache":{
+      "message": "Hier gibt es keinen Eintrag!"
+    },
+    "url":{
+      "message": "URL"
+    },
+    "date":{
+      "message": "Datum"
+    },
+    "summary":{
+      "message": "Zusammenfassung"
+    },
+    "copy":{
+      "message": "Kopieren"
+    },
+    "delete":{
+      "message": "Löschen"
+    },
+    "deleteSelected":{
+      "message": "Lösche gewählten Eintrag"
+    },
+    "deleteAllinc":{
+      "message": "Lösche alle (inkl. der nicht gewählten Einträge)"
+    },
+    "deleteAll":{
+      "message": "Lösche alle"
+    },
+    "cache_copied":{
+      "message": "Eintrag kopiert."
+    },
+    "option_skipConfirmPaste": {
+      "message": "Kein Bestätigung beim Kopieren aus dem Kontextmenü"
+    },
+    "option_pageAction": {
+      "message": "Symbol in der Symbolleiste anzeigen"
+    },
+    "option_pageActionLite": {
+      "message": "PageAction (icon on url bar) using lite list"
+    },
+    "option_popupType": {
+      "message": "Popup what to show list"
+    },
+    "option_exception": {
+      "message": "Ausnahmen"
+    },
+    "option_exp_site_hint": {
+      "message": "(eine Seite pro Zeile)"
+    },
+    "option_showContextMenu": {
+      "message": "Kontextmenü anzeigen"
+    },
+    "option_intervalToSave": {
+      "message": "Speicher-Intervall (ms)"
+    },
+    "option_shouldAutoClear": {
+      "message": "Alte Einträge automatisch löschen"
+    },
+    "option_intervalCantBeZero": {
+      "message": "Intervall kann nicht Null sein."
+    },
+    "option_saved": {
+      "message": "Veränderung gespeichert."
+    },
+    "option_save_error": {
+      "message": "Irgendwas stimmt nicht, bitte dem Entwickler melden."
+    }
+}
