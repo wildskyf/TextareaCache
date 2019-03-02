@@ -118,6 +118,16 @@ ta_bg._popupListInTab = () => {
 };
 
 ta_bg._popupLiteByPageAction = tab => {
+    pageAction.settitle({
+        tabId: tab.id,
+        title: "View your saved data (Textarea Cache)"
+    })
+
+    pageAction.setIcon({
+        tabId: tab.id,
+        path: "icons/tacache-48-bw.png"
+    });
+
     pageAction.setPopup({
         tabId: tab.id,
         popup: extension.getURL("view/lite/lite.html")
