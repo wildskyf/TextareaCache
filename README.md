@@ -6,7 +6,8 @@ Save automatically the content in Textarea.
 
 ## install
 
-Please go to [AMO/textarea-cache](https://addons.mozilla.org/firefox/addon/textarea-cache) to install Textarea Cache.
+* Firefox Version: [AMO/textarea-cache](https://addons.mozilla.org/firefox/addon/textarea-cache)
+* Chrome Version: [Chrome Web Store](https://chrome.google.com/webstore/detail/textarea-cache/chpphekfimlabghbdankokcohcmnbmab)
 
 ## Change Log and Previous Versions
 
