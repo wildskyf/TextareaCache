@@ -18,7 +18,7 @@
     "48": "icons/icon.png"
   },
 
-  "permissions": ["storage", "tabs", "clipboardWrite", "menus", "alarms"],
+  "permissions": ["storage", "clipboardWrite", "menus", "alarms"],
 
   "browser_action": {
     "browser_style": true,
