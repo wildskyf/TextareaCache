@@ -12,7 +12,7 @@
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
-  "homepage_url": "https://addons.mozilla.org/firefox/addon/textarea-cache/",
+  "homepage_url": "https://github.com/wildskyf/TextareaCache",
 
   "icons": {
     "48": "icons/icon.png"
