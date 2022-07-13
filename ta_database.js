@@ -1,3 +1,5 @@
+const { local } = chrome.storage
+
 var ta_database = {
     VERSION: '9',
     data: null,
@@ -100,3 +102,4 @@ var ta_database = {
     print: () => console.log(ta_database.data)
 };
 
+export default ta_database

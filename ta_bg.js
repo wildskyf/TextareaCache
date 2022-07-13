@@ -1,3 +1,7 @@
+import ta_database from './ta_database.js'
+
+const { alarms, runtime, action, pageAction, tabs, windows, contextMenus } = chrome;
+
 var ta_bg = {};
 
 ta_bg.init = () => {
@@ -41,18 +45,17 @@ ta_bg.initPageAction = info => {
 ta_bg.listenMessageFromContentScript = () => {
     var me = ta_bg;
 
-    runtime.onMessage.addListener( (request, sender, sendBack) => {
-
+    runtime.onMessage.addListener( (request, _, sendBack) => {
         switch(request.behavior) {
             case 'init':
                 if (ta_database &&
                     ta_database.data &&
                     ta_database.data.setting &&
                     ta_database.data.setting.showContextMenu &&
-                    menus
+                    contextMenus
                 ) {
-                    menus.removeAll();
-                    menus.onClicked.removeListener(me._menuOnClick);
+                    contextMenus.removeAll();
+                    contextMenus.onClicked.removeListener(me._menuOnClick);
                     me.setupContext(request);
                 }
                 break;
@@ -87,6 +90,7 @@ ta_bg.listenMessageFromContentScript = () => {
                 });
                 break;
             case 'load':
+                console.log('load', ta_database.data);
                 sendBack({ data: ta_database.data });
                 break;
             case 'delete':
@@ -107,7 +111,7 @@ ta_bg.listenMessageFromContentScript = () => {
 
 ta_bg._popupListInWindow = () => {
     windows.create({
-        url: extension.getURL("view/list/list.html"),
+        url: runtime.getURL("view/list/list.html"),
         type: "popup", // "normal", "popup"
         height: 450,
         width: 800
@@ -116,7 +120,7 @@ ta_bg._popupListInWindow = () => {
 
 ta_bg._popupListInTab = () => {
     tabs.create({
-        url: extension.getURL("view/list/list.html")
+        url: runtime.getURL("view/list/list.html")
     });
 };
 
@@ -133,7 +137,7 @@ ta_bg._popupLiteByPageAction = tab => {
 
     pageAction.setPopup({
         tabId: tab.id,
-        popup: extension.getURL("view/lite/lite.html")
+        popup: runtime.getURL("view/lite/lite.html")
     });
     pageAction.openPopup();
 };
@@ -156,23 +160,23 @@ ta_bg.setupCacheList = () => {
     }
 
     if (setting.popupType == "window") {
-        browserAction.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
+        action.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
 
-        browserAction.setPopup({ popup: "" });
+        action.setPopup({ popup: "" });
 
-        browserAction.onClicked.addListener(ta_bg._popupListInWindow);
+        action.onClicked.addListener(ta_bg._popupListInWindow);
     }
     else {
-        browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
+        action.onClicked.removeListener(ta_bg._popupListInWindow);
 
-        browserAction.setPopup({
-            popup: extension.getURL("view/lite/lite.html")
+        action.setPopup({
+            popup: runtime.getURL("view/lite/lite.html")
         });
 
-        browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
+        action.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
     }
 
-    if (!setting.pageAction) return;
+    if (!pageAction || !setting.pageAction) return;
     var target_function = setting.popupType == "window" ? ta_bg._popupListInWindow : ta_bg._popupLiteByPageAction;
     if (setting.pageActionLite) {
         pageAction.onClicked.removeListener(target_function);
@@ -204,25 +208,25 @@ ta_bg._menuOnClick = (info, tab) => {
 ta_bg.showCachesInContext = caches => {
     if (caches.length == 0) return;
 
-    menus.create({
+    contextMenus.create({
         id: '[TEXTAREA CACHE] open-cache-list',
         title: 'View your caches',
         contexts: ["editable"],
         command: '_execute_browser_action'
     });
 
-    menus.create({
+    contextMenus.create({
         type: 'separator'
     });
 
     caches.forEach( cache => {
-        menus.create({
+        contextMenus.create({
             id: cache,
             title: cache,
             contexts: ["editable"]
         });
     });
-    menus.onClicked.addListener(ta_bg._menuOnClick);
+    contextMenus.onClicked.addListener(ta_bg._menuOnClick);
 };
 
 ta_bg.setupAutoClear = () => {
@@ -230,7 +234,7 @@ ta_bg.setupAutoClear = () => {
     // should remove alarm when shouldAutoClear is set to false
     // and add back when shouldAutoClear is set to true
 
-    browser.alarms.create('check-auto-clear', {
+    alarms.create('check-auto-clear', {
         periodInMinutes: 1
     });
 
@@ -263,6 +267,8 @@ ta_bg.setupAutoClear = () => {
         }
     };
 
-    browser.alarms.onAlarm.addListener(checkAutoClear);
+    alarms.onAlarm.addListener(checkAutoClear);
     checkAutoClear();
 };
+
+export default ta_bg

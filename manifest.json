@@ -1,12 +1,5 @@
 {
-  "applications": {
-    "gecko": {
-      "id": "textarea-cache-lite@wildsky.cc",
-      "strict_min_version": "51.0"
-    }
-  },
-
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Textarea Cache",
   "version": "4.5.0",
 
@@ -18,9 +11,9 @@
     "48": "icons/icon.png"
   },
 
-  "permissions": ["storage", "clipboardWrite", "menus", "alarms"],
+  "permissions": ["storage", "clipboardWrite", "contextMenus", "alarms"],
 
-  "browser_action": {
+  "action": {
     "browser_style": true,
     "default_title": "View your saved data (Textarea Cache)",
     "default_icon": "icons/tacache-48.png"
@@ -32,12 +25,13 @@
       "all_frames": true,
       "matches": ["<all_urls>"],
       "run_at": "document_idle",
-      "js": ["browser-polyfill.min.js", "content-script.js"]
+      "js": ["content-script.js"]
     }
   ],
 
   "background": {
-    "scripts": ["browser-polyfill.min.js", "common.js", "ta_database.js", "ta_bg.js", "background.js"]
+    "service_worker": "background.js",
+    "type": "module"
   },
 
   "options_ui": {

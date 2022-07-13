@@ -1,6 +1,6 @@
 // content script
 
-var { runtime } = browser;
+var { runtime } = chrome;
 var strip = html => html.replace(/<(?:.|\n)*?>/gm, '')
 
 const SAVE_TARGET = 'tc-textContent';
@@ -8,8 +8,6 @@ var tcl = {
     sessionKey: String((new Date()).getTime()), // the timestamp at which user open a website
 
     init: async () => {
-        var me = tcl;
-
         if (await tcl.initExceptionSites()) return;
 
         tcl.initContextMenu();

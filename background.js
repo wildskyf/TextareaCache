@@ -1,3 +1,6 @@
+import ta_database from './ta_database.js'
+import ta_bg from './ta_bg.js'
+
 // background script, data from content script:
 //
 //  {
@@ -10,7 +13,8 @@
 //      sessionKey: 'the timeing open page'    /* String */
 //  }
 
-(async () => {
+
+;(async () => {
     await ta_database.init();
     ta_bg.init();
 })();
