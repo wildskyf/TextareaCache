@@ -1,1 +1,3 @@
 .web-extension-id
+.tmp-profile/
+node_modules/
