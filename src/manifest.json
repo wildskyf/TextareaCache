@@ -34,12 +34,12 @@
       "all_frames": true,
       "matches": ["<all_urls>"],
       "run_at": "document_idle",
-      "js": ["browser-polyfill.min.js", "content-script.js"]
+      "js": ["mv3-polyfill.js", "content-script.js"]
     }
   ],
 
   "background": {
-    "scripts": ["browser-polyfill.min.js", "common.js", "ta_database.js", "ta_bg.js", "background.js"]
+    "scripts": ["mv3-polyfill.js", "common.js", "ta_database.js", "ta_bg.js", "background.js"]
   },
 
   "options_ui": {
