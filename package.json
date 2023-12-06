@@ -7,6 +7,7 @@
   "author": "wildskyf <poppin.wildsky+gh@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "web-ext run --source-dir ./src"
+    "dev": "web-ext run --source-dir ./src --start-url https://wildskyf.github.io/test/textarea.html",
+    "dev:save-profile": "npm run dev -- -p ./.tmp-profile --profile-create-if-missing --keep-profile-changes"
   }
 }
