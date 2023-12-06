@@ -20,10 +20,12 @@
 
   "permissions": ["storage", "clipboardWrite", "menus", "alarms"],
 
-  "browser_action": {
-    "browser_style": true,
+  "action": {
     "default_title": "View your saved data (Textarea Cache)",
-    "default_icon": "icons/tacache-48.png"
+    "default_icon": {
+      "16": "icons/tacache-16.png",
+      "32": "icons/tacache-32.png"
+    }
   },
 
   "content_scripts": [

@@ -139,7 +139,7 @@ ta_bg._popupLiteByPageAction = tab => {
 };
 
 ta_bg._popupLiteByBrowserAction = () => {
-    browseraction.openpopup();
+    action.openpopup();
 };
 
 ta_bg.setupCacheList = () => {
@@ -156,20 +156,20 @@ ta_bg.setupCacheList = () => {
     }
 
     if (setting.popupType == "window") {
-        browserAction.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
+        action.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
 
-        browserAction.setPopup({ popup: "" });
+        action.setPopup({ popup: null });
 
-        browserAction.onClicked.addListener(ta_bg._popupListInWindow);
+        action.onClicked.addListener(ta_bg._popupListInWindow);
     }
     else {
-        browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
+        action.onClicked.removeListener(ta_bg._popupListInWindow);
 
-        browserAction.setPopup({
+        action.setPopup({
             popup: extension.getURL("view/lite/lite.html")
         });
 
-        browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
+        action.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
     }
 
     if (!setting.pageAction) return;
@@ -208,7 +208,7 @@ ta_bg.showCachesInContext = caches => {
         id: '[TEXTAREA CACHE] open-cache-list',
         title: 'View your caches',
         contexts: ["editable"],
-        command: '_execute_browser_action'
+        command: '_execute_action'
     });
 
     menus.create({
