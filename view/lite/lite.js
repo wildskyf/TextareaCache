@@ -184,6 +184,15 @@ var panel = {
                 me.showPreview(isWYSIWYG, cache);
             });
 
+            $select.addEventListener('wheel', e => {
+                e.preventDefault();
+                var direction = e.deltaY > 0 ? 1 : -1;
+                var index = $select.selectedIndex + direction;
+                if (index < 0 || $select.options.length <= index) return;
+                $select.selectedIndex = index;
+                $select.dispatchEvent(new Event('change'));
+            });
+
             $copy_btn.addEventListener('click', () => {
                 if ($show_cache.type == 'WYSIWYG') {
                     me.selectText($show_cache);
