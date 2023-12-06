@@ -1,7 +1,5 @@
 # Textarea Cache
 
-[![Join the chat at https://gitter.im/textarea-cache/community](https://badges.gitter.im/textarea-cache/community.svg)](https://gitter.im/textarea-cache/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Save automatically the content in Textarea.
 
 ## install
@@ -20,6 +18,6 @@ Now You could see them at [AMO/textarea-cache/versions/](https://addons.mozilla.
 
 ```
 # install node.js
-npm install web-ext -g
-web-ext run
+yarn global add web-ext
+yarn dev
 ```
