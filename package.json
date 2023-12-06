@@ -1,0 +1,12 @@
+{
+  "name": "TextareaCache",
+  "version": "0.10.0",
+  "description": "Browser Add-on: Automatically save the content in Textarea.",
+  "main": "index.js",
+  "repository": "git@github.com:wildskyf/TextareaCache.git",
+  "author": "wildskyf <poppin.wildsky+gh@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "web-ext run --source-dir ./src"
+  }
+}
