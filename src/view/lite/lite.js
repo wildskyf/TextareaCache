@@ -139,6 +139,16 @@ var panel = {
         });
     },
 
+    selectGoBy: n => {
+        var me = panel;
+        var $select = me.$select
+        var index = $select.selectedIndex + n;
+        if (index < 0 || $select.length <= index) return null;
+        $select.selectedIndex = index;
+        $select.dispatchEvent(new Event('change'));
+        return index;
+    },
+
     init: () => {
         var me = panel;
         var whole_data = null;
@@ -186,11 +196,34 @@ var panel = {
 
             $select.addEventListener('wheel', e => {
                 e.preventDefault();
-                var direction = e.deltaY > 0 ? 1 : -1;
-                var index = $select.selectedIndex + direction;
-                if (index < 0 || $select.options.length <= index) return;
-                $select.selectedIndex = index;
-                $select.dispatchEvent(new Event('change'));
+                var step = e.deltaY > 0 ? 1 : -1;
+                me.selectGoBy(step);
+            });
+
+            window.addEventListener('keydown', e => {
+                var k = e.key;
+                if (!e.ctrlKey || e.isComposing) return;
+
+                var nop = () => e.preventDefault();
+                if (k == 'd') {
+                    nop();
+                    $delete_btn.click();
+                }
+                else if (k == 'f' || k == 'b') {
+                    nop();
+                    var step = k == 'f' ? 1 : -1;
+                    me.selectGoBy(step);
+                }
+                else if (k == 'Enter') {
+                    nop();
+                    $copy_btn.click();
+                }
+                else if (k == 'c') {
+                    var node = e.target;
+                    if (node.isContentEditable || node.nodeName == 'textarea') return;
+                    nop();
+                    $copy_btn.click();
+                }
             });
 
             $copy_btn.addEventListener('click', () => {
