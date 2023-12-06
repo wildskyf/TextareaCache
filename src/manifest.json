@@ -1,12 +1,12 @@
 {
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "textarea-cache-lite@wildsky.cc",
       "strict_min_version": "51.0"
     }
   },
 
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Textarea Cache",
   "version": "4.5.0",
 
