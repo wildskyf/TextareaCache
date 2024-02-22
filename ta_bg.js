@@ -41,9 +41,9 @@ ta_bg.initPageAction = info => {
 ta_bg.listenMessageFromContentScript = () => {
     var me = ta_bg;
 
-    runtime.onMessage.addListener( (request, sender, sendBack) => {
+    runtime.onMessage.addListener((request, sender, sendBack) => {
 
-        switch(request.behavior) {
+        switch (request.behavior) {
             case 'init':
                 if (ta_database &&
                     ta_database.data &&
@@ -62,22 +62,22 @@ ta_bg.listenMessageFromContentScript = () => {
             case 'set_exceptions':
                 ta_database.set(
                     'exceptions', request.val.split('\n').filter(site => site)
-                ).then( () => sendBack({ msg: 'done'}) );
+                ).then(() => sendBack({ msg: 'done' }));
                 break;
             case 'set_options':
-                ta_database.setOptions(request).then( () => {
+                ta_database.setOptions(request).then(() => {
                     me.setupCacheList();
                     me.initPageAction({
                         forAll: true
                     });
-                    sendBack({ msg: 'done'});
+                    sendBack({ msg: 'done' });
                 });
                 break;
             case 'get_options':
                 sendBack(ta_database.data.setting);
                 break;
             case 'save':
-                var {title, val, type, id, url, sessionKey} = request;
+                var { title, val, type, id, url, sessionKey } = request;
                 ta_database.set(`${sessionKey} ${url} ${id}`, {
                     time: sessionKey,
                     type: type,
@@ -90,12 +90,12 @@ ta_bg.listenMessageFromContentScript = () => {
                 sendBack({ data: ta_database.data });
                 break;
             case 'delete':
-                ta_database.remove(request.id).then( () => {
+                ta_database.remove(request.id).then(() => {
                     sendBack({ msg: 'done', deleted: request.id, data: ta_database.data });
                 });
                 break;
             case 'clear':
-                ta_database.reset().then( () => {
+                ta_database.reset().then(() => {
                     sendBack({ msg: 'done' });
                 });
                 break;
@@ -111,7 +111,7 @@ ta_bg._popupListInWindow = () => {
         type: "popup", // "normal", "popup"
         height: 450,
         width: 800
-    }).then(()=>{});
+    }).then(() => { });
 };
 
 ta_bg._popupListInTab = () => {
@@ -186,8 +186,8 @@ ta_bg.setupCacheList = () => {
 
 ta_bg.setupContext = req => {
     var me = ta_bg;
-    var site_names = Object.keys(ta_database.data).filter( t => t.includes(req.url));
-    var datas = site_names.map( name => ta_database.data[name] ).filter( d => d.url == req.url ).map( d => d.val );
+    var site_names = Object.keys(ta_database.data).filter(t => t.includes(req.url));
+    var datas = site_names.map(name => ta_database.data[name]).filter(d => d.url == req.url).map(d => d.val);
     me.showCachesInContext(datas);
 };
 
@@ -215,7 +215,7 @@ ta_bg.showCachesInContext = caches => {
         type: 'separator'
     });
 
-    caches.forEach( cache => {
+    caches.forEach(cache => {
         menus.create({
             id: cache,
             title: cache,
@@ -239,15 +239,15 @@ ta_bg.setupAutoClear = () => {
 
         if (!data.setting.shouldAutoClear) return;
 
-        var day  = data.setting.autoClear_day,
+        var day = data.setting.autoClear_day,
             hour = data.setting.autoClear_hour,
-            min  = data.setting.autoClear_min;
+            min = data.setting.autoClear_min;
 
         if (day + hour + min == 0) return;
 
-        var lifetime = day  * 86400 +
-                       hour * 3600 +
-                       min  * 60;      // by second
+        var lifetime = day * 86400 +
+            hour * 3600 +
+            min * 60;      // by second
 
         var now = new Date();
 

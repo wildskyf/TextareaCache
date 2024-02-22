@@ -22,11 +22,11 @@ var ta_database = {
         ]
     },
 
-    _loadFromStorage: () => local.get().then( db_data => {
+    _loadFromStorage: () => sync.get().then(db_data => {
         ta_database.data = db_data;
     }),
 
-    init: () => ta_database._loadFromStorage().then( async () => {
+    init: () => ta_database._loadFromStorage().then(async () => {
         var me = ta_database;
         var add_on_version = me.VERSION;
         var current_version = me.data && me.data.version;
@@ -65,7 +65,7 @@ var ta_database = {
         }
     },
 
-    reset: () => local.clear().then( () => {
+    reset: () => sync.clear().then(() => {
         // reserve setting, clean caches
         var { data, _resetData } = ta_database;
 
@@ -73,12 +73,12 @@ var ta_database = {
         if (data.setting) keep_config.setting = data.setting;
         if (data.exceptions) keep_config.exceptions = data.exceptions;
 
-        return local.set(keep_config).then( () => {
+        return sync.set(keep_config).then(() => {
             ta_database.data = keep_config;
         });
     }),
 
-    remove: key => local.remove(key).then( () => {
+    remove: key => sync.remove(key).then(() => {
         delete ta_database.data[key];
     }),
 
@@ -87,7 +87,7 @@ var ta_database = {
 
         var tmp = {};
         tmp[name] = obj;
-        return local.set(tmp);
+        return sync.set(tmp);
     },
 
     setOptions: config => {
@@ -99,4 +99,3 @@ var ta_database = {
 
     print: () => console.log(ta_database.data)
 };
-
