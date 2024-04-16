@@ -59,8 +59,9 @@ var ta_database = {
             me.set(key, me.data[key]);
         }
 
-        if (me.data.setting.version != me.VERSION) {
-            me.data.setting.version = me.VERSION;
+        if (me.data.version != me.VERSION) {
+            me.data.version = me.VERSION;
+            await me.set('version', me.data.version);
             await me.set('setting', me.data.setting);
         }
     },
