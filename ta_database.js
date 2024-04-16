@@ -56,7 +56,7 @@ var ta_database = {
             else {
                 me.data[key].last_modified = me.data[key].time;
             }
-            me.set(key, me.data[key]);
+            await me.set(key, me.data[key]);
         }
 
         if (me.data.version != me.VERSION) {
