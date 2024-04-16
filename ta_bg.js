@@ -230,10 +230,6 @@ ta_bg.setupAutoClear = () => {
     // should remove alarm when shouldAutoClear is set to false
     // and add back when shouldAutoClear is set to true
 
-    browser.alarms.create('check-auto-clear', {
-        periodInMinutes: 1
-    });
-
     var checkAutoClear = () => {
         var data = ta_database.data;
 
@@ -263,6 +259,13 @@ ta_bg.setupAutoClear = () => {
         }
     };
 
-    browser.alarms.onAlarm.addListener(checkAutoClear);
-    checkAutoClear();
+    var checkAutoClearListener = idleState => {
+        if (!["idle", "locked"].includes(idleState)) {
+            return;
+        }
+        checkAutoClear();
+    };
+    idle.setDetectionInterval(180);  // 3 minutes.
+    idle.onStateChanged.removeListener(checkAutoClearListener);  // avoids repetitive call
+    idle.onStateChanged.addListener(checkAutoClearListener);
 };
