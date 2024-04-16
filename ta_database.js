@@ -43,7 +43,7 @@ var ta_database = {
         var me = ta_database;
 
         for (var key in me.data) {
-            if (key == 'setting') continue;
+            if (["version", "setting", "exceptions"].includes(key)) continue;
 
             let { last_modified } = me.data[key];
 
