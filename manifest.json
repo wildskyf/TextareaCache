@@ -26,6 +26,12 @@
     "default_icon": "icons/tacache-48.png"
   },
 
+  "page_action": {
+    "browser_style": true,
+    "default_title": "View your saved data (Textarea Cache)",
+    "default_icon": "icons/tacache-48-bw.png"
+  },
+
   "content_scripts": [
     {
       "match_about_blank": true,
