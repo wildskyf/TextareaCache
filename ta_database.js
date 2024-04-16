@@ -44,7 +44,7 @@ var ta_database = {
         var me = ta_database;
 
         for (var key in me.data) {
-            if (key == 'setting') continue;
+            if (["version", "setting", "exceptions"].includes(key)) continue;
 
             let { last_modified } = me.data[key];
 
@@ -57,12 +57,30 @@ var ta_database = {
             else {
                 me.data[key].last_modified = me.data[key].time;
             }
-            me.set(key, me.data[key]);
+            await me.set(key, me.data[key]);
         }
 
-        if (me.data.setting.version != me.VERSION) {
-            me.data.setting.version = me.VERSION;
-            await me.set('setting', me.data.setting);
+        if (me.data.version != me.VERSION) {
+            me.data.version = me.VERSION;
+            await me.set('version', me.data.version);
+        }
+
+        if (me.data.setting == undefined) me.data.setting = me._resetData.setting;
+        for (var key in me._resetData.setting) {
+            if (me.data.setting[key] == undefined) {
+                me.data.setting[key] = me._resetData.setting[key];
+            }
+        }
+        for (var key in me.data.setting) {
+            if (me._resetData.setting[key] == undefined) {
+                delete me.data.setting[key];
+            }
+        }
+        await me.set('setting', me.data.setting);
+
+        if (me.data.exceptions == undefined) {
+            me.data.exceptions = me._resetData.exceptions;
+            await me.set('exceptions', me.data.exceptions);
         }
     },
 
