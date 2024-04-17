@@ -107,7 +107,7 @@ ta_bg.listenMessageFromContentScript = () => {
 
 ta_bg._popupListInWindow = () => {
     windows.create({
-        url: extension.getURL("view/list/list.html"),
+        url: runtime.getURL("view/list/list.html"),
         type: "popup", // "normal", "popup"
         height: 450,
         width: 800
@@ -116,7 +116,7 @@ ta_bg._popupListInWindow = () => {
 
 ta_bg._popupListInTab = () => {
     tabs.create({
-        url: extension.getURL("view/list/list.html")
+        url: runtime.getURL("view/list/list.html")
     });
 };
 
@@ -133,7 +133,7 @@ ta_bg._popupLiteByPageAction = tab => {
 
     pageAction.setPopup({
         tabId: tab.id,
-        popup: extension.getURL("view/lite/lite.html")
+        popup: runtime.getURL("view/lite/lite.html")
     });
     pageAction.openPopup();
 };
@@ -166,7 +166,7 @@ ta_bg.setupCacheList = () => {
         browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
 
         browserAction.setPopup({
-            popup: extension.getURL("view/lite/lite.html")
+            popup: runtime.getURL("view/lite/lite.html")
         });
 
         browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
