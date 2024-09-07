@@ -121,7 +121,7 @@ ta_bg._popupListInTab = () => {
 };
 
 ta_bg._popupLiteByPageAction = tab => {
-    pageAction.settitle({
+    pageAction.setTitle({
         tabId: tab.id,
         title: "View your saved data (Textarea Cache)"
     })

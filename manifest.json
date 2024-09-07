@@ -1,13 +1,13 @@
 {
   "applications": {
     "gecko": {
-      "id": "textarea-cache-lite@wildsky.cc",
+      "id": "textarea-cache-lite.dev@wildsky.cc",
       "strict_min_version": "51.0"
     }
   },
 
   "manifest_version": 2,
-  "name": "Textarea Cache",
+  "name": "Textarea Cache Dev",
   "version": "4.6.0",
 
   "default_locale": "en",
