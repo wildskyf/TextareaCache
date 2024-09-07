@@ -49,8 +49,12 @@ var tcl = {
                 "[aria-multiline='true']"
             ].map( rule => (rule+`:not([${SAVE_TARGET}])`) ).join(',');
 
-            document.querySelectorAll(cache_rule).forEach(ta => {
+            document.querySelectorAll(cache_rule).forEach(function attach(ta) {
                 var rn = Math.random(), isTEXTAREA = ta.tagName == "TEXTAREA";
+                if (ta.shadowRoot) {
+                    ta.shadowRoot.querySelectorAll(cache_rule).forEach(attach)
+                    return
+                }
                 ta.setAttribute(SAVE_TARGET, true);
                 ta.dataset['tcId'] = isTEXTAREA ? rn : `w-${rn}`;
                 ta.addEventListener('keyup', me.saveToStorage);
