@@ -41,6 +41,7 @@ var tcl = {
         var me = tcl;
 
         const attachEvent = () => {
+            console.debug(`[textarea cache m] @${Date.now()} query textarea ${window.location.href}`);
             const cache_rule = [
                 "textarea",
                 "iframe",
@@ -69,8 +70,24 @@ var tcl = {
 
         runtime.sendMessage({
             behavior: 'get_options'
-        }).then( setting => {
-            window.setInterval(attachEvent, setting.intervalToSave);
+        }).then(async setting => {
+            const ms = setting.intervalToSave;
+            await sleep(ms);
+            while (true) {
+                attachEvent();
+                await sleep(ms);
+                await waitPageVisible();
+            }
+
+            function sleep(ms) {
+                return new Promise(wake => setTimeout(wake, ms));
+            }
+            function waitPageVisible() {
+                if (!document.hidden) return Promise.resolve();
+                return new Promise(fg => document.addEventListener(
+                    'visibilitychange', fg, {once: true}
+                ));
+            }
         });
         attachEvent();
     },
