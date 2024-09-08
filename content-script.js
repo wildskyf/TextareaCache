@@ -12,8 +12,16 @@ var tcl = {
 
         if (await tcl.initExceptionSites()) return;
 
-        tcl.initContextMenu();
+        tcl.cache_rule = [
+            "textarea",
+            "iframe",
+            "[contentEditable]",
+            "[role='textbox']",
+            "[aria-multiline='true']"
+        ].map( rule => (rule+`:not([${SAVE_TARGET}])`) ).join(',');
 
+        tcl.initContextMenu();
+        window.addEventListener('focusin', tcl.focusEventTaDetector)
         tcl.findTextContentsAndAttachEvents();
     },
 
@@ -36,60 +44,29 @@ var tcl = {
             document.activeElement.innerHTML = req.val
         });
     },
+    attachEventToNode: ta => {
+        var me = tcl;
+        var rn = Math.random(), isTEXTAREA = ta.tagName == "TEXTAREA";
+        ta.setAttribute(SAVE_TARGET, true);
+        ta.dataset['tcId'] = isTEXTAREA ? rn : `w-${rn}`;
+        ta.addEventListener('keyup', me.saveToStorage);
+    },
+
+    focusEventTaDetector: evt => {
+        const me = tcl;
+        let e = document.activeElement
+        while (e.shadowRoot) e = e.shadowRoot.activeElement
+        if (e && e.matches(me.cache_rule)) me.attachEventToNode(e)
+    },
 
     findTextContentsAndAttachEvents: () => {
-        var me = tcl;
-
-        const attachEvent = () => {
-            console.debug(`[textarea cache m] @${Date.now()} query textarea ${window.location.href}`);
-            const cache_rule = [
-                "textarea",
-                "iframe",
-                "[contentEditable]",
-                "[role='textbox']",
-                "[aria-multiline='true']"
-            ].map( rule => (rule+`:not([${SAVE_TARGET}])`) ).join(',');
-
-            document.querySelectorAll(cache_rule).forEach(function attach(ta) {
-                var rn = Math.random(), isTEXTAREA = ta.tagName == "TEXTAREA";
-                if (ta.shadowRoot) {
-                    ta.shadowRoot.querySelectorAll(cache_rule).forEach(attach)
-                    return
-                }
-                ta.setAttribute(SAVE_TARGET, true);
-                ta.dataset['tcId'] = isTEXTAREA ? rn : `w-${rn}`;
-                ta.addEventListener('keyup', me.saveToStorage);
-            });
-        };
-
-        // TODO: PERFORMANCE ISSUE
-        //       some textarea might not appear when document finished
-        //       loading, but appear when user do something, code here is use
-        //       to check every two seconds.
-
-
-        runtime.sendMessage({
-            behavior: 'get_options'
-        }).then(async setting => {
-            const ms = setting.intervalToSave;
-            await sleep(ms);
-            while (true) {
-                attachEvent();
-                await sleep(ms);
-                await waitPageVisible();
-            }
-
-            function sleep(ms) {
-                return new Promise(wake => setTimeout(wake, ms));
-            }
-            function waitPageVisible() {
-                if (!document.hidden) return Promise.resolve();
-                return new Promise(fg => document.addEventListener(
-                    'visibilitychange', fg, {once: true}
-                ));
-            }
-        });
-        attachEvent();
+        const me = tcl;
+        const q = me.cache_rule;
+        const qf = r => r.querySelectorAll(q).forEach(e => {
+            if (e.shadowRoot) qf(e.shadowRoot)
+            else me.attachEventToNode(e)
+        })
+        qf(document)
     },
 
     saveToStorage: event => {

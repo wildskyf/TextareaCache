@@ -1,29 +1,24 @@
-# Textarea Cache
-
-[![Join the chat at https://gitter.im/textarea-cache/community](https://badges.gitter.im/textarea-cache/community.svg)](https://gitter.im/textarea-cache/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
+# Textarea Cache M
 Save automatically the content in Textarea.
 
-## Textarea Cache M
-This is a fork of textarea cache, which cache the textarea in shadow-root
-and stop scan textarea node intervally in background tab.
+This is a fork of the [origin textarea cache][tc].
+TCM cache the textarea in shadow-root
+and stop scan textarea intervally.
+
+[tc]: https://github.com/wildskyf/TextareaCache
 
 If a element match [css selector][ta sel] and has a shadow-root,
 TCM will cache the textarea inside it.
 
-[ta sel]: content-script.js#L45
+[ta sel]: content-script.js#L15
+
+This fork will not scan textarea intervally,
+but listen to the focus event and cache its value.
 
 ## install
 
-* Firefox Version: [AMO/textarea-cache](https://addons.mozilla.org/firefox/addon/textarea-cache)
-* Chrome Version: [Chrome Web Store](https://chrome.google.com/webstore/detail/textarea-cache/chpphekfimlabghbdankokcohcmnbmab)
-
-## Change Log and Previous Versions
-
-Sometimes, you might wonder what's new in the updated version.
-And sometime you might need to roll back to the previous version.
-
-Now You could see them at [AMO/textarea-cache/versions/](https://addons.mozilla.org/en-US/firefox/addon/textarea-cache/versions/).
+* Firefox Version: [AMO/textarea-cache-m](https://addons.mozilla.org/firefox/addon/textarea-cache-m)
+* Chrome Version: not published
 
 ## develop
 
