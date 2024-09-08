@@ -129,24 +129,6 @@ var option = {
             });
         });
 
-        document.querySelector('#intervalToSave').addEventListener('change', e => {
-            var intervalToSave = parseInt(e.currentTarget.value);
-
-            if (Number.isNaN(intervalToSave)) return;
-            if (intervalToSave == 0) {
-                e.currentTarget.value = 2000;
-                return alert(i18n.getMessage('option_intervalCantBeZero'));
-            }
-
-            runtime.sendMessage({
-                behavior: 'set_options',
-                key: 'intervalToSave',
-                val: intervalToSave
-            }).then( () => {
-                me.showUpdatedMessage('success');
-            });
-        });
-
         document.querySelector('#popupType').addEventListener('change', e => {
             var { value } = e.target;
 

@@ -226,14 +226,6 @@ ta_bg.showCachesInContext = caches => {
 };
 
 ta_bg.setupAutoClear = () => {
-    // XXX: might causing performance issue (not sure)
-    // should remove alarm when shouldAutoClear is set to false
-    // and add back when shouldAutoClear is set to true
-
-    browser.alarms.create('check-auto-clear', {
-        periodInMinutes: 1
-    });
-
     var checkAutoClear = () => {
         var data = ta_database.data;
 
@@ -263,6 +255,15 @@ ta_bg.setupAutoClear = () => {
         }
     };
 
-    browser.alarms.onAlarm.addListener(checkAutoClear);
-    checkAutoClear();
+    const me = ta_bg
+    const delay = 3000
+    const interval = 15 * 60 * 1000
+    const checkDelay = () => void setTimeout(() => {
+        const t = Date.now()
+        if (t - me.lastRunAutoClear < interval) return
+        me.lastRunAutoClear = t
+        checkAutoClear()
+    }, delay)
+    checkDelay();
+    runtime.onMessage.addListener(checkDelay)
 };
