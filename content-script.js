@@ -24,6 +24,9 @@ var tcl = {
         window.addEventListener('focusin', tcl.focusEventTaDetector)
         const opt = await runtime.sendMessage({behavior: 'get_options'})
         if (!opt.onlyCacheFocusElement) tcl.findTextContentsAndAttachEvents();
+        if (opt.intervalToSave > 0) {
+            tcl.findTextContentInterval(opt.intervalToSave)
+        }
     },
 
     initExceptionSites: async () => {
@@ -68,6 +71,31 @@ var tcl = {
             else me.attachEventToNode(e)
         })
         qf(document)
+    },
+    findTextContentInterval: async ms => {
+        let visibleNow = () => {}
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) visibleNow()
+        })
+        function waitPageVisible() {
+            if (!document.hidden) return Promise.resolve();
+            return new Promise(ok => visibleNow = () => {
+                ok()
+                visibleNow = () => {}
+            })
+        }
+        function sleep(ms) {
+            return new Promise(wake => setTimeout(wake, ms));
+        }
+
+        const me = tcl
+        await sleep(ms);
+        while (true) {
+            me.findTextContentsAndAttachEvents();
+            console.log('find interval')
+            await sleep(ms);
+            await waitPageVisible();
+        }
     },
 
     saveToStorage: event => {
