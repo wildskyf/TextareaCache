@@ -8,6 +8,7 @@ var ta_database = {
             pageActionLite: true,
             popupType: 'tab',
             skipConfirmPaste: false,
+            onlyCacheFocusElement: false,
             showContextMenu: true,
             intervalToSave: 2000,
             shouldAutoClear: false,

@@ -32,6 +32,9 @@
     "option_skipConfirmPaste": {
       "message": "從右鍵選單貼上時不再次確認"
     },
+    "option_onlyCacheFocusElement": {
+      "message": "只儲存曾獲得焦點的文字框"
+    },
     "option_pageAction": {
       "message": "在網址列顯示 Icon"
     },

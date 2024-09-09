@@ -86,6 +86,15 @@ var option = {
                 me.showUpdatedMessage('success');
             });
         });
+        document.querySelector('#onlyCacheFocusElement').onchange = e => {
+            runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'onlyCacheFocusElement',
+                val: e.target.checked
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        }
 
         document.querySelector('#pageAction').addEventListener('change', e => {
             var isPageAction = e.currentTarget.checked;

@@ -32,6 +32,9 @@
     "option_skipConfirmPaste": {
       "message": "Skip Confirm When Paste From Context Menu"
     },
+    "option_onlyCacheFocusElement": {
+      "message": "Cache the textarea which ever get focus only"
+    },
     "option_pageAction": {
       "message": "Show Icon at navigation bar"
     },

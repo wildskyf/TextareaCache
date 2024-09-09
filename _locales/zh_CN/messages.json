@@ -32,6 +32,9 @@
     "option_skipConfirmPaste": {
       "message": "从右键菜单粘贴时不再次确认"
     },
+    "option_onlyCacheFocusElement": {
+      "message": "只储存曾获得焦点的文字框"
+    },
     "option_pageAction": {
       "message": "在地址栏显示图标"
     },

@@ -23,7 +23,7 @@ var tcl = {
         tcl.initContextMenu();
         window.addEventListener('focusin', tcl.focusEventTaDetector)
         const opt = await runtime.sendMessage({behavior: 'get_options'})
-        if (!opt.noFindTextContent) tcl.findTextContentsAndAttachEvents();
+        if (!opt.onlyCacheFocusElement) tcl.findTextContentsAndAttachEvents();
     },
 
     initExceptionSites: async () => {
