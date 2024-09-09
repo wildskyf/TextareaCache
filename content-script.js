@@ -23,9 +23,11 @@ var tcl = {
         tcl.initContextMenu();
         window.addEventListener('focusin', tcl.focusEventTaDetector)
         const opt = await runtime.sendMessage({behavior: 'get_options'})
-        if (!opt.onlyCacheFocusElement) tcl.findTextContentsAndAttachEvents();
-        if (opt.intervalToSave > 0) {
-            tcl.findTextContentInterval(opt.intervalToSave)
+        if (!opt.onlyCacheFocusElement) {
+            tcl.findTextContentsAndAttachEvents();
+            if (opt.intervalToSave > 0) {
+                tcl.findTextContentInterval(opt.intervalToSave)
+            }
         }
     },
 
@@ -89,12 +91,11 @@ var tcl = {
         }
 
         const me = tcl
-        await sleep(ms);
         while (true) {
-            me.findTextContentsAndAttachEvents();
-            console.log('find interval')
             await sleep(ms);
             await waitPageVisible();
+            console.log('find interval')
+            me.findTextContentsAndAttachEvents();
         }
     },
 
