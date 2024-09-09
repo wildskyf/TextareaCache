@@ -1,14 +1,14 @@
 {
   "applications": {
     "gecko": {
-      "id": "textarea-cache-lite.dev@gholk.github.io",
+      "id": "textarea-cache-lite.M@gholk.github.io",
       "strict_min_version": "58.0"
     }
   },
 
   "manifest_version": 2,
   "name": "Textarea Cache M",
-  "version": "4.8.0",
+  "version": "4.9.0",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
