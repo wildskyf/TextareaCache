@@ -86,6 +86,15 @@ var option = {
                 me.showUpdatedMessage('success');
             });
         });
+        document.querySelector('#onlyCacheFocusElement').onchange = e => {
+            runtime.sendMessage({
+                behavior: 'set_options',
+                key: 'onlyCacheFocusElement',
+                val: e.target.checked
+            }).then( () => {
+                me.showUpdatedMessage('success');
+            });
+        }
 
         document.querySelector('#pageAction').addEventListener('change', e => {
             var isPageAction = e.currentTarget.checked;
@@ -133,10 +142,6 @@ var option = {
             var intervalToSave = parseInt(e.currentTarget.value);
 
             if (Number.isNaN(intervalToSave)) return;
-            if (intervalToSave == 0) {
-                e.currentTarget.value = 2000;
-                return alert(i18n.getMessage('option_intervalCantBeZero'));
-            }
 
             runtime.sendMessage({
                 behavior: 'set_options',

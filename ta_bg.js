@@ -107,7 +107,7 @@ ta_bg.listenMessageFromContentScript = () => {
 
 ta_bg._popupListInWindow = () => {
     windows.create({
-        url: extension.getURL("view/list/list.html"),
+        url: runtime.getURL("view/list/list.html"),
         type: "popup", // "normal", "popup"
         height: 450,
         width: 800
@@ -116,12 +116,12 @@ ta_bg._popupListInWindow = () => {
 
 ta_bg._popupListInTab = () => {
     tabs.create({
-        url: extension.getURL("view/list/list.html")
+        url: runtime.getURL("view/list/list.html")
     });
 };
 
 ta_bg._popupLiteByPageAction = tab => {
-    pageAction.settitle({
+    pageAction.setTitle({
         tabId: tab.id,
         title: "View your saved data (Textarea Cache)"
     })
@@ -133,7 +133,7 @@ ta_bg._popupLiteByPageAction = tab => {
 
     pageAction.setPopup({
         tabId: tab.id,
-        popup: extension.getURL("view/lite/lite.html")
+        popup: runtime.getURL("view/lite/lite.html")
     });
     pageAction.openPopup();
 };
@@ -166,7 +166,7 @@ ta_bg.setupCacheList = () => {
         browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
 
         browserAction.setPopup({
-            popup: extension.getURL("view/lite/lite.html")
+            popup: runtime.getURL("view/lite/lite.html")
         });
 
         browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
@@ -226,14 +226,6 @@ ta_bg.showCachesInContext = caches => {
 };
 
 ta_bg.setupAutoClear = () => {
-    // XXX: might causing performance issue (not sure)
-    // should remove alarm when shouldAutoClear is set to false
-    // and add back when shouldAutoClear is set to true
-
-    browser.alarms.create('check-auto-clear', {
-        periodInMinutes: 1
-    });
-
     var checkAutoClear = () => {
         var data = ta_database.data;
 
@@ -263,6 +255,15 @@ ta_bg.setupAutoClear = () => {
         }
     };
 
-    browser.alarms.onAlarm.addListener(checkAutoClear);
-    checkAutoClear();
+    const me = ta_bg
+    const delay = 3000
+    const interval = 15 * 60 * 1000
+    const checkDelay = () => void setTimeout(() => {
+        const t = Date.now()
+        if (t - me.lastRunAutoClear < interval) return
+        me.lastRunAutoClear = t
+        checkAutoClear()
+    }, delay)
+    checkDelay();
+    runtime.onMessage.addListener(checkDelay)
 };

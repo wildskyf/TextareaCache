@@ -32,6 +32,9 @@
     "option_skipConfirmPaste": {
       "message": "Skip Confirm When Paste From Context Menu"
     },
+    "option_onlyCacheFocusElement": {
+      "message": "Cache the textarea which ever get focus only"
+    },
     "option_pageAction": {
       "message": "Show Icon at navigation bar"
     },
@@ -51,13 +54,10 @@
       "message": "show context menu"
     },
     "option_intervalToSave": {
-      "message": "interval to save text (ms)"
+      "message": "interval (ms) to scan the new textbox in the page (0 meaning no scaning)"
     },
     "option_shouldAutoClear": {
       "message": "auto clear old cache"
-    },
-    "option_intervalCantBeZero": {
-      "message": "interval can't be zero."
     },
     "option_saved": {
       "message": "Your change has been saved."

@@ -32,6 +32,9 @@
     "option_skipConfirmPaste": {
       "message": "從右鍵選單貼上時不再次確認"
     },
+    "option_onlyCacheFocusElement": {
+      "message": "只儲存曾獲得焦點的文字框"
+    },
     "option_pageAction": {
       "message": "在網址列顯示 Icon"
     },
@@ -51,13 +54,10 @@
       "message": "顯示右鍵選單"
     },
     "option_intervalToSave": {
-      "message": "每幾秒進行儲存 (ms)"
+      "message": "每幾毫秒檢查頁面中是否有新文字框 (0 則不檢查)"
     },
     "option_shouldAutoClear": {
       "message": "自動清除舊快取"
-    },
-    "option_intervalCantBeZero": {
-      "message": "間隔不可為零"
     },
     "option_saved": {
       "message": "設定已儲存"

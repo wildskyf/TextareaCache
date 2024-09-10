@@ -2,13 +2,13 @@
   "applications": {
     "gecko": {
       "id": "textarea-cache-lite@wildsky.cc",
-      "strict_min_version": "51.0"
+      "strict_min_version": "58.0"
     }
   },
 
   "manifest_version": 2,
   "name": "Textarea Cache",
-  "version": "4.6.0",
+  "version": "4.9.1",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
@@ -24,6 +24,12 @@
     "browser_style": true,
     "default_title": "View your saved data (Textarea Cache)",
     "default_icon": "icons/tacache-48.png"
+  },
+
+  "page_action": {
+    "browser_style": true,
+    "default_title": "View your saved data (Textarea Cache)",
+    "default_icon": "icons/tacache-48-bw.png"
   },
 
   "content_scripts": [
