@@ -61,26 +61,24 @@ var ta_database = {
         }
 
         if (me.data.version != me.VERSION) {
-            me.data.version = me.VERSION;
-            await me.set('version', me.data.version);
+            await me.set('version', me.VERSION);
         }
 
         if (me.data.setting == undefined) me.data.setting = me._resetData.setting;
         for (var key in me._resetData.setting) {
-            if (me.data.setting[key] == undefined) {
+            if (!(key in me.data.setting)) {
                 me.data.setting[key] = me._resetData.setting[key];
             }
         }
         for (var key in me.data.setting) {
-            if (me._resetData.setting[key] == undefined) {
+            if (!(key in me._resetData.setting)) {
                 delete me.data.setting[key];
             }
         }
         await me.set('setting', me.data.setting);
 
         if (me.data.exceptions == undefined) {
-            me.data.exceptions = me._resetData.exceptions;
-            await me.set('exceptions', me.data.exceptions);
+            await me.set('exceptions', me._resetData.exceptions);
         }
     },
 
