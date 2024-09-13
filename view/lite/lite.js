@@ -102,27 +102,26 @@ var panel = {
         var me = panel;
         var { $select, $show_cache } = me;
 
-        me._sort(whole_data).forEach(one_data => {
-            var { type } = one_data;
-            var cache = one_data.val;
-            var txt = me._formatDate(one_data.key).split(" ");
-            txt.pop(); // hide the serial number
-            txt = txt.join(' ');
+        var l = me._sort(whole_data)
+        l.map(one_data => {
+            var txt0 = me._formatDate(one_data.key)
+            var txta = txt0.split(' ')
+            txta.pop(); // hide the serial number
+            var txt = txta.join(' ');
 
             var option = document.createElement('option');
             option.textContent = txt; // todo: remove date stamp
             option.value = one_data.key;
-            option.title = `${me._formatDate(one_data.key)}\n(${one_data.url})\n\n${one_data.val.substr(0,40)}...`;
+            option.title = `${txt0}\n(${one_data.url})\n\n${one_data.val.substr(0,40)}...`;
 
-            $select.appendChild(option);
-
-            if ($show_cache.innerHTML == '')
-                me.showPreview(type == 'WYSIWYG', cache);
-
-            if (!document.querySelector('option')) {
-                me.setBodyEmpty();
-            }
-        });
+            return option;
+        }).forEach(e => $select.appendChild(e))
+        if (l[0] && !$show_cache.firstChild) {
+            me.showPreview(l[0].type == 'WYSIWYG', l[0].val);
+        }
+        if (!document.querySelector('option')) {
+            me.setBodyEmpty();
+        }
     },
 
     initHeaderBtns: () => {
@@ -155,10 +154,12 @@ var panel = {
 
         me.initHeaderBtns();
 
+        const lr = logc('history-load')
         runtime.sendMessage({
             behavior: 'load'
         }).then( ( resObj => {
             var { data } = resObj;
+            lr.log('get data')
 
             if (!data) {
                 console.error('loading error', resObj);
@@ -184,7 +185,10 @@ var panel = {
             $copy_btn.textContent = i18n.getMessage('copy');
             $delete_btn.textContent = i18n.getMessage('delete');
             $delete_all_btn.textContent = i18n.getMessage('deleteAll');
+            lr.log('init html')
             me.showSelect(whole_data);
+            lr.log('fill select element')
+            console.log('data size', Object.keys(whole_data).length)
 
             $select.addEventListener('change', e => {
                 var key = e.target.value;
@@ -267,8 +271,22 @@ var panel = {
                     me.showPreview(isWYSIWYG, cache);
                 });
             });
-        }));
+        })).then(() => lr.end());
     }
 };
 
 window.onload = panel.init;
+
+function logc(tag) {
+    if (Array.isArray(tag)) tag = tag[0]
+    console.time(tag)
+    return {
+        tag,
+        log(...a) {
+            console.timeLog(this.tag, ...a)
+        },
+        end() {
+            console.timeEnd(this.tag)
+        }
+    }
+}
