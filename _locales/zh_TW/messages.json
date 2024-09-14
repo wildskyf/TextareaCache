@@ -35,6 +35,9 @@
     "option_onlyCacheFocusElement": {
       "message": "只儲存曾獲得焦點的文字框"
     },
+    "option_exportHistory": {
+      "message": "匯出所有歷史紀錄"
+    },
     "option_pageAction": {
       "message": "在網址列顯示 Icon"
     },

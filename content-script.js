@@ -61,7 +61,7 @@ var tcl = {
     focusEventTaDetector: evt => {
         const me = tcl;
         let e = document.activeElement
-        while (e.shadowRoot) e = e.shadowRoot.activeElement
+        while (e && e.shadowRoot) e = e.shadowRoot.activeElement
         if (e && e.matches(me.cache_rule)) me.attachEventToNode(e)
     },
 

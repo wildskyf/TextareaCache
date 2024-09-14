@@ -35,6 +35,9 @@
     "option_onlyCacheFocusElement": {
       "message": "Cache the textarea which ever get focus only"
     },
+    "option_exportHistory": {
+      "message": "Export history as file"
+    },
     "option_pageAction": {
       "message": "Show Icon at navigation bar"
     },

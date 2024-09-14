@@ -35,6 +35,9 @@
     "option_onlyCacheFocusElement": {
       "message": "只储存曾获得焦点的文字框"
     },
+    "option_exportHistory": {
+      "message": "汇出所有历史纪录"
+    },
     "option_pageAction": {
       "message": "在地址栏显示图标"
     },

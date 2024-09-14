@@ -198,8 +198,66 @@ var option = {
                 me.showUpdatedMessage('success');
             });
         });
+        $id.exportHistory.onclick = async evt => {
+            const r = await browser.runtime.sendMessage({behavior: 'load'})
+            const l = []
+            for (const [k, v] of Object.entries(r.data)) {
+                const id = k.split(' ').at(-1)
+                const a = pick(v, 'time url type last_modified'.split(' '))
+                l.push(a.concat(id, v.val))
+            }
+            const csv = csvFormat(l)
+            download(new File(
+                ['time,url,type,last_modified,id,val\n', csv],
+                'textarea-history.csv',
+                {type: 'text/plain'}
+            ))
 
+            function csvFormat(t) {
+                return t.map(r =>
+                    r.map(f => csvEncode(f)).join(',') + '\n'
+                ).join('')
+            }
+            function csvEncode(t) {
+                const sp = /\n|"|,/
+                const nl = /\n/g
+                const dq = /"/g
+                const cm = /,/g
+                if (!sp.test(t)) return t
+                return '"' + t.replace(/"/g, '""') + '"'
+            }
+            function pick(o, kl) {
+                return kl.map(k => o[k])
+            }
+            function download(file) {
+                const a = document.createElement('a')
+                a.href = URL.createObjectURL(file)
+                a.download = file.name
+                document.body.appendChild(a)
+                a.click()
+                setTimeout(() => {
+                    URL.revokeObjectURL(a.href)
+                    a.remove()
+                }, 2000)
+            }
+
+        }
     }
 };
 
 window.addEventListener('load', option.init);
+
+var $d = document
+var $id = new Proxy($d, {
+    get(root, id) {
+        let e = $(`#${id}`);
+        if (!e) e = $(`[name=${id}]`);
+        return e;
+    }
+});
+function $all(q, root = $d) {
+    return Array.from(root.querySelectorAll(q));
+}
+function $(q, root = $d) {
+    return root.querySelector(q);
+}
