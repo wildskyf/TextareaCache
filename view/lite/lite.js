@@ -56,8 +56,8 @@ var panel = {
 
         if (isWYSIWYG) {
             me.$show_cache.type = 'WYSIWYG';
-            return me.getDomPurify().then(f => {
-                me.$show_cache.innerHTML = f(val);
+            return me.getDomPurify().then(domPurify => {
+                me.$show_cache.innerHTML = domPurify.sanitize(val);
             })
         }
         else {
