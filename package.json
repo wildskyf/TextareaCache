@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "dompurify": "^3.1.6"
+  },
+  "scripts": {
+    "build": "cp -auv node_modules/dompurify/dist/purify.es.mjs vendor/dompurify.js; web-ext build; rename -f 's/zip$/xpi/' web-ext-artifacts/*zip"
+  },
+  "webExt": {
+    "ignoreFiles": ["**/*~"]
+  }
+}

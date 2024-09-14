@@ -41,6 +41,12 @@ var panel = {
         return timestamp + ' ' + else_info;
     },
 
+    async getDomPurify() {
+        if (this.domPurify) return this.domPurify
+        const m = await import('../../vendor/dompurify.js')
+        return this.domPurify = m.default
+    },
+
     showPreview: (isWYSIWYG, val) => {
         // val is used to show preview of WYSIWYG,
         // so it should not be escaped.
@@ -50,8 +56,9 @@ var panel = {
 
         if (isWYSIWYG) {
             me.$show_cache.type = 'WYSIWYG';
-            val = val.replace(/<script.*>.*<\/script.*>/g, '');
-            me.$show_cache.innerHTML = val;
+            return me.getDomPurify().then(f => {
+                me.$show_cache.innerHTML = f(val);
+            })
         }
         else {
             me.$show_cache.type = 'txt';
