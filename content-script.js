@@ -94,7 +94,6 @@ var tcl = {
         while (true) {
             await sleep(ms);
             await waitPageVisible();
-            console.log('find interval')
             me.findTextContentsAndAttachEvents();
         }
     },
