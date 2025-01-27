@@ -4,38 +4,8 @@ ta_bg.init = () => {
     var me = ta_bg;
     me.listenMessageFromContentScript();
 
-    // FIXME: the timing for event binding is wrong
-    tabs.onUpdated.addListener( tab_id => {
-        me.initPageAction({
-            forAll: false,
-            tab_id: tab_id
-        });
-    });
-
     me.setupCacheList();
     me.setupAutoClear();
-};
-
-ta_bg.initPageAction = info => {
-    var { forAll, tab_id } = info;
-    var show_page_action = ta_database.data.setting.pageAction;
-
-    if (!pageAction) return;
-
-    if (forAll) {
-        tabs.query({}).then(tab_infos => {
-            tab_infos.forEach(tab_info => {
-                show_page_action ?
-                    pageAction.show(tab_info.id) :
-                    pageAction.hide(tab_info.id);
-            });
-        }).catch(catchErr);
-    }
-    else {
-        show_page_action ?
-            pageAction.show(tab_id) :
-            pageAction.hide(tab_id);
-    }
 };
 
 ta_bg.listenMessageFromContentScript = () => {
@@ -67,9 +37,6 @@ ta_bg.listenMessageFromContentScript = () => {
             case 'set_options':
                 ta_database.setOptions(request).then( () => {
                     me.setupCacheList();
-                    me.initPageAction({
-                        forAll: true
-                    });
                     sendBack({ msg: 'done'});
                 });
                 break;
@@ -120,24 +87,6 @@ ta_bg._popupListInTab = () => {
     });
 };
 
-ta_bg._popupLiteByPageAction = tab => {
-    pageAction.setTitle({
-        tabId: tab.id,
-        title: "View your saved data (Textarea Cache)"
-    })
-
-    pageAction.setIcon({
-        tabId: tab.id,
-        path: "icons/tacache-48-bw.png"
-    });
-
-    pageAction.setPopup({
-        tabId: tab.id,
-        popup: runtime.getURL("view/lite/lite.html")
-    });
-    pageAction.openPopup();
-};
-
 ta_bg._popupLiteByBrowserAction = () => {
     browseraction.openpopup();
 };
@@ -149,7 +98,6 @@ ta_bg.setupCacheList = () => {
     if (!setting) {
         setting = {
             popupType: 'tab',
-            pageActionLite: true,
             skipConfirmPaste: false,
             showContextMenu: true
         };
@@ -170,17 +118,6 @@ ta_bg.setupCacheList = () => {
         });
 
         browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
-    }
-
-    if (!setting.pageAction) return;
-    var target_function = setting.popupType == "window" ? ta_bg._popupListInWindow : ta_bg._popupLiteByPageAction;
-    if (setting.pageActionLite) {
-        pageAction.onClicked.removeListener(target_function);
-        pageAction.onClicked.addListener(ta_bg._popupLiteByPageAction);
-    }
-    else {
-        pageAction.onClicked.removeListener(ta_bg._popupLiteByPageAction);
-        pageAction.onClicked.addListener(target_function);
     }
 };
 

@@ -5,7 +5,6 @@ var ta_database = {
     _resetData: {
         version: '9',
         setting: {
-            pageActionLite: true,
             popupType: 'tab',
             skipConfirmPaste: false,
             onlyCacheFocusElement: false,
