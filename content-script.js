@@ -45,10 +45,27 @@ var tcl = {
 
         runtime.onMessage.addListener( req => {
             if (req.behavior != "pasteToTextarea") return;
-            if (!req.skipConfirmPaste && !confirm(`paste "${req.val}" ?`)) return;
+            if (!req.skipConfirmPaste && !confirm(`paste "${req.val.slice(2)}" ?`)) return;
 
-            document.activeElement.innerHTML = req.val
+            tcl.pasteToElement(req.val);
         });
+    },
+    getInnerHtml: (html) => {
+        const dp = new DOMParser()
+        const doc = dp.parseFromString(html, 'text/html')
+        const r = doc.body.children[0]
+        return r?.innerHTML || ''
+    },
+    pasteToElement: (data, e = document.activeElement) => {
+        if (!e) return
+        const flag = data.charAt(0)
+        let val = data.slice(2)
+        if (flag == 'w') val = tcl.getInnerHtml(val)
+        if (e.isContentEditable) {
+            if (flag == 'w') e.innerHTML = val
+            else e.textContent = val
+        }
+        else e.value = val
     },
     attachEventToNode: ta => {
         var me = tcl;

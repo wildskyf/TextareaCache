@@ -124,8 +124,15 @@ ta_bg.setupCacheList = () => {
 ta_bg.setupContext = req => {
     var me = ta_bg;
     var site_names = Object.keys(ta_database.data).filter( t => t.includes(req.url));
-    var datas = site_names.map( name => ta_database.data[name] ).filter( d => d.url == req.url ).map( d => d.val );
-    me.showCachesInContext(datas);
+    var datas = site_names.map( name => ta_database.data[name] ).filter( d => d.url == req.url );
+    const menuItems = []
+    for (let i=0; i<datas.length; i++) {
+        const o = datas[i]
+        const o2 = {type: o.type, val: o.val}
+        if (o.type == 'WYSIWYG') o2.val = domPurify.sanitize(o.val)
+        menuItems.push(o2)
+    }
+    me.showCachesInContext(menuItems);
 };
 
 ta_bg._menuOnClick = (info, tab) => {
@@ -153,9 +160,11 @@ ta_bg.showCachesInContext = caches => {
     });
 
     caches.forEach( cache => {
+        const {type, val} = cache;
+        const flag = type == 'WYSIWYG' ? 'w' : 't'
         menus.create({
-            id: cache,
-            title: cache,
+            id: flag + ':' + val,
+            title: val,
             contexts: ["editable"]
         });
     });
