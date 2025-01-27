@@ -3,11 +3,7 @@ var ta_bg = {};
 ta_bg.init = () => {
     var me = ta_bg;
     me.listenMessageFromContentScript();
-    if (ta_database.data.setting.showContextMenu) {
-        menus.onClicked.addListener(me._menuOnClick);
-    }
-    else menus.onClicked.removeListener(me._menuOnClick);
-
+    me.setupContext()
     me.setupCacheList();
     me.setupAutoClear();
 };
@@ -18,17 +14,6 @@ ta_bg.listenMessageFromContentScript = () => {
     runtime.onMessage.addListener( (request, sender, sendBack) => {
 
         switch(request.behavior) {
-            case 'init':
-                if (ta_database &&
-                    ta_database.data &&
-                    ta_database.data.setting &&
-                    ta_database.data.setting.showContextMenu &&
-                    menus
-                ) {
-                    menus.removeAll();
-                    me.setupContext(request);
-                }
-                break;
             case 'get_exceptions':
                 sendBack({ expts: ta_database.data.exceptions });
                 break;
@@ -104,11 +89,26 @@ ta_bg.setupCacheList = () => {
     }
 };
 
-ta_bg.setupContext = async req => {
+ta_bg.setupContext = () => {
+    const db = ta_database
+    const me = ta_bg
+    if (db.data.setting.showContextMenu) {
+        menus.onClicked.addListener(me._menuOnClick);
+        menus.onShown.addListener(me.updateContext);
+    }
+    else {
+        menus.onClicked.removeListener(me._menuOnClick);
+        menus.onShown.removeListener(me.updateContext);
+    }
+}
+ta_bg.updateContext = async evt => {
+    menus.removeAll()
     var me = ta_bg;
+    const tab = await tabs.query({active: true, currentWindow: true})
+    const url = tab[0].url
     const dataAll = await ta_database.getAll()
-    var site_names = Object.keys(dataAll).filter( t => t.includes(req.url));
-    var datas = site_names.map( name => dataAll[name] ).filter( d => d.url == req.url );
+    var site_names = Object.keys(dataAll).filter( t => t.includes(url));
+    var datas = site_names.map( name => dataAll[name] ).filter( d => d.url == url );
     const menuItems = []
     for (let i=0; i<datas.length; i++) {
         const o = datas[i]
@@ -152,6 +152,8 @@ ta_bg.showCachesInContext = caches => {
             contexts: ["editable"]
         });
     });
+
+    menus.refresh()
 };
 
 ta_bg.setupAutoClear = () => {
