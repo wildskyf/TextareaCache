@@ -24,16 +24,22 @@ If you want it sooner, you can [buy me a coffee about MV3][bmc]
 to encourage me to work on this.
 The timeline is:
 
-* 10 months if 20 USD
-* 6 months if 40 USD
-* 2 months if 60 USD
+* ~~10 months if 20 USD~~
+* ~~6 months if 40 USD~~
+* ~~2 months if 60 USD~~
 
 [bmc]: https://buymeacoffee.com/gholk/textarea-cache-mv3-upgrade
 
 Please find the details in the link.
 
+*I have received more than $60 at 2025/01/18, so I will upgrade to MV3 before 2025/03/18.*
+
 By the way, we can not add MV2 features to the chrome version now
 since Chrome Web Store no longer allow uploading the MV2 add-on.
+
+## buy me a coffee
+
+[![bubble-tea]](https://buymeacoffee.com/gholk)
 
 ## buy me a coffee
 
