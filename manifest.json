@@ -1,7 +1,7 @@
 {
   "applications": {
     "gecko": {
-      "id": "textarea-cache-lite@wildsky.cc",
+      "id": "textarea-cache-lite-dev@wildsky.cc",
       "strict_min_version": "58.0"
     }
   },
@@ -37,6 +37,7 @@
   ],
 
   "background": {
+    "persistent": false,
     "scripts": ["browser-polyfill.min.js", "common.js", "ta_database.js", "ta_bg.js", "background.js"]
   },
 

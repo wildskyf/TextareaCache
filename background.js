@@ -10,8 +10,6 @@
 //      sessionKey: 'the timeing open page'    /* String */
 //  }
 
-(async () => {
-    await ta_database.init();
-    ta_bg.init();
-})();
+ta_database.init()
+ta_bg.init();
 

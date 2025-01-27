@@ -3,6 +3,10 @@ var ta_bg = {};
 ta_bg.init = () => {
     var me = ta_bg;
     me.listenMessageFromContentScript();
+    if (ta_database.data.setting.showContextMenu) {
+        menus.onClicked.addListener(me._menuOnClick);
+    }
+    else menus.onClicked.removeListener(me._menuOnClick);
 
     me.setupCacheList();
     me.setupAutoClear();
@@ -22,7 +26,6 @@ ta_bg.listenMessageFromContentScript = () => {
                     menus
                 ) {
                     menus.removeAll();
-                    menus.onClicked.removeListener(me._menuOnClick);
                     me.setupContext(request);
                 }
                 break;
@@ -36,7 +39,7 @@ ta_bg.listenMessageFromContentScript = () => {
                 break;
             case 'set_options':
                 ta_database.setOptions(request).then( () => {
-                    me.setupCacheList();
+                    if (request.key == 'popupType') ta_bg.setupCacheList()
                     sendBack({ msg: 'done'});
                 });
                 break;
@@ -54,7 +57,7 @@ ta_bg.listenMessageFromContentScript = () => {
                 });
                 break;
             case 'load':
-                sendBack({ data: ta_database.data });
+                ta_database.getAll().then(data => sendBack({data}))
                 break;
             case 'delete':
                 ta_database.remove(request.id).then( () => {
@@ -87,44 +90,25 @@ ta_bg._popupListInTab = () => {
     });
 };
 
-ta_bg._popupLiteByBrowserAction = () => {
-    browseraction.openpopup();
-};
-
 ta_bg.setupCacheList = () => {
     var me = ta_bg;
-    var { setting } = ta_database.data;
-
-    if (!setting) {
-        setting = {
-            popupType: 'tab',
-            skipConfirmPaste: false,
-            showContextMenu: true
-        };
-    }
-
-    if (setting.popupType == "window") {
-        browserAction.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
-
-        browserAction.setPopup({ popup: "" });
-
-        browserAction.onClicked.addListener(ta_bg._popupListInWindow);
+    const setting = ta_database.data.setting
+    if (setting.popupType == 'window') {
+        browserAction.setPopup({popup: ""})
+        browserAction.onClicked.addListener(ta_bg._popupListInWindow)
     }
     else {
-        browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
-
         browserAction.setPopup({
             popup: runtime.getURL("view/lite/lite.html")
-        });
-
-        browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
+        })
     }
 };
 
-ta_bg.setupContext = req => {
+ta_bg.setupContext = async req => {
     var me = ta_bg;
-    var site_names = Object.keys(ta_database.data).filter( t => t.includes(req.url));
-    var datas = site_names.map( name => ta_database.data[name] ).filter( d => d.url == req.url );
+    const dataAll = await ta_database.getAll()
+    var site_names = Object.keys(dataAll).filter( t => t.includes(req.url));
+    var datas = site_names.map( name => dataAll[name] ).filter( d => d.url == req.url );
     const menuItems = []
     for (let i=0; i<datas.length; i++) {
         const o = datas[i]
@@ -168,14 +152,14 @@ ta_bg.showCachesInContext = caches => {
             contexts: ["editable"]
         });
     });
-    menus.onClicked.addListener(ta_bg._menuOnClick);
 };
 
 ta_bg.setupAutoClear = () => {
-    var checkAutoClear = () => {
-        var data = ta_database.data;
+    var checkAutoClear = async () => {
+        var data = await ta_database.getAll()
+        var setting = ta_database.data.setting
 
-        if (!data.setting.shouldAutoClear) return;
+        if (!setting.shouldAutoClear) return;
 
         var day  = data.setting.autoClear_day,
             hour = data.setting.autoClear_hour,
@@ -202,14 +186,15 @@ ta_bg.setupAutoClear = () => {
     };
 
     const me = ta_bg
-    const delay = 3000
+    let delay = 0
     const interval = 15 * 60 * 1000
-    const checkDelay = () => void setTimeout(() => {
+    const checkDelay = () => void setTimeout(async () => {
         const t = Date.now()
         if (t - me.lastRunAutoClear < interval) return
         me.lastRunAutoClear = t
         checkAutoClear()
     }, delay)
     checkDelay();
+    delay = 3000
     runtime.onMessage.addListener(checkDelay)
 };

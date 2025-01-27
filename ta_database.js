@@ -1,9 +1,9 @@
 var ta_database = {
-    VERSION: '9',
+    VERSION: '10',
     data: null,
 
     _resetData: {
-        version: '9',
+        version: '10',
         setting: {
             popupType: 'tab',
             skipConfirmPaste: false,
@@ -22,84 +22,36 @@ var ta_database = {
         ]
     },
 
-    _loadFromStorage: () => local.get().then( db_data => {
-        ta_database.data = db_data;
-    }),
-
-    init: () => ta_database._loadFromStorage().then( async () => {
-        var me = ta_database;
-        var add_on_version = me.VERSION;
-        var current_version = me.data && me.data.version;
-
-        if (!current_version) return me.reset();
-        if (add_on_version == current_version) return Promise.resolve();
-
-        await me.updateDatabaseVersion();
-
-        // return me.set('version', add_on_version);
-    }),
-
-    updateDatabaseVersion: async () => {
-        var me = ta_database;
-
-        for (var key in me.data) {
-            if (["version", "setting", "exceptions"].includes(key)) continue;
-
-            let { last_modified } = me.data[key];
-
-            if (typeof last_modified == 'string') {
-                // do nothing
-            }
-            else if (typeof last_modified == 'object' && last_modified.getTime) {
-                me.data[key].last_modified = String(last_modified.getTime())
-            }
-            else {
-                me.data[key].last_modified = me.data[key].time;
-            }
-            await me.set(key, me.data[key]);
-        }
-
-        if (me.data.version != me.VERSION) {
-            await me.set('version', me.VERSION);
-        }
-
-        if (me.data.setting == undefined) me.data.setting = me._resetData.setting;
-        for (var key in me._resetData.setting) {
-            if (!(key in me.data.setting)) {
-                me.data.setting[key] = me._resetData.setting[key];
-            }
-        }
-        for (var key in me.data.setting) {
-            if (!(key in me._resetData.setting)) {
-                delete me.data.setting[key];
-            }
-        }
-        await me.set('setting', me.data.setting);
-
-        if (me.data.exceptions == undefined) {
-            await me.set('exceptions', me._resetData.exceptions);
-        }
+    getAll() {
+        return local.get()
     },
 
-    reset: () => local.clear().then( () => {
-        // reserve setting, clean caches
-        var { data, _resetData } = ta_database;
+    configLoad: () => {
+        // const data = local.get(['setting', 'version', 'exceptions'])
+        var data = localStorage.getItem('config')
+        if (data) data = JSON.parse(data)
+        else data = ta_database._resetData
+        ta_database.data = data
+    },
+    configSave() {
+        var data = JSON.stringify(ta_database.data)
+        localStorage.setItem('config', data)
+    },
 
-        var keep_config = Object.assign({}, _resetData);
-        if (data.setting) keep_config.setting = data.setting;
-        if (data.exceptions) keep_config.exceptions = data.exceptions;
+    init: () => {
+        ta_database.configLoad()
+    },
 
-        return local.set(keep_config).then( () => {
-            ta_database.data = keep_config;
-        });
-    }),
+    // clear history
+    reset: () => local.clear(),
 
-    remove: key => local.remove(key).then( () => {
-        delete ta_database.data[key];
-    }),
+    remove: key => local.remove(key),
 
     set: (name, obj) => {
-        ta_database.data[name] = obj
+        if (name in ta_database.data) {
+            ta_database.data[name] = obj
+            ta_database.configSave()
+        }
 
         var tmp = {};
         tmp[name] = obj;
