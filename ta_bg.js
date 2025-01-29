@@ -99,6 +99,7 @@ ta_bg.setupContext = () => {
     else {
         menus.onClicked.removeListener(me._menuOnClick);
         menus.onShown.removeListener(me.updateContext);
+        menus.removeAll()
     }
 }
 ta_bg.updateContext = async evt => {

@@ -33,9 +33,12 @@ var tcl = {
     },
 
     initExceptionSites: async () => {
-        var res = await stor.get('exceptions')
-        if (!res) res = await runtime.sendMessage({ behavior: 'get_exceptions' });
-        return res.expts.some(site => location.href.includes(site));
+        var expts = await stor.get('exceptions')
+        if (!expts) {
+            let res = await runtime.sendMessage({ behavior: 'get_exceptions' });
+            expts = res.expts
+        }
+        return expts.some(site => location.href.includes(site));
     },
 
     initContextMenu: () => {
