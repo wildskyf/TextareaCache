@@ -32,7 +32,7 @@
       "all_frames": true,
       "matches": ["<all_urls>"],
       "run_at": "document_idle",
-      "js": ["browser-polyfill.min.js", "content-script.js"]
+      "js": ["browser-polyfill.min.js", "helper.js", "content-script.js"]
     }
   ],
 

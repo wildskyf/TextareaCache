@@ -162,16 +162,8 @@ var panel = {
         me.initHeaderBtns();
 
         const lr = logc('history-load')
-        runtime.sendMessage({
-            behavior: 'load'
-        }).then( ( resObj => {
-            var { data } = resObj;
+        stor.load().then( ( data => {
             lr.log('get data')
-
-            if (!data) {
-                console.error('loading error', resObj);
-                return false;
-            }
 
             delete data.version;
             delete data.setting;
@@ -258,22 +250,19 @@ var panel = {
             });
 
             $delete_btn.addEventListener('click', () => {
-                runtime.sendMessage({
-                    behavior: 'delete',
-                    id: $select.value
-                }).then( res => {
-                    whole_data = res.data;
-                    $select.querySelector(`[value="${res.deleted}"]`).remove();
+                var id = $select.value
+                stor.delete(id).then(async () => {
+                    $select.querySelector(`[value="${id}"]`).remove();
+                    var id2 = $select.value
 
-                    var key = $select.value;
-
-                    if (!whole_data[key]) {
+                    let r = await stor.get(id2)
+                    if (!r) {
                         me.setBodyEmpty();
                         return false;
                     }
 
-                    var cache = whole_data[key].val;
-                    var isWYSIWYG = whole_data[key].type == 'WYSIWYG';
+                    var cache = r.val;
+                    var isWYSIWYG = r.type == 'WYSIWYG';
 
                     me.showPreview(isWYSIWYG, cache);
                 });

@@ -27,19 +27,32 @@ var ta_database = {
     },
 
     configLoad: () => {
-        // const data = local.get(['setting', 'version', 'exceptions'])
         var data = localStorage.getItem('config')
         if (data) data = JSON.parse(data)
         else data = ta_database._resetData
         ta_database.data = data
     },
     configSave() {
-        var data = JSON.stringify(ta_database.data)
+        var data = JSON.stringify(this.data)
         localStorage.setItem('config', data)
+        return local.set(this.data)
     },
 
     init: () => {
         ta_database.configLoad()
+        ta_database.checkDatabaseVersion()
+    },
+
+    async checkDatabaseVersion() {
+        const me = this
+        b: {
+            const cfg0 = await local.get(['version', 'setting', 'exceptions'])
+            if (cfg0.version == '9' && me.VERSION == '10') true
+            else break b
+            me.data.setting = cfg0.setting
+            me.data.exceptions = cfg0.exceptions
+            await me.configSave()
+        }
     },
 
     // clear history
@@ -50,7 +63,7 @@ var ta_database = {
     set: (name, obj) => {
         if (name in ta_database.data) {
             ta_database.data[name] = obj
-            ta_database.configSave()
+            return ta_database.configSave()
         }
 
         var tmp = {};

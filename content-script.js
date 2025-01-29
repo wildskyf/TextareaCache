@@ -22,7 +22,8 @@ var tcl = {
 
         tcl.initContextMenu();
         window.addEventListener('focusin', tcl.focusEventTaDetector)
-        const opt = await runtime.sendMessage({behavior: 'get_options'})
+        let opt = await stor.get('setting')
+        if (!opt) opt = await runtime.sendMessage({behavior: 'get_options'})
         if (!opt.onlyCacheFocusElement) {
             tcl.findTextContentsAndAttachEvents();
             if (opt.intervalToSave > 0) {
@@ -32,17 +33,12 @@ var tcl = {
     },
 
     initExceptionSites: async () => {
-        var res = await runtime.sendMessage({ behavior: 'get_exceptions' });
+        var res = await stor.get('exceptions')
+        if (!res) res = await runtime.sendMessage({ behavior: 'get_exceptions' });
         return res.expts.some(site => location.href.includes(site));
     },
 
     initContextMenu: () => {
-        runtime.sendMessage({
-            behavior: 'init',
-            title: window.parent.document.title,
-            url: location.href
-        }).then(()=>{}).catch(()=>{});
-
         runtime.onMessage.addListener( req => {
             if (req.behavior != "pasteToTextarea") return;
             if (!req.skipConfirmPaste && !confirm(`paste "${req.val.slice(2)}" ?`)) return;
@@ -120,7 +116,8 @@ var tcl = {
 
         if (strip(save_info.val).length == 0) return;
 
-        runtime.sendMessage({
+        // runtime.sendMessage({
+        stor.saveTa({
             behavior: 'save',
             title: window.parent.document.title,
             url: location.href,
