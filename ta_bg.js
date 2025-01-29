@@ -26,6 +26,8 @@ ta_bg.listenMessageFromContentScript = () => {
                 ta_database.setOptions(request).then( () => {
                     if (request.key == 'popupType') ta_bg.setupCacheList()
                     sendBack({ msg: 'done'});
+                    // attach listener according to new config
+                    setTimeout(() => browser.runtime.reload(), 300)
                 });
                 break;
             case 'get_options':
@@ -137,7 +139,7 @@ ta_bg.showCachesInContext = caches => {
         id: '[TEXTAREA CACHE] open-cache-list',
         title: 'View your caches',
         contexts: ["editable"],
-        command: '_execute_browser_action'
+        command: '_execute_action'
     });
 
     menus.create({
