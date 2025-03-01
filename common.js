@@ -22,9 +22,3 @@ function ok(t, m) {
     else m = `assert fail`
     throw new Error(m)
 }
-
-let domPurify = {sanitize: s => s};
-if (!browserHas('chromium')) {
-    import('./vendor/dompurify.js').then(x => domPurify = x.default);
-}
-else domPurify = self.domPurify
