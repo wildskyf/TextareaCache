@@ -11,8 +11,13 @@ ta_bg.init = () => {
 ta_bg.listenMessageFromContentScript = () => {
     var me = ta_bg;
 
-    runtime.onMessage.addListener( (request, sender, sendBack) => {
-
+    let callee
+    runtime.onMessage.addListener(callee = (request, sender, sendBack) => {
+        const db = ta_database
+        if (db.loading) {
+            db.loadingPromise.then(() => callee(request, sender, sendBack))
+            return true
+        }
         switch(request.behavior) {
             case 'get_exceptions':
                 sendBack({ expts: ta_database.data.exceptions });
@@ -79,8 +84,8 @@ ta_bg._popupListInTab = () => {
 
 ta_bg.setupCacheList = () => {
     var me = ta_bg;
-    const setting = ta_database.data.setting
-    if (setting.popupType == 'window') {
+    const db = ta_database
+    if (db.loading || db.data.setting.popupType == 'window') {
         browserAction.setPopup({popup: ""})
         browserAction.onClicked.addListener(ta_bg._popupListInWindow)
     }
@@ -89,12 +94,14 @@ ta_bg.setupCacheList = () => {
             popup: runtime.getURL("view/lite/lite.html")
         })
     }
+    if (db.loading) db.loadingPromise.then(() => me.setupCacheList())
 };
 
 ta_bg.setupContext = () => {
     const db = ta_database
     const me = ta_bg
-    if (db.data.setting.showContextMenu) {
+    if (!menus) return
+    if (db.loading || db.data.setting.showContextMenu) {
         menus.onClicked.addListener(me._menuOnClick);
         menus.onShown.addListener(me.updateContext);
     }
@@ -103,6 +110,7 @@ ta_bg.setupContext = () => {
         menus.onShown.removeListener(me.updateContext);
         menus.removeAll()
     }
+    if (db.loading) db.loadingPromise.then(() => ta_bg.setupContext())
 }
 ta_bg.updateContext = async evt => {
     menus.removeAll()

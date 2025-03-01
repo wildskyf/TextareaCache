@@ -2,7 +2,10 @@ var { storage, runtime, action, pageAction, tabs, windows, menus, extension } = 
 var browserAction = action
 var { local } = storage;
 let domPurify = {sanitize: s => s};
-import('./vendor/dompurify.js').then(x => domPurify = x.default);
+if (!browserHas('chromium')) {
+    import('./vendor/dompurify.js').then(x => domPurify = x.default);
+}
+else domPurify = self.dompurify
 
 var catchErr = e => console.error(e);
 

@@ -20,3 +20,17 @@ var stor = {
     },
     delete(id) {return this.db.remove(id)}
 }
+
+var browserHas = (x) => {
+    if (x == 'chromium') {
+        return !browserHas('localStorage')
+    }
+    return x in window
+}
+
+function ok(t, m) {
+    if (t) return
+    if (m) m = `assert fail: ${m}`
+    else m = `assert fail`
+    throw new Error(m)
+}

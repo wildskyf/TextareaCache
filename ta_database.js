@@ -26,15 +26,28 @@ var ta_database = {
         return local.get()
     },
 
+    loading: true,
+    loadingPromise: null,
     configLoad: () => {
+        const me = ta_database
+        if (!browserHas('localStorage')) {
+            return me.loadingPromise = (async () => {
+                const k = 'setting exceptions version'.split(' ')
+                const data = await local.get(k)
+                if (k[0] in data) me.data = data
+                else me.data = me._resetData
+                me.loading = false
+            })()
+        }
         var data = localStorage.getItem('config')
         if (data) data = JSON.parse(data)
         else data = ta_database._resetData
         ta_database.data = data
+        me.loading = false
     },
     configSave() {
         var data = JSON.stringify(this.data)
-        localStorage.setItem('config', data)
+        if (browserHas('localStorage')) localStorage.setItem('config', data)
         return local.set(this.data)
     },
 
@@ -45,6 +58,10 @@ var ta_database = {
 
     async checkDatabaseVersion() {
         const me = this
+        if (this.loading) {
+            ok(this.loadingPromise)
+            await this.loadingPromise
+        }
         b: {
             const cfg0 = await local.get(['version', 'setting', 'exceptions'])
             if (cfg0.version == '9' && me.VERSION == '10') true

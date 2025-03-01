@@ -6,6 +6,7 @@
   },
   "scripts": {
     "build": "cp -auv node_modules/dompurify/dist/purify.es.mjs vendor/dompurify.js; web-ext build; rename -f 's/zip$/xpi/' web-ext-artifacts/*zip"
+    "build-chromium": "sh build-chromium.sh"
   },
   "webExt": {
     "ignoreFiles": [
