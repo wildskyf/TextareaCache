@@ -10,7 +10,7 @@
   },
   "webExt": {
     "ignoreFiles": [
-      "**/*~"
+      "**/*~", "chromium"
     ]
   }
 }

@@ -16,7 +16,7 @@ delete o.browser_specific_settings.chromium_background
 console.log(JSON.stringify(o, null, '  '))
 " > chromium/manifest.json
 
-cp -rvu browser-polyfill.min.js* common.js helper.js \
+ln -sr browser-polyfill.min.js* common.js helper.js \
    content-script.js service-worker.js vendor \
    options view css fonts icons _locales \
    chromium
