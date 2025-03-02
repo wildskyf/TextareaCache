@@ -29,6 +29,9 @@
     "cache_copied":{
       "message": "Cache 已複製。"
     },
+    "chromium_defect": {
+      "message": "Google Chromium 不支援"
+    },
     "option_skipConfirmPaste": {
       "message": "從右鍵選單貼上時不再次確認"
     },

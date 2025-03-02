@@ -29,6 +29,9 @@
     "cache_copied":{
       "message": "Cache copied."
     },
+    "chromium_defect": {
+      "message": "Google Chromium does not support this"
+    },
     "option_skipConfirmPaste": {
       "message": "Skip Confirm When Paste From Context Menu"
     },

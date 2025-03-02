@@ -100,6 +100,13 @@ var option = {
                 me.showUpdatedMessage('success');
             });
         });
+        if (!browserHas('menus')) {
+            const e = $id.showContextMenu
+            e.disabled = true
+            e.checked = false
+            e.parentNode.title = i18n.getMessage('chromium_defect')
+            e.id = e.id + '_disabled'
+        }
 
         document.querySelector('#intervalToSave').addEventListener('change', e => {
             var intervalToSave = parseInt(e.currentTarget.value);

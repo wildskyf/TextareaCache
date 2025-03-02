@@ -12,6 +12,7 @@ var catchErr = e => console.error(e);
         if (x == 'chromium') {
             return !browserHas('localStorage')
         }
+        if (x == 'menus') return Boolean(menus)
         return x in global
     }
 }
