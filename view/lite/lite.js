@@ -41,6 +41,7 @@ var panel = {
         return timestamp + ' ' + else_info;
     },
 
+    domPurify: null,
     async getDomPurify() {
         if (this.domPurify) return this.domPurify
         const m = await import('../../vendor/dompurify.js')

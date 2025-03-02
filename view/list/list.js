@@ -7,7 +7,19 @@ String.prototype.trunc = String.prototype.trunc || function(n){
 var list = {
     last_selected_index: null,
 
-    _strip: html => html.replace(/<(?:.|\n)*?>/gm, ''),
+    domParser: null,
+    domPurify: null,
+    async getDomPurify() {
+        if (this.domPurify) return this.domPurify
+        const m = await import('../../vendor/dompurify.js')
+        return this.domPurify = m.default
+    },
+    html2text(h) {
+        const clean = this.domPurify.sanitize(h)
+        const dp = this.domParser
+        const d = dp.parseFromString(clean, 'text/html')
+        return d.firstChild.textContent
+    },
 
     _escapeHTML: str =>  str.replace(/[&"'<>]/g, m => ({
         "&": "&amp;",
@@ -37,13 +49,15 @@ var list = {
         });
     },
 
-    init: () => {
+    init: async () => {
         var me = list;
 
-        runtime.sendMessage({
-            behavior: 'load'
-        }).then( ( res => {
-
+        me.domParser = new DOMParser()
+        const [res, domPurify] = await Promise.all([
+            runtime.sendMessage({behavior: 'load'}),
+            me.getDomPurify()
+        ])
+        {
             if (!(res && res.data)) return false;
 
             delete res.data.version;
@@ -58,8 +72,7 @@ var list = {
             me.onSelect();
             me.initDelBtn();
             me.initSearchBar();
-        }));
-
+        }
         me.onDelete();
     },
 
@@ -107,7 +120,7 @@ var list = {
                 <td><a href="${cache.url}">${cache.url}</a></td>
                 <td>
                     <a class="open-frame" href="./entity.html?id=${encodeURI(cache.key)}" target="detail-frame">
-                        ${me._escapeHTML(me._strip(cache.val)).trunc(120)}
+                        ${me._escapeHTML(me.html2text(cache.val)).trunc(120)}
                     </a>
                 </td>
                 <td>${time.toLocaleString()}</td>
