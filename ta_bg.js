@@ -82,6 +82,10 @@ ta_bg._popupListInTab = () => {
     });
 };
 
+// we need this to make textarea cache bg execute once when browser start
+// because action.setPopup is not persistent
+browser.runtime.onStartup.addListener(() => 'nop')
+
 ta_bg.setupCacheList = () => {
     var me = ta_bg;
     const db = ta_database
