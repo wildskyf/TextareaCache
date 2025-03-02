@@ -6,3 +6,7 @@
 * upgrade from async storage.local
 * reload after setting change
 * check min version
+* use activeTab instead of <all_urls>
+  * maybe impossible
+* context menu
+  * google chromium does not support menus.onShown event

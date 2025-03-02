@@ -2,7 +2,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "textarea-cache-lite@wildsky.cc",
-      "strict_min_version": "58.0"
+      "strict_min_version": "109.0"
     },
     "chromium_background": {
       "service_worker": "service-worker.js",
@@ -11,18 +11,18 @@
   },
 
   "manifest_version": 3,
-  "name": "Textarea Cache",
-  "version": "5.0.0",
+  "name": "Textarea Cache BETA",
+  "version": "5.0.1",
 
   "default_locale": "en",
-  "description": "Allows to save automatically the content in a text input field.",
+  "description": "THIS EXTENSION IS FOR BETA TESTING\n Allows to save automatically the content in a text input field.",
   "homepage_url": "https://github.com/wildskyf/TextareaCache",
 
   "icons": {
     "48": "icons/icon.png"
   },
 
-    "permissions": ["storage", "clipboardWrite", "menus", "alarms", "tabs", "activeTab"],
+  "permissions": ["storage", "clipboardWrite", "menus", "alarms", "tabs", "activeTab"],
 
   "action": {
     "default_title": "View your saved data (Textarea Cache)",
