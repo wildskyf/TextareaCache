@@ -13,6 +13,7 @@ node -e "
 var o = $(cat manifest.json)
 o.background = o.browser_specific_settings.chromium_background
 delete o.browser_specific_settings.chromium_background
+o.permissions = o.permissions.filter(x => x != 'tabs' && x != 'activeTab')
 console.log(JSON.stringify(o, null, '  '))
 " > chromium/manifest.json
 
