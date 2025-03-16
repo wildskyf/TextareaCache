@@ -49,10 +49,6 @@ var panel = {
     },
 
     showPreview: (isWYSIWYG, val) => {
-        // val is used to show preview of WYSIWYG,
-        // so it should not be escaped.
-        //
-        // for security issues, I will remove all <script> & </script> tag
         var me = panel;
 
         if (isWYSIWYG) {

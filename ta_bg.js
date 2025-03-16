@@ -29,9 +29,12 @@ ta_bg.listenMessageFromContentScript = () => {
                 break;
             case 'set_options':
                 ta_database.setOptions(request).then( () => {
-                    if (request.key == 'popupType') ta_bg.setupCacheList()
+                    const r = request
+                    if (r.key == 'popupType') ta_bg.setupCacheList()
                     sendBack({ msg: 'done'});
                     // attach listener according to new config
+                    const rl = 'popupType showContextMenu shouldAutoClear'
+                    if (rl.split(' ').indexOf(r.key) == -1) return
                     setTimeout(() => browser.runtime.reload(), 300)
                 });
                 break;
