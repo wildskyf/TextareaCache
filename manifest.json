@@ -11,11 +11,11 @@
   },
 
   "manifest_version": 3,
-  "name": "Textarea Cache BETA",
-  "version": "5.0.2",
+  "name": "Textarea Cache",
+  "version": "5.0.3",
 
   "default_locale": "en",
-  "description": "THIS EXTENSION IS FOR BETA TESTING\n Allows to save automatically the content in a text input field.",
+  "description": "Allows to save automatically the content in a text input field.",
   "homepage_url": "https://github.com/wildskyf/TextareaCache",
 
   "icons": {
