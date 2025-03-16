@@ -10,3 +10,4 @@
   * maybe impossible
 * context menu
   * google chromium does not support menus.onShown event
+  * remove confirm since we cache content before paste now

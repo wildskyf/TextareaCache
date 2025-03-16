@@ -46,6 +46,9 @@ var tcl = {
             if (req.behavior != "pasteToTextarea") return;
             if (!req.skipConfirmPaste && !confirm(`paste "${req.val.slice(2)}" ?`)) return;
 
+            const e = document.activeElement
+            if (!e) return
+            tcl.saveToStorage(e)
             tcl.pasteToElement(req.val);
         });
     },
@@ -114,8 +117,10 @@ var tcl = {
         }
     },
 
-    saveToStorage: event => {
-        var save_info = tcl.getContent(event.target);
+    saveToStorage: x => {
+        let e = x
+        if (x instanceof Event) e = x.target
+        var save_info = tcl.getContent(e);
 
         if (strip(save_info.val).length == 0) return;
 
@@ -125,7 +130,7 @@ var tcl = {
             title: window.parent.document.title,
             url: location.href,
             val: save_info.val,
-            id: event.target.dataset['tcId'],
+            id: e.dataset['tcId'],
             type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt',
             sessionKey: tcl.sessionKey
         });

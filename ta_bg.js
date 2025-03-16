@@ -131,18 +131,31 @@ ta_bg.updateContext = async evt => {
     for (let i=0; i<datas.length; i++) {
         const o = datas[i]
         const o2 = {type: o.type, val: o.val}
-        if (o.type == 'WYSIWYG') o2.val = domPurify.sanitize(o.val)
         menuItems.push(o2)
     }
     me.showCachesInContext(menuItems);
 };
 
-ta_bg._menuOnClick = (info, tab) => {
+ta_bg.domPurify = null
+ta_bg.getDomPurify = async function () {
+    if (this.domPurify) return this.domPurify
+    const m = await import('./vendor/dompurify.js')
+    return this.domPurify = m.default
+}
+
+ta_bg._menuOnClick = async (info, tab) => {
     if (/^\[TEXTAREA CACHE\] /.test(info.menuItemId)) return;
+
+    const t = info.menuItemId.charAt(0)
+    let b = info.menuItemId.slice(2)
+    if (t == 'w') {
+        const domPurify = await ta_bg.getDomPurify()
+        b = domPurify.sanitize(b)
+    }
 
     tabs.sendMessage(tab.id, {
         behavior: 'pasteToTextarea',
-        val: info.menuItemId,
+        val: `${t}:${b}`,
         skipConfirmPaste: ta_database.data.setting.skipConfirmPaste
     });
 };
