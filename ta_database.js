@@ -1,11 +1,10 @@
 var ta_database = {
-    VERSION: '9',
+    VERSION: '10',
     data: null,
 
     _resetData: {
-        version: '9',
+        version: '10',
         setting: {
-            pageActionLite: true,
             popupType: 'tab',
             skipConfirmPaste: false,
             onlyCacheFocusElement: false,
@@ -23,84 +22,66 @@ var ta_database = {
         ]
     },
 
-    _loadFromStorage: () => local.get().then( db_data => {
-        ta_database.data = db_data;
-    }),
+    getAll() {
+        return local.get()
+    },
 
-    init: () => ta_database._loadFromStorage().then( async () => {
-        var me = ta_database;
-        var add_on_version = me.VERSION;
-        var current_version = me.data && me.data.version;
-
-        if (!current_version) return me.reset();
-        if (add_on_version == current_version) return Promise.resolve();
-
-        await me.updateDatabaseVersion();
-
-        // return me.set('version', add_on_version);
-    }),
-
-    updateDatabaseVersion: async () => {
-        var me = ta_database;
-
-        for (var key in me.data) {
-            if (["version", "setting", "exceptions"].includes(key)) continue;
-
-            let { last_modified } = me.data[key];
-
-            if (typeof last_modified == 'string') {
-                // do nothing
-            }
-            else if (typeof last_modified == 'object' && last_modified.getTime) {
-                me.data[key].last_modified = String(last_modified.getTime())
-            }
-            else {
-                me.data[key].last_modified = me.data[key].time;
-            }
-            await me.set(key, me.data[key]);
+    loading: true,
+    loadingPromise: null,
+    configLoad: () => {
+        const me = ta_database
+        if (!browserHas('localStorage')) {
+            return me.loadingPromise = (async () => {
+                const k = 'setting exceptions version'.split(' ')
+                const data = await local.get(k)
+                if (k[0] in data) me.data = data
+                else me.data = me._resetData
+                me.loading = false
+            })()
         }
+        var data = localStorage.getItem('config')
+        if (data) data = JSON.parse(data)
+        else data = ta_database._resetData
+        ta_database.data = data
+        me.loading = false
+    },
+    configSave() {
+        var data = JSON.stringify(this.data)
+        if (browserHas('localStorage')) localStorage.setItem('config', data)
+        return local.set(this.data)
+    },
 
-        if (me.data.version != me.VERSION) {
-            await me.set('version', me.VERSION);
-        }
+    init: () => {
+        ta_database.configLoad()
+        ta_database.checkDatabaseVersion()
+    },
 
-        if (me.data.setting == undefined) me.data.setting = me._resetData.setting;
-        for (var key in me._resetData.setting) {
-            if (!(key in me.data.setting)) {
-                me.data.setting[key] = me._resetData.setting[key];
-            }
+    async checkDatabaseVersion() {
+        const me = this
+        if (this.loading) {
+            ok(this.loadingPromise)
+            await this.loadingPromise
         }
-        for (var key in me.data.setting) {
-            if (!(key in me._resetData.setting)) {
-                delete me.data.setting[key];
-            }
-        }
-        await me.set('setting', me.data.setting);
-
-        if (me.data.exceptions == undefined) {
-            await me.set('exceptions', me._resetData.exceptions);
+        b: {
+            const cfg0 = await local.get(['version', 'setting', 'exceptions'])
+            if (cfg0.version == '9' && me.VERSION == '10') true
+            else break b
+            me.data.setting = cfg0.setting
+            me.data.exceptions = cfg0.exceptions
+            await me.configSave()
         }
     },
 
-    reset: () => local.clear().then( () => {
-        // reserve setting, clean caches
-        var { data, _resetData } = ta_database;
+    // clear history
+    reset: () => local.clear(),
 
-        var keep_config = Object.assign({}, _resetData);
-        if (data.setting) keep_config.setting = data.setting;
-        if (data.exceptions) keep_config.exceptions = data.exceptions;
-
-        return local.set(keep_config).then( () => {
-            ta_database.data = keep_config;
-        });
-    }),
-
-    remove: key => local.remove(key).then( () => {
-        delete ta_database.data[key];
-    }),
+    remove: key => local.remove(key),
 
     set: (name, obj) => {
-        ta_database.data[name] = obj
+        if (name in ta_database.data) {
+            ta_database.data[name] = obj
+            return ta_database.configSave()
+        }
 
         var tmp = {};
         tmp[name] = obj;

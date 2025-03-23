@@ -1,14 +1,18 @@
 {
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "textarea-cache-lite@wildsky.cc",
-      "strict_min_version": "58.0"
+      "strict_min_version": "109.0"
+    },
+    "chromium_background": {
+      "service_worker": "service-worker.js",
+      "type": "module"
     }
   },
 
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Textarea Cache",
-  "version": "4.10.2",
+  "version": "5.0.3",
 
   "default_locale": "en",
   "description": "Allows to save automatically the content in a text input field.",
@@ -18,18 +22,11 @@
     "48": "icons/icon.png"
   },
 
-  "permissions": ["storage", "clipboardWrite", "menus", "alarms"],
+  "permissions": ["storage", "clipboardWrite", "menus", "tabs", "activeTab"],
 
-  "browser_action": {
-    "browser_style": true,
+  "action": {
     "default_title": "View your saved data (Textarea Cache)",
     "default_icon": "icons/tacache-48.png"
-  },
-
-  "page_action": {
-    "browser_style": true,
-    "default_title": "View your saved data (Textarea Cache)",
-    "default_icon": "icons/tacache-48-bw.png"
   },
 
   "content_scripts": [
@@ -38,7 +35,7 @@
       "all_frames": true,
       "matches": ["<all_urls>"],
       "run_at": "document_idle",
-      "js": ["browser-polyfill.min.js", "content-script.js"]
+      "js": ["browser-polyfill.min.js", "helper.js", "content-script.js"]
     }
   ],
 
@@ -47,7 +44,6 @@
   },
 
   "options_ui": {
-    "browser_style": true,
     "page": "options/options.html"
   }
 }

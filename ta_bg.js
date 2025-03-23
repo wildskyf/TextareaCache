@@ -3,59 +3,22 @@ var ta_bg = {};
 ta_bg.init = () => {
     var me = ta_bg;
     me.listenMessageFromContentScript();
-
-    // FIXME: the timing for event binding is wrong
-    tabs.onUpdated.addListener( tab_id => {
-        me.initPageAction({
-            forAll: false,
-            tab_id: tab_id
-        });
-    });
-
+    me.setupContext()
     me.setupCacheList();
     me.setupAutoClear();
-};
-
-ta_bg.initPageAction = info => {
-    var { forAll, tab_id } = info;
-    var show_page_action = ta_database.data.setting.pageAction;
-
-    if (!pageAction) return;
-
-    if (forAll) {
-        tabs.query({}).then(tab_infos => {
-            tab_infos.forEach(tab_info => {
-                show_page_action ?
-                    pageAction.show(tab_info.id) :
-                    pageAction.hide(tab_info.id);
-            });
-        }).catch(catchErr);
-    }
-    else {
-        show_page_action ?
-            pageAction.show(tab_id) :
-            pageAction.hide(tab_id);
-    }
 };
 
 ta_bg.listenMessageFromContentScript = () => {
     var me = ta_bg;
 
-    runtime.onMessage.addListener( (request, sender, sendBack) => {
-
+    let callee
+    runtime.onMessage.addListener(callee = (request, sender, sendBack) => {
+        const db = ta_database
+        if (db.loading) {
+            db.loadingPromise.then(() => callee(request, sender, sendBack))
+            return true
+        }
         switch(request.behavior) {
-            case 'init':
-                if (ta_database &&
-                    ta_database.data &&
-                    ta_database.data.setting &&
-                    ta_database.data.setting.showContextMenu &&
-                    menus
-                ) {
-                    menus.removeAll();
-                    menus.onClicked.removeListener(me._menuOnClick);
-                    me.setupContext(request);
-                }
-                break;
             case 'get_exceptions':
                 sendBack({ expts: ta_database.data.exceptions });
                 break;
@@ -66,11 +29,13 @@ ta_bg.listenMessageFromContentScript = () => {
                 break;
             case 'set_options':
                 ta_database.setOptions(request).then( () => {
-                    me.setupCacheList();
-                    me.initPageAction({
-                        forAll: true
-                    });
+                    const r = request
+                    if (r.key == 'popupType') ta_bg.setupCacheList()
                     sendBack({ msg: 'done'});
+                    // attach listener according to new config
+                    const rl = 'popupType showContextMenu shouldAutoClear'
+                    if (rl.split(' ').indexOf(r.key) == -1) return
+                    setTimeout(() => browser.runtime.reload(), 300)
                 });
                 break;
             case 'get_options':
@@ -87,7 +52,7 @@ ta_bg.listenMessageFromContentScript = () => {
                 });
                 break;
             case 'load':
-                sendBack({ data: ta_database.data });
+                ta_database.getAll().then(data => sendBack({data}))
                 break;
             case 'delete':
                 ta_database.remove(request.id).then( () => {
@@ -120,83 +85,77 @@ ta_bg._popupListInTab = () => {
     });
 };
 
-ta_bg._popupLiteByPageAction = tab => {
-    pageAction.setTitle({
-        tabId: tab.id,
-        title: "View your saved data (Textarea Cache)"
-    })
-
-    pageAction.setIcon({
-        tabId: tab.id,
-        path: "icons/tacache-48-bw.png"
-    });
-
-    pageAction.setPopup({
-        tabId: tab.id,
-        popup: runtime.getURL("view/lite/lite.html")
-    });
-    pageAction.openPopup();
-};
-
-ta_bg._popupLiteByBrowserAction = () => {
-    browseraction.openpopup();
-};
+// we need this to make textarea cache bg execute once when browser start
+// because action.setPopup is not persistent
+browser.runtime.onStartup.addListener(() => 'nop')
 
 ta_bg.setupCacheList = () => {
     var me = ta_bg;
-    var { setting } = ta_database.data;
-
-    if (!setting) {
-        setting = {
-            popupType: 'tab',
-            pageActionLite: true,
-            skipConfirmPaste: false,
-            showContextMenu: true
-        };
-    }
-
-    if (setting.popupType == "window") {
-        browserAction.onClicked.removeListener(ta_bg._popupLiteByBrowserAction);
-
-        browserAction.setPopup({ popup: "" });
-
-        browserAction.onClicked.addListener(ta_bg._popupListInWindow);
+    const db = ta_database
+    if (db.loading || db.data.setting.popupType == 'window') {
+        browserAction.setPopup({popup: ""})
+        browserAction.onClicked.addListener(ta_bg._popupListInWindow)
     }
     else {
-        browserAction.onClicked.removeListener(ta_bg._popupListInWindow);
-
         browserAction.setPopup({
             popup: runtime.getURL("view/lite/lite.html")
-        });
-
-        browserAction.onClicked.addListener(ta_bg._popupLiteByBrowserAction);
+        })
     }
+    if (db.loading) db.loadingPromise.then(() => me.setupCacheList())
+};
 
-    if (!setting.pageAction) return;
-    var target_function = setting.popupType == "window" ? ta_bg._popupListInWindow : ta_bg._popupLiteByPageAction;
-    if (setting.pageActionLite) {
-        pageAction.onClicked.removeListener(target_function);
-        pageAction.onClicked.addListener(ta_bg._popupLiteByPageAction);
+ta_bg.setupContext = () => {
+    const db = ta_database
+    const me = ta_bg
+    if (!menus) return
+    if (db.loading || db.data.setting.showContextMenu) {
+        menus.onClicked.addListener(me._menuOnClick);
+        menus.onShown.addListener(me.updateContext);
     }
     else {
-        pageAction.onClicked.removeListener(ta_bg._popupLiteByPageAction);
-        pageAction.onClicked.addListener(target_function);
+        menus.onClicked.removeListener(me._menuOnClick);
+        menus.onShown.removeListener(me.updateContext);
+        menus.removeAll()
     }
-};
-
-ta_bg.setupContext = req => {
+    if (db.loading) db.loadingPromise.then(() => ta_bg.setupContext())
+}
+ta_bg.updateContext = async evt => {
+    menus.removeAll()
     var me = ta_bg;
-    var site_names = Object.keys(ta_database.data).filter( t => t.includes(req.url));
-    var datas = site_names.map( name => ta_database.data[name] ).filter( d => d.url == req.url ).map( d => d.val );
-    me.showCachesInContext(datas);
+    const tab = await tabs.query({active: true, currentWindow: true})
+    const url = tab[0].url
+    const dataAll = await ta_database.getAll()
+    var site_names = Object.keys(dataAll).filter( t => t.includes(url));
+    var datas = site_names.map( name => dataAll[name] ).filter( d => d.url == url );
+    const menuItems = []
+    for (let i=0; i<datas.length; i++) {
+        const o = datas[i]
+        const o2 = {type: o.type, val: o.val}
+        menuItems.push(o2)
+    }
+    me.showCachesInContext(menuItems);
 };
 
-ta_bg._menuOnClick = (info, tab) => {
+ta_bg.domPurify = null
+ta_bg.getDomPurify = async function () {
+    if (this.domPurify) return this.domPurify
+    const m = await import('./vendor/dompurify.js')
+    return this.domPurify = m.default
+}
+
+ta_bg._menuOnClick = async (info, tab) => {
     if (/^\[TEXTAREA CACHE\] /.test(info.menuItemId)) return;
+
+    const t = info.menuItemId.charAt(0)
+    let b = info.menuItemId.slice(2)
+    if (t == 'w') {
+        const domPurify = await ta_bg.getDomPurify()
+        b = domPurify.sanitize(b)
+    }
 
     tabs.sendMessage(tab.id, {
         behavior: 'pasteToTextarea',
-        val: info.menuItemId,
+        val: `${t}:${b}`,
         skipConfirmPaste: ta_database.data.setting.skipConfirmPaste
     });
 };
@@ -208,7 +167,7 @@ ta_bg.showCachesInContext = caches => {
         id: '[TEXTAREA CACHE] open-cache-list',
         title: 'View your caches',
         contexts: ["editable"],
-        command: '_execute_browser_action'
+        command: '_execute_action'
     });
 
     menus.create({
@@ -216,20 +175,24 @@ ta_bg.showCachesInContext = caches => {
     });
 
     caches.forEach( cache => {
+        const {type, val} = cache;
+        const flag = type == 'WYSIWYG' ? 'w' : 't'
         menus.create({
-            id: cache,
-            title: cache,
+            id: flag + ':' + val,
+            title: val,
             contexts: ["editable"]
         });
     });
-    menus.onClicked.addListener(ta_bg._menuOnClick);
+
+    menus.refresh()
 };
 
 ta_bg.setupAutoClear = () => {
-    var checkAutoClear = () => {
-        var data = ta_database.data;
+    var checkAutoClear = async () => {
+        var data = await ta_database.getAll()
+        var setting = ta_database.data.setting
 
-        if (!data.setting.shouldAutoClear) return;
+        if (!setting.shouldAutoClear) return;
 
         var day  = data.setting.autoClear_day,
             hour = data.setting.autoClear_hour,
@@ -256,14 +219,15 @@ ta_bg.setupAutoClear = () => {
     };
 
     const me = ta_bg
-    const delay = 3000
+    let delay = 0
     const interval = 15 * 60 * 1000
-    const checkDelay = () => void setTimeout(() => {
+    const checkDelay = () => void setTimeout(async () => {
         const t = Date.now()
         if (t - me.lastRunAutoClear < interval) return
         me.lastRunAutoClear = t
         checkAutoClear()
     }, delay)
     checkDelay();
+    delay = 3000
     runtime.onMessage.addListener(checkDelay)
 };

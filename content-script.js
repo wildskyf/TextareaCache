@@ -22,7 +22,8 @@ var tcl = {
 
         tcl.initContextMenu();
         window.addEventListener('focusin', tcl.focusEventTaDetector)
-        const opt = await runtime.sendMessage({behavior: 'get_options'})
+        let opt = await stor.get('setting')
+        if (!opt) opt = await runtime.sendMessage({behavior: 'get_options'})
         if (!opt.onlyCacheFocusElement) {
             tcl.findTextContentsAndAttachEvents();
             if (opt.intervalToSave > 0) {
@@ -32,23 +33,41 @@ var tcl = {
     },
 
     initExceptionSites: async () => {
-        var res = await runtime.sendMessage({ behavior: 'get_exceptions' });
-        return res.expts.some(site => location.href.includes(site));
+        var expts = await stor.get('exceptions')
+        if (!expts) {
+            let res = await runtime.sendMessage({ behavior: 'get_exceptions' });
+            expts = res.expts
+        }
+        return expts.some(site => location.href.includes(site));
     },
 
     initContextMenu: () => {
-        runtime.sendMessage({
-            behavior: 'init',
-            title: window.parent.document.title,
-            url: location.href
-        }).then(()=>{}).catch(()=>{});
-
         runtime.onMessage.addListener( req => {
             if (req.behavior != "pasteToTextarea") return;
-            if (!req.skipConfirmPaste && !confirm(`paste "${req.val}" ?`)) return;
+            if (!req.skipConfirmPaste && !confirm(`paste "${req.val.slice(2)}" ?`)) return;
 
-            document.activeElement.innerHTML = req.val
+            const e = document.activeElement
+            if (!e) return
+            tcl.saveToStorage(e)
+            tcl.pasteToElement(req.val);
         });
+    },
+    getInnerHtml: (html) => {
+        const dp = new DOMParser()
+        const doc = dp.parseFromString(html, 'text/html')
+        const r = doc.body.children[0]
+        return r?.innerHTML || ''
+    },
+    pasteToElement: (data, e = document.activeElement) => {
+        if (!e) return
+        const flag = data.charAt(0)
+        let val = data.slice(2)
+        if (flag == 'w') val = tcl.getInnerHtml(val)
+        if (e.isContentEditable) {
+            if (flag == 'w') e.innerHTML = val
+            else e.textContent = val
+        }
+        else e.value = val
     },
     attachEventToNode: ta => {
         var me = tcl;
@@ -98,17 +117,20 @@ var tcl = {
         }
     },
 
-    saveToStorage: event => {
-        var save_info = tcl.getContent(event.target);
+    saveToStorage: x => {
+        let e = x
+        if (x instanceof Event) e = x.target
+        var save_info = tcl.getContent(e);
 
         if (strip(save_info.val).length == 0) return;
 
-        runtime.sendMessage({
+        // runtime.sendMessage({
+        stor.saveTa({
             behavior: 'save',
             title: window.parent.document.title,
             url: location.href,
             val: save_info.val,
-            id: event.target.dataset['tcId'],
+            id: e.dataset['tcId'],
             type: save_info.isWYSIWYG ? 'WYSIWYG' : 'txt',
             sessionKey: tcl.sessionKey
         });

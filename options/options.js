@@ -57,13 +57,6 @@ var option = {
                     break;
                 }
             }
-
-            if (setting.pageAction) {
-                document.querySelector('#lite-list').classList.remove('hide');
-            }
-            else {
-                document.querySelector('#lite-list').classList.add('hide');
-            }
         });
     },
 
@@ -96,36 +89,6 @@ var option = {
             });
         }
 
-        document.querySelector('#pageAction').addEventListener('change', e => {
-            var isPageAction = e.currentTarget.checked;
-
-            runtime.sendMessage({
-                behavior: 'set_options',
-                key: 'pageAction',
-                val: isPageAction
-            }).then( () => {
-                me.showUpdatedMessage('success');
-                if (isPageAction) {
-                    document.querySelector('#lite-list').classList.remove('hide');
-                }
-                else {
-                    document.querySelector('#lite-list').classList.add('hide');
-                }
-            });
-        });
-
-        document.querySelector('#pageActionLite').addEventListener('change', e => {
-            var isLite = e.currentTarget.checked;
-
-            runtime.sendMessage({
-                behavior: 'set_options',
-                key: 'pageActionLite',
-                val: isLite
-            }).then( () => {
-                me.showUpdatedMessage('success');
-            });
-        });
-
         document.querySelector('#showContextMenu').addEventListener('change', e => {
             var showContextMenu = e.currentTarget.checked;
 
@@ -137,6 +100,13 @@ var option = {
                 me.showUpdatedMessage('success');
             });
         });
+        if (!browserHas('menus')) {
+            const e = $id.showContextMenu
+            e.disabled = true
+            e.checked = false
+            e.parentNode.title = i18n.getMessage('chromium_defect')
+            e.id = e.id + '_disabled'
+        }
 
         document.querySelector('#intervalToSave').addEventListener('change', e => {
             var intervalToSave = parseInt(e.currentTarget.value);
