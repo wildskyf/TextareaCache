@@ -16,31 +16,6 @@ And sometime you might need to roll back to the previous version.
 
 Now You could see them at [AMO/textarea-cache/versions/](https://addons.mozilla.org/en-US/firefox/addon/textarea-cache/versions/).
 
-### about Manifest V3
-This add-on will eventually get MV3 after firefox obsolete MV2
-and if I still need this add-on.
-
-If you want it sooner, you can [buy me a coffee about MV3][bmc]
-to encourage me to work on this.
-The timeline is:
-
-* ~~10 months if 20 USD~~
-* ~~6 months if 40 USD~~
-* ~~2 months if 60 USD~~
-
-[bmc]: https://buymeacoffee.com/gholk/textarea-cache-mv3-upgrade
-
-Please find the details in the link.
-
-*I have received more than $60 at 2025/01/18, so I will upgrade to MV3 before 2025/03/18.*
-
-By the way, we can not add MV2 features to the chrome version now
-since Chrome Web Store no longer allow uploading the MV2 add-on.
-
-## buy me a coffee
-
-[![bubble-tea]](https://buymeacoffee.com/gholk)
-
 ## buy me a coffee
 
 [![bubble-tea]](https://buymeacoffee.com/gholk)
@@ -48,9 +23,16 @@ since Chrome Web Store no longer allow uploading the MV2 add-on.
 [bubble-tea]: https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png "buy me a bubble tea"
 
 ## develop
+build:
 
+```sh
+npm i web-ext -g; npm run build
 ```
-# install node.js
-npm install web-ext -g
-web-ext run
+
+build chromium:
+
+```sh
+npm run build-chromium
+cd chromium
+zip ../ta-chromium.zip -r *
 ```
