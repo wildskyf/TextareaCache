@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "dexie": "^4.0.11",
     "dompurify": "^3.1.6",
     "webextension-polyfill": "^0.12.0"
   },
@@ -10,7 +9,9 @@
   },
   "webExt": {
     "ignoreFiles": [
-        "**/*~", "chromium", "skip"
+      "**/*~",
+      "chromium",
+      "skip"
     ]
   }
 }

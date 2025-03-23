@@ -3,7 +3,7 @@ mkdir -p chromium
 
 (
 for f in common.js ta_database.js ta_bg.js background.js
-do 
+do
 cat $f
 echo \;
 done
