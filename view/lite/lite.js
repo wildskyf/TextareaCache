@@ -10,6 +10,7 @@ var panel = {
     $delete_btn    : null,
     $delete_all_btn: null,
 
+    optionSizeMax: 80,
     setBodyEmpty: () => {
         let $main = document.querySelector('#main');
         let $footer = document.querySelector('#footer');
@@ -48,6 +49,13 @@ var panel = {
         return this.domPurify = m.default
     },
 
+    showPreviewFromSelect() {
+        const sel = this.$select
+        var key = sel.value;
+        var cache = this.data[key].val;
+        var isWYSIWYG = this.data[key].type == 'WYSIWYG';
+        this.showPreview(isWYSIWYG, cache);
+    },
     showPreview: (isWYSIWYG, val) => {
         var me = panel;
 
@@ -112,6 +120,10 @@ var panel = {
             var txta = txt0.split(' ')
             txta.pop(); // hide the serial number
             var txt = txta.join(' ');
+            const optionSizeMax = me.optionSizeMax
+            if (txt.length > optionSizeMax) {
+                txt = txt.slice(0, optionSizeMax-3) + '...'
+            }
 
             var option = document.createElement('option');
             option.textContent = txt; // todo: remove date stamp
@@ -145,10 +157,11 @@ var panel = {
     selectGoBy: n => {
         var me = panel;
         var $select = me.$select
-        var index = $select.selectedIndex + n;
-        if (index < 0 || $select.length <= index) return null;
-        $select.selectedIndex = index;
-        $select.dispatchEvent(new Event('change'));
+        const optl = Array.from($select.options).filter(e => !e.hidden)
+        var index = optl.indexOf($select.selectedOptions[0]) + n;
+        if (index < 0 || optl.length <= index) return null;
+        $select.selectedIndex = optl[index].index
+        me.showPreviewFromSelect()
         return index;
     },
 
@@ -158,6 +171,11 @@ var panel = {
 
         me.initHeaderBtns();
 
+        tabs.query({active: true, currentWindow: true}).then(l => {
+            const uo = new URL(l[0].url)
+            me.siteUrl = uo
+        })
+
         const lr = logc('history-load')
         stor.load().then( ( data => {
             lr.log('get data')
@@ -166,7 +184,7 @@ var panel = {
             delete data.setting;
             delete data.exceptions;
 
-            whole_data = data;
+            me.data = whole_data = data;
             if (Object.keys(whole_data).length <= 0) {
                 me.setBodyEmpty();
                 return false;
@@ -199,6 +217,29 @@ var panel = {
                 var step = e.deltaY > 0 ? 1 : -1;
                 me.selectGoBy(step);
             });
+
+            $('#filter_site_this input').onchange = async evt => {
+                const filter = evt.target.checked
+                const u = me.siteUrl.hostname
+                let hasVisible = false
+                for (const e of $select.options) {
+                    if (!filter) {
+                        e.hidden = false
+                        hasVisible = true
+                        continue
+                    }
+                    const [et, eu, ekey] = e.value.split(' ')
+                    if (eu.indexOf(u) == -1) e.hidden = true
+                    else hasVisible = true
+                }
+                if (hasVisible) {
+                    $select.selectedIndex =
+                        $('option:not([hidden])', $select).index
+                    me.showPreviewFromSelect()
+                    $select.showPicker()
+                }
+                else $select.value = ''
+            }
 
             window.addEventListener('keydown', e => {
                 var k = e.key;
@@ -265,6 +306,8 @@ var panel = {
                 });
             });
         })).then(() => lr.end());
+
+        i18nAuto.run('lite')
     }
 };
 

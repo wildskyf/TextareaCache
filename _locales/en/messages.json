@@ -26,6 +26,9 @@
     "deleteAll":{
       "message": "Delete All"
     },
+    "lite__filter_site_this": {
+        "message": "This site"
+    },
     "cache_copied":{
       "message": "Cache copied."
     },

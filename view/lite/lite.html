@@ -20,7 +20,13 @@
             <h1>TEXTAREA CACHE</h1>
         </div>
         <div id="main">
-            <select id="cache_seletor" name="cache_seletor"></select>
+            <div class="selector_bar">
+              <select id="cache_seletor" name="cache_seletor"></select>
+              <label class="tool" id="filter_site_this">
+                <input type="checkbox">
+                <span data-i18n-xpath="../@id"></span>
+              </label>
+            </div>
             <div id="show_cache" contenteditable='true'></div>
         </div>
     	<div id="footer">

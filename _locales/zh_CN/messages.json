@@ -26,6 +26,9 @@
     "deleteAll":{
       "message": "删除全部"
     },
+    "lite__filter_site_this": {
+        "message": "本站"
+    },
     "cache_copied":{
       "message": "Cache 已复制。"
     },

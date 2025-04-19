@@ -26,7 +26,8 @@ Now You could see them at [AMO/textarea-cache/versions/](https://addons.mozilla.
 build:
 
 ```sh
-npm i web-ext -g; npm run build
+npm i web-ext -g
+npm run build
 ```
 
 build chromium:
