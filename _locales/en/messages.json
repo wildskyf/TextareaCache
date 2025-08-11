@@ -21,7 +21,7 @@
       "message": "Delete Selected Cache"
     },
     "deleteAllinc":{
-      "message": "Delete All (including those you didn't select)"
+      "message": "Delete All (including those not selected)"
     },
     "deleteAll":{
       "message": "Delete All"
@@ -33,40 +33,40 @@
       "message": "Google Chromium does not support this"
     },
     "option_skipConfirmPaste": {
-      "message": "Skip Confirm When Paste From Context Menu"
+      "message": "Skip confirm when paste via context menu"
     },
     "option_onlyCacheFocusElement": {
-      "message": "Cache the textarea which ever get focus only"
+      "message": "Only cache focused textareas"
     },
     "option_exportHistory": {
-      "message": "Export history as file"
+      "message": "Export history to file"
     },
     "option_pageAction": {
-      "message": "Show Icon at navigation bar"
+      "message": "Show address bar icon"
     },
     "option_pageActionLite": {
-      "message": "PageAction (icon on url bar) using lite list"
+      "message": "Open lite list via address bar icon"
     },
     "option_popupType": {
-      "message": "Popup what to show list"
+      "message": "Open in"
     },
     "option_exception": {
-      "message": "Exception List"
+      "message": "Exception list"
     },
     "option_exp_site_hint": {
-      "message": "(one site one line)"
+      "message": "(one site per line)"
     },
     "option_showContextMenu": {
-      "message": "show context menu"
+      "message": "Show context menu"
     },
     "option_intervalToSave": {
-      "message": "interval (ms) to scan the new textbox in the page (0 meaning no scaning)"
+      "message": "Interval (ms) to scan for new textboxes in page (0 for no scanning)"
     },
     "option_shouldAutoClear": {
-      "message": "auto clear old cache"
+      "message": "Auto-clear old cache"
     },
     "option_saved": {
-      "message": "Your change has been saved."
+      "message": "Options saved"
     },
     "option_save_error": {
       "message": "There is something wrong, please report to developer."
