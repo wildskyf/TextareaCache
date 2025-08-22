@@ -11,6 +11,9 @@
     "ignoreFiles": [
       "**/*~",
       "chromium",
+      "package*",
+      "todo*",
+      "*.sh", "*.xpi", "*.zip", "*.crx",
       "skip"
     ]
   }
