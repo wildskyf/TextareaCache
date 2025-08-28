@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "dompurify": "^3.1.6",
+    "dompurify": "^3.2.6",
     "webextension-polyfill": "^0.12.0"
   },
   "scripts": {
@@ -13,7 +13,10 @@
       "chromium",
       "package*",
       "todo*",
-      "*.sh", "*.xpi", "*.zip", "*.crx",
+      "*.sh",
+      "*.xpi",
+      "*.zip",
+      "*.crx",
       "skip"
     ]
   }
