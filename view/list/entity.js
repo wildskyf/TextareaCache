@@ -45,18 +45,23 @@ var entity = {
         });
     },
 
-    showPreview: (isWYSIWYG, val) => {
+    async getDomPurify() {
+        if (!this.domPurify) {
+            const m = await import('../../vendor/dompurify.js')
+            this.domPurify = m.default
+        }
+        return this.domPurify
+    },
+    async showPreview(isWYSIWYG, val) {
 
         // val is used to show preview of WYSIWYG,
         // so it should not be escaped.
-        //
-        // for security issues, I will remove all <script> & </script> tag
         var me = entity;
 
         if (isWYSIWYG) {
             me.$show_cache.type = 'WYSIWYG';
-            val = val.replace(/<script.*>.*<\/script.*>/g, '');
-            me.$show_cache.innerHTML = val;
+            const domPurify = await me.getDomPurify()
+            me.$show_cache.innerHTML = domPurify.sanitize(val)
         }
         else {
             me.$show_cache.type = 'txt';
