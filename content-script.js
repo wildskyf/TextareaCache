@@ -127,7 +127,6 @@ var tcl = {
         // runtime.sendMessage({
         stor.saveTa({
             behavior: 'save',
-            title: window.parent.document.title,
             url: location.href,
             val: save_info.val,
             id: e.dataset['tcId'],

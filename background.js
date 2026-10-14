@@ -2,7 +2,6 @@
 //
 //  {
 //      behavior:   'save',
-//      title:      'the website title',       /* String */
 //      url:        'https://the.website/url', /* String */
 //      val:        'the text in textarea',    /* String */
 //      id:         'the No. of textarea',     /* String */

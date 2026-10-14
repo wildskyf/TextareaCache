@@ -42,7 +42,7 @@ ta_bg.listenMessageFromContentScript = () => {
                 sendBack(ta_database.data.setting);
                 break;
             case 'save':
-                var {title, val, type, id, url, sessionKey} = request;
+                var {val, type, id, url, sessionKey} = request;
                 ta_database.set(`${sessionKey} ${url} ${id}`, {
                     time: sessionKey,
                     type: type,

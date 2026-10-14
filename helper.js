@@ -9,7 +9,7 @@ var stor = {
         return this.db.set({[k]: v})
     },
     saveTa(o) {
-        var {title, val, type, id, url, sessionKey} = o;
+        var {val, type, id, url, sessionKey} = o;
         return this.set(`${sessionKey} ${url} ${id}`, {
             time: sessionKey,
             type: type,
